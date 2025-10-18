@@ -1,0 +1,14 @@
+# Ignore environment variable files
+.env
+.env.*
+
+# Except for example files
+!.env.example
+!.env.*.example
+
+# Ignore dependency directories and system files
+node_modules
+.DS_Store
+
+# Ignore database migration files
+_migrations

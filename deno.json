@@ -1,0 +1,16 @@
+{
+  "imports": {
+    "@types/pg": "npm:@types/pg@^8.15.5",
+    "drizzle-kit": "npm:drizzle-kit@^0.31.5",
+    "drizzle-orm": "npm:drizzle-orm@^0.44.6",
+    "pg": "npm:pg@^8.16.3",
+    "@db/*": "./shared/db/*"
+  },
+  "tasks": {
+    "db:generate": "deno -A --env-file=./.env npm:drizzle-kit generate --config=./shared/db/drizzle.config.ts",
+    "db:migrate": "deno -A --env-file=./.env npm:drizzle-kit migrate --config=./shared/db/drizzle.config.ts",
+    "db:empty": "deno -A --env-file=./.env shared/db/helpers/clearData.ts",
+    "db:deploy": "deno run db:generate && db:migrate"
+  },
+  "nodeModulesDir": "auto"
+}
