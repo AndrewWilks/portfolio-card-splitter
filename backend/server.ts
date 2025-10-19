@@ -49,7 +49,7 @@ backend.use(
   cors({
     origin:
       Deno.env.get("NODE_ENV") === "production"
-        ? [Deno.env.get("APP_UR") || ""]
+        ? [Deno.env.get("APP_URL") || ""]
         : ["http://localhost:3000"],
     credentials: true,
   })
