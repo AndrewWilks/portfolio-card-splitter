@@ -27,6 +27,10 @@ import { PasswordService } from "@backend/services";
 import { PotService } from "@backend/services";
 import { SessionService } from "@backend/services";
 
+// Routes
+import { rootRoute } from "@backend/routes";
+import { apiAuthBootstrap } from "@backend/routes";
+
 // Repository Factories
 export function createUserRepository() {
   return new UserRepository();
@@ -142,4 +146,14 @@ export function createPotService() {
 
 export function createSessionService() {
   return SessionService;
+}
+
+// Route Factories
+export function createRootRoute() {
+  return rootRoute;
+}
+
+export function createApiAuthBootstrap() {
+  const authService = createAuthService();
+  return (c: any) => apiAuthBootstrap(c, authService);
 }

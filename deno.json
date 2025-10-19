@@ -4,6 +4,7 @@
     "@db": "./backend/db/index.ts",
     "@backend/services": "./backend/services/index.ts",
     "@backend/repositories": "./backend/repositories/index.ts",
+    "@backend/routes": "./backend/routes/index.ts",
 
     // Frontend modules
     "@frontend/components": "./frontend/components/index.ts",

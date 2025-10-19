@@ -1,10 +1,8 @@
 import { Context } from "hono";
-import { db } from "@db";
 import { string, email, object } from "zod";
-import { Schemas } from "@db";
-import { eq } from "drizzle-orm";
 import { STATUS_CODE } from "@std/http";
 import { PasswordService } from "@shared/services";
+import { AuthService } from "@backend/services";
 
 const BootstrapRequestSchema = object({
   firstName: string().min(2),
@@ -25,8 +23,7 @@ interface BootstrapResponseSchema {
   message: string;
 }
 
-// Created the first admin user for fresh installations
-export async function apiAuthBootstrap(c: Context) {
+export async function apiAuthBootstrap(c: Context, authService: AuthService) {
   // Parse and validate request body
   const parseResult = BootstrapRequestSchema.safeParse(await c.req.json());
 
@@ -38,58 +35,30 @@ export async function apiAuthBootstrap(c: Context) {
   // Extract validated data
   const { laseName, firstName, email, password } = parseResult.data;
 
-  // Check if any users exist
-  const existingUsers = await db
-    .select()
-    .from(Schemas.Tables.users)
-    .where(eq(Schemas.Tables.users.role, "admin"))
-    .limit(1);
-
-  // If users exist, prevent bootstrapping
-  if (existingUsers.length > 0) {
-    return c.json(
-      { error: "Bootstrap has already been completed." },
-      STATUS_CODE.Forbidden
-    );
-  }
-
-  // Create the admin user
-  const passwordHash = await PasswordService.hashPassword(password);
-  const createdUser = await db
-    .insert(Schemas.Tables.users)
-    .values({
+  try {
+    // Use authService.bootstrap to create the admin user
+    const result = await authService.bootstrap({
       email,
-      passwordHash,
+      password,
       firstName,
       lastName: laseName,
-      role: "admin",
-      isActive: true,
-    })
-    .returning({
-      id: Schemas.Tables.users.id,
-      email: Schemas.Tables.users.email,
-      firstName: Schemas.Tables.users.firstName,
-      laseName: Schemas.Tables.users.lastName,
     });
 
-  // Verify user creation
-  if (createdUser.length === 0 && Array.isArray(createdUser)) {
-    return c.json(
-      { error: "Failed to create admin user." },
-      STATUS_CODE.InternalServerError
-    );
-  }
-
-  // Return success response
-  c.json<BootstrapResponseSchema>(
-    {
+    return c.json<BootstrapResponseSchema>({
       success: true,
       user: {
-        ...createdUser[0],
+        id: result.user.id,
+        email: result.user.email,
+        firstName: result.user.firstName,
+        laseName: result.user.lastName,
         isActive: true,
       },
-      message: "Bootstrap completed successfully. Admin user created.",
-    },
-    STATUS_CODE.Created
-  );
+      message: "Admin user created successfully",
+    });
+  } catch (error) {
+    return c.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      STATUS_CODE.BadRequest
+    );
+  }
 }
