@@ -18,6 +18,7 @@
     // Third-party Packages
     "@std/crypto": "jsr:@std/crypto@^1.0.5",
     "@std/http": "jsr:@std/http@^1.0.21",
+    "@std/assert": "jsr:@std/assert@^1.0.11",
     "@stdext/crypto": "jsr:@stdext/crypto@^0.1.0",
     "@types/pg": "npm:@types/pg@^8.15.5",
     "drizzle-kit": "npm:drizzle-kit@^0.31.5",
@@ -34,6 +35,9 @@
     "db:deploy": "deno run db:generate && db:migrate",
     "backend:start": "deno run --allow-net --allow-env --env-file=.env backend/server.ts",
     "backend:dev": "deno run --allow-net --allow-env --watch=backend/ --env-file=.env backend/server.ts",
+    "test": "deno test --allow-net --allow-env --env-file=.env backend/__tests__/",
+    "test:watch": "deno test --allow-net --allow-env --watch --env-file=.env backend/__tests__/",
+    "test:coverage": "deno test --allow-net --allow-env --coverage=./coverage --env-file=.env backend/__tests__/",
     "spell:check": "deno run -A npm:cspell --config .cspell.cjs '**/*.{ts,tsx,js,jsx,json,md}'",
     "spell:fix": "deno run -A npm:cspell --config .cspell.cjs '**/*.{ts,tsx,js,jsx,json,md}' --fix"
   },

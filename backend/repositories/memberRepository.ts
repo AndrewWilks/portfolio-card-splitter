@@ -1,7 +1,11 @@
 import { MemberRepository as SharedMemberRepository } from "@shared/repositories";
 import { Member } from "@shared/entities";
+import { db } from "@db";
 
 export class MemberRepository extends SharedMemberRepository {
+  constructor(private dbClient = db) {
+    super();
+  }
   override save(_member: Member): Promise<void> {
     // TODO: Implement save method to insert member into database
     return Promise.reject("Not implemented");

@@ -5,6 +5,8 @@ import * as routes from "./routes/index.ts";
 
 const backend = new Hono();
 
+export { backend };
+
 // Logger Middleware
 backend.use("*", logger());
 
@@ -109,5 +111,8 @@ backend.get("/api/audit", routes.apiAuditGet);
 
 // Real-Time Events Endpoint
 backend.get("/api/events/stream", routes.apiEventsStream);
+
+// Health Check Endpoint
+backend.get("/api/health", (c) => c.json({ status: "ok" }));
 
 Deno.serve(backend.fetch);

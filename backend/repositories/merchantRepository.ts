@@ -1,7 +1,11 @@
 import { MerchantRepository as SharedMerchantRepository } from "@shared/repositories";
 import { Merchant } from "@shared/entities";
+import { db } from "@db";
 
 export class MerchantRepository extends SharedMerchantRepository {
+  constructor(private dbClient = db) {
+    super();
+  }
   override save(_merchant: Merchant): Promise<void> {
     // TODO: Implement save method to insert merchant into database
     return Promise.reject("Not implemented");
