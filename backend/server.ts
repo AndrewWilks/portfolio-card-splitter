@@ -1,8 +1,39 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import * as routes from "./routes/index.ts";
-import { createRootRoute, createApiAuthBootstrap } from "./di.ts";
+import {
+  createRootRoute,
+  createApiAuthBootstrap,
+  createApiAuthInvite,
+  createApiAuthAcceptInvite,
+  createApiAuthLogin,
+  createApiAuthLogout,
+  createApiAuthRequestReset,
+  createApiAuthResetPassword,
+  createApiPeopleList,
+  createApiPeopleCreate,
+  createApiPeopleUpdate,
+  createApiTransactionsList,
+  createApiTransactionsCreate,
+  createApiTransactionsUpdate,
+  createApiMerchantsList,
+  createApiMerchantsCreate,
+  createApiMerchantsUpdate,
+  createApiTagsList,
+  createApiTagsCreate,
+  createApiTagsUpdate,
+  createApiPotsList,
+  createApiPotsCreate,
+  createApiPotsUpdate,
+  createApiPotsDeposit,
+  createApiReservationsCreate,
+  createApiReservationsDelete,
+  createApiTransfersCreate,
+  createApiPaymentsCreate,
+  createApiLedgerGet,
+  createApiAuditGet,
+  createApiEventsStream,
+} from "./di.ts";
 
 const backend = new Hono();
 
@@ -63,55 +94,55 @@ backend.get("/api/status", (c) => {
 
 // Authentication Endpoints
 backend.post("/api/auth/bootstrap", createApiAuthBootstrap());
-backend.post("/api/auth/invite", routes.apiAuthInvite); // TODO: Implement invite functionality
-backend.post("/api/auth/accept-invite", routes.apiAuthAcceptInvite); // TODO: Implement accept invite functionality
-backend.post("/api/auth/login", routes.apiAuthLogin); // TODO: Implement login functionality
-backend.post("/api/auth/logout", routes.apiAuthLogout); // TODO: Implement logout functionality
-backend.post("/api/auth/request-reset", routes.apiAuthRequestReset); // TODO: Implement password reset request
-backend.post("/api/auth/reset", routes.apiAuthResetPassword); // TODO: Implement password reset
+backend.post("/api/auth/invite", createApiAuthInvite()); // TODO: Implement invite functionality
+backend.post("/api/auth/accept-invite", createApiAuthAcceptInvite()); // TODO: Implement accept invite functionality
+backend.post("/api/auth/login", createApiAuthLogin()); // TODO: Implement login functionality
+backend.post("/api/auth/logout", createApiAuthLogout()); // TODO: Implement logout functionality
+backend.post("/api/auth/request-reset", createApiAuthRequestReset()); // TODO: Implement password reset request
+backend.post("/api/auth/reset", createApiAuthResetPassword()); // TODO: Implement password reset
 
 // People Management Endpoints
-backend.get("/api/people", routes.apiPeopleList); // TODO: Implement people list endpoint
-backend.post("/api/people", routes.apiPeopleCreate); // TODO: Implement people create endpoint
-backend.patch("/api/people/:id", routes.apiPeopleUpdate); // TODO: Implement people update endpoint
+backend.get("/api/people", createApiPeopleList()); // TODO: Implement people list endpoint
+backend.post("/api/people", createApiPeopleCreate()); // TODO: Implement people create endpoint
+backend.patch("/api/people/:id", createApiPeopleUpdate()); // TODO: Implement people update endpoint
 
 // Transaction Management Endpoints
-backend.get("/api/transactions", routes.apiTransactionsList); // TODO: Implement transactions list endpoint
-backend.post("/api/transactions", routes.apiTransactionsCreate); // TODO: Implement transactions create endpoint
-backend.patch("/api/transactions/:id", routes.apiTransactionsUpdate); // TODO: Implement transactions update endpoint
+backend.get("/api/transactions", createApiTransactionsList()); // TODO: Implement transactions list endpoint
+backend.post("/api/transactions", createApiTransactionsCreate()); // TODO: Implement transactions create endpoint
+backend.patch("/api/transactions/:id", createApiTransactionsUpdate()); // TODO: Implement transactions update endpoint
 
 // Merchant Management Endpoints
-backend.get("/api/merchants", routes.apiMerchantsList); // TODO: Implement merchants list endpoint
-backend.post("/api/merchants", routes.apiMerchantsCreate); // TODO: Implement merchants create endpoint
-backend.patch("/api/merchants/:id", routes.apiMerchantsUpdate); // TODO: Implement merchants update endpoint
+backend.get("/api/merchants", createApiMerchantsList()); // TODO: Implement merchants list endpoint
+backend.post("/api/merchants", createApiMerchantsCreate()); // TODO: Implement merchants create endpoint
+backend.patch("/api/merchants/:id", createApiMerchantsUpdate()); // TODO: Implement merchants update endpoint
 
 // Tag Management Endpoints
-backend.get("/api/tags", routes.apiTagsList); // TODO: Implement tags list endpoint
-backend.post("/api/tags", routes.apiTagsCreate); // TODO: Implement tags create endpoint
-backend.patch("/api/tags/:id", routes.apiTagsUpdate); // TODO: Implement tags update endpoint
+backend.get("/api/tags", createApiTagsList()); // TODO: Implement tags list endpoint
+backend.post("/api/tags", createApiTagsCreate()); // TODO: Implement tags create endpoint
+backend.patch("/api/tags/:id", createApiTagsUpdate()); // TODO: Implement tags update endpoint
 
 // Pot Management Endpoints
-backend.get("/api/pots", routes.apiPotsList); // TODO: Implement pots list endpoint
-backend.post("/api/pots", routes.apiPotsCreate); // TODO: Implement pots create endpoint
-backend.patch("/api/pots/:id", routes.apiPotsUpdate); // TODO: Implement pots update endpoint
-backend.post("/api/pots/:id/deposit", routes.apiPotsDeposit); // TODO: Implement pots deposit endpoint
+backend.get("/api/pots", createApiPotsList()); // TODO: Implement pots list endpoint
+backend.post("/api/pots", createApiPotsCreate()); // TODO: Implement pots create endpoint
+backend.patch("/api/pots/:id", createApiPotsUpdate()); // TODO: Implement pots update endpoint
+backend.post("/api/pots/:id/deposit", createApiPotsDeposit()); // TODO: Implement pots deposit endpoint
 
 // Reservation Management Endpoints
-backend.post("/api/reservations", routes.apiReservationsCreate); // TODO: Implement reservations create endpoint
-backend.delete("/api/reservations/:id", routes.apiReservationsDelete); // TODO: Implement reservations delete endpoint
+backend.post("/api/reservations", createApiReservationsCreate()); // TODO: Implement reservations create endpoint
+backend.delete("/api/reservations/:id", createApiReservationsDelete()); // TODO: Implement reservations delete endpoint
 
 // Transfer Management Endpoints
-backend.post("/api/transfers", routes.apiTransfersCreate); // TODO: Implement transfers create endpoint
+backend.post("/api/transfers", createApiTransfersCreate()); // TODO: Implement transfers create endpoint
 
 // Payment Management Endpoints
-backend.post("/api/payments", routes.apiPaymentsCreate); // TODO: Implement payments create endpoint
+backend.post("/api/payments", createApiPaymentsCreate()); // TODO: Implement payments create endpoint
 
 // Ledger & Audit Endpoints
-backend.get("/api/ledger", routes.apiLedgerGet); // TODO: Implement ledger get endpoint
-backend.get("/api/audit", routes.apiAuditGet); // TODO: Implement audit get endpoint
+backend.get("/api/ledger", createApiLedgerGet()); // TODO: Implement ledger get endpoint
+backend.get("/api/audit", createApiAuditGet()); // TODO: Implement audit get endpoint
 
 // Real-Time Events Endpoint
-backend.get("/api/events/stream", routes.apiEventsStream); // TODO: Implement events stream endpoint
+backend.get("/api/events/stream", createApiEventsStream()); // TODO: Implement events stream endpoint
 
 // Health Check Endpoint
 backend.get("/api/health", (c) => c.json({ status: "ok" }));
