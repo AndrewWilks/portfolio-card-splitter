@@ -1,7 +1,10 @@
 import { Context } from "hono";
 import { ReservationService } from "@backend/services";
 
-export function apiReservationsDelete(_c: Context, _reservationService: ReservationService) {
+export function apiReservationsDelete(
+  _c: Context,
+  _reservationService: ReservationService
+) {
   // TODO: Implement DELETE /api/reservations/:id endpoint to delete a reservation
   // - Extract id from params
   // - Delete reservation using ReservationService
