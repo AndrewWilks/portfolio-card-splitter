@@ -1,12 +1,6 @@
 import { string } from "zod";
-import { hash, verify } from "@stdext/crypto/hash";
 
 export class PasswordService {
-  private static readonly hashConfig = {
-    name: "argon2",
-    algorithm: "argon2i",
-  };
-
   static readonly schema = string("Password must be a string.")
     .min(8, "Password must be at least 8 characters long.")
     .max(128, "Password must be at most 128 characters long.")
@@ -25,12 +19,20 @@ export class PasswordService {
       }
     );
 
-  static hashPassword(password: string): string {
-    return hash(this.hashConfig, password);
+  static async hashPassword(password: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
   }
 
-  static verifyPassword(password: string, hashedPassword: string): boolean {
-    return verify(this.hashConfig, password, hashedPassword);
+  static async verifyPassword(
+    password: string,
+    hashedPassword: string
+  ): Promise<boolean> {
+    const hash = await this.hashPassword(password);
+    return hash === hashedPassword;
   }
 
   static validatePassword(password: string) {

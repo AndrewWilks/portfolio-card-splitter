@@ -1,22 +1,22 @@
 import { db } from "../db.client.ts";
-import * as schema from "../db.schema.ts";
+import { Schemas } from "../index.ts";
 
 export async function clearDatabaseData() {
-  await db.delete(schema.Tables.users);
-  await db.delete(schema.Tables.events);
-  await db.delete(schema.Tables.inviteTokens);
-  await db.delete(schema.Tables.members);
-  await db.delete(schema.Tables.passwordResetTokens);
-  await db.delete(schema.Tables.payments);
-  await db.delete(schema.Tables.pots);
-  await db.delete(schema.Tables.reservations);
-  await db.delete(schema.Tables.sessions);
-  await db.delete(schema.Tables.transactions);
-  await db.delete(schema.Tables.transactionTags);
-  await db.delete(schema.Tables.transfers);
-  await db.delete(schema.Tables.allocations);
-  await db.delete(schema.Tables.merchants);
-  await db.delete(schema.Tables.tags);
+  await db.delete(Schemas.Tables.users);
+  await db.delete(Schemas.Tables.events);
+  await db.delete(Schemas.Tables.inviteTokens);
+  await db.delete(Schemas.Tables.members);
+  await db.delete(Schemas.Tables.passwordResetTokens);
+  await db.delete(Schemas.Tables.payments);
+  await db.delete(Schemas.Tables.pots);
+  await db.delete(Schemas.Tables.reservations);
+  await db.delete(Schemas.Tables.sessions);
+  await db.delete(Schemas.Tables.transactions);
+  await db.delete(Schemas.Tables.transactionTags);
+  await db.delete(Schemas.Tables.transfers);
+  await db.delete(Schemas.Tables.allocations);
+  await db.delete(Schemas.Tables.merchants);
+  await db.delete(Schemas.Tables.tags);
 }
 
 if (import.meta.main) {

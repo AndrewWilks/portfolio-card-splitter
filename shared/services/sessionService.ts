@@ -1,5 +1,5 @@
 import { crypto } from "@std/crypto";
-import { Session } from "@entities";
+import { Session } from "@shared/entities";
 
 export class SessionService {
   static create(userId: string, expirationHours = 24): Session {

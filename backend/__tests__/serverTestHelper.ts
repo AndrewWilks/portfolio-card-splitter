@@ -12,13 +12,10 @@ export class TestServer {
     }
 
     this.controller = new AbortController();
-    this.server = Deno.serve(
+    this.server = await Deno.serve(
       { port: this.port, signal: this.controller.signal },
       this.app.fetch
     );
-
-    // Wait a bit for server to start
-    await new Promise(resolve => setTimeout(resolve, 100));
 
     return `http://localhost:${this.port}`;
   }

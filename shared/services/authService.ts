@@ -4,7 +4,14 @@ import {
   SessionRepository,
   UserRepository,
 } from "@shared/repositories";
-import { PasswordResetToken, Session, User } from "@shared/entities";
+import {
+  PasswordResetToken,
+  Session,
+  User,
+  InviteToken,
+  UserRole,
+  type UserRoleType,
+} from "@shared/entities";
 import { PasswordService, SessionService } from "@shared/services";
 import { crypto } from "@std/crypto";
 
@@ -33,14 +40,16 @@ export class AuthService {
     // Validate password strength
     const passwordValidation = PasswordService.validatePassword(data.password);
 
-    if (!passwordValidation.isValid) {
+    if (!passwordValidation.success) {
       throw new Error(
-        `Password validation failed: ${passwordValidation.errors.join(", ")}`
+        `Password validation failed: ${passwordValidation.error.issues
+          .map((e) => e.message)
+          .join(", ")}`
       );
     }
 
     // Hash password
-    const passwordHash = await PasswordService.hash(data.password);
+    const passwordHash = await PasswordService.hashPassword(data.password);
 
     // Create admin user
     const user = User.create({
@@ -81,9 +90,9 @@ export class AuthService {
     }
 
     // Verify password
-    const isPasswordValid = await PasswordService.verify(
-      user.passwordHash,
-      password
+    const isPasswordValid = PasswordService.verifyPassword(
+      password,
+      user.passwordHash
     );
     if (!isPasswordValid) {
       throw new Error("Invalid email or password");
@@ -178,14 +187,16 @@ export class AuthService {
 
     // Validate password
     const passwordValidation = PasswordService.validatePassword(data.password);
-    if (!passwordValidation.isValid) {
+    if (!passwordValidation.success) {
       throw new Error(
-        `Password validation failed: ${passwordValidation.errors.join(", ")}`
+        `Password validation failed: ${passwordValidation.error.issues
+          .map((e) => e.message)
+          .join(", ")}`
       );
     }
 
     // Hash password
-    const passwordHash = await PasswordService.hash(data.password);
+    const passwordHash = await PasswordService.hashPassword(data.password);
 
     // Create user
     const user = User.create({
@@ -259,16 +270,17 @@ export class AuthService {
     }
 
     // Validate new password
-    const passwordValidation =
-      PasswordService.validatePasswordStrength(newPassword);
-    if (!passwordValidation.isValid) {
+    const passwordValidation = PasswordService.validatePassword(newPassword);
+    if (!passwordValidation.success) {
       throw new Error(
-        `Password validation failed: ${passwordValidation.errors.join(", ")}`
+        `Password validation failed: ${passwordValidation.error.issues
+          .map((e) => e.message)
+          .join(", ")}`
       );
     }
 
     // Hash new password
-    const passwordHash = await PasswordService.hash(newPassword);
+    const passwordHash = await PasswordService.hashPassword(newPassword);
 
     // Update user
     const user = await this.userRepository.findById(token.userId);

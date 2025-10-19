@@ -107,7 +107,10 @@ export function createTransactionService() {
 }
 
 export function createReservationService() {
-  return new ReservationService(createReservationRepository(), createPotRepository());
+  return new ReservationService(
+    createReservationRepository(),
+    createPotRepository()
+  );
 }
 
 export function createTransferService() {
@@ -115,7 +118,10 @@ export function createTransferService() {
 }
 
 export function createPaymentService() {
-  return new PaymentService(createPaymentRepository(), createReservationRepository());
+  return new PaymentService(
+    createPaymentRepository(),
+    createReservationRepository()
+  );
 }
 
 export function createAuditService() {
