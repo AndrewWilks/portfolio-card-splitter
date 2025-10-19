@@ -188,7 +188,7 @@ export function createApiAuthBootstrap() {
   return (c: Context) => apiAuthBootstrap(c, authService);
 }
 
-// TODO: Wire DI for auth routes - requires AuthService
+// Auth Routes - require AuthService for business logic
 export function createApiAuthInvite() {
   const authService = createAuthService();
   return (c: Context) => apiAuthInvite(c, authService);
@@ -219,7 +219,7 @@ export function createApiAuthResetPassword() {
   return (c: Context) => apiAuthResetPassword(c, authService);
 }
 
-// TODO: Wire DI for people routes - requires MemberService
+// People Routes - require MemberService
 export function createApiPeopleList() {
   const memberService = createMemberService();
   return (c: Context) => apiPeopleList(c, memberService);
@@ -235,7 +235,7 @@ export function createApiPeopleUpdate() {
   return (c: Context) => apiPeopleUpdate(c, memberService);
 }
 
-// TODO: Wire DI for transaction routes - requires TransactionService
+// Transaction Routes - require TransactionService
 export function createApiTransactionsList() {
   const transactionService = createTransactionService();
   return (c: Context) => apiTransactionsList(c, transactionService);
@@ -251,7 +251,7 @@ export function createApiTransactionsUpdate() {
   return (c: Context) => apiTransactionsUpdate(c, transactionService);
 }
 
-// TODO: Wire DI for merchant routes - requires MerchantService
+// Merchant Routes - require MerchantService
 export function createApiMerchantsList() {
   const merchantService = createMerchantService();
   return (c: Context) => apiMerchantsList(c, merchantService);
@@ -267,7 +267,7 @@ export function createApiMerchantsUpdate() {
   return (c: Context) => apiMerchantsUpdate(c, merchantService);
 }
 
-// TODO: Wire DI for tag routes - requires TagService (if exists) or direct repository
+// Tag Routes - require TagRepository
 export function createApiTagsList() {
   const tagRepository = createTagRepository();
   return (c: Context) => apiTagsList(c, tagRepository);
@@ -283,7 +283,7 @@ export function createApiTagsUpdate() {
   return (c: Context) => apiTagsUpdate(c, tagRepository);
 }
 
-// TODO: Wire DI for pot routes - requires PotService
+// Pot Routes - require PotService
 export function createApiPotsList() {
   const potService = createPotService();
   return (c: Context) => apiPotsList(c, potService);
@@ -304,7 +304,7 @@ export function createApiPotsDeposit() {
   return (c: Context) => apiPotsDeposit(c, potService);
 }
 
-// TODO: Wire DI for reservation routes - requires ReservationService
+// Reservation Routes - require ReservationService
 export function createApiReservationsCreate() {
   const reservationService = createReservationService();
   return (c: Context) => apiReservationsCreate(c, reservationService);
@@ -315,19 +315,19 @@ export function createApiReservationsDelete() {
   return (c: Context) => apiReservationsDelete(c, reservationService);
 }
 
-// TODO: Wire DI for transfer routes - requires TransferService
+// Transfer Routes - require TransferService
 export function createApiTransfersCreate() {
   const transferService = createTransferService();
   return (c: Context) => apiTransfersCreate(c, transferService);
 }
 
-// TODO: Wire DI for payment routes - requires PaymentService
+// Payment Routes - require PaymentService
 export function createApiPaymentsCreate() {
   const paymentService = createPaymentService();
   return (c: Context) => apiPaymentsCreate(c, paymentService);
 }
 
-// TODO: Wire DI for ledger routes - requires LedgerService
+// Ledger Routes - require LedgerService and AuditService
 export function createApiLedgerGet() {
   const ledgerService = createLedgerService();
   return (c: Context) => apiLedgerGet(c, ledgerService);
@@ -338,7 +338,7 @@ export function createApiAuditGet() {
   return (c: Context) => apiAuditGet(c, auditService);
 }
 
-// TODO: Wire DI for events routes - requires EventService (if exists)
+// Events Routes - require EventRepository
 export function createApiEventsStream() {
   const eventRepository = createEventRepository();
   return (c: Context) => apiEventsStream(c, eventRepository);
