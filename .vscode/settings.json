@@ -1,6 +1,5 @@
 {
-  "deno.enablePaths": [
-    "./"
-  ],
-  "editor.inlayHints.enabled": "off"
+  "deno.enablePaths": ["./"],
+  "editor.inlayHints.enabled": "off",
+  "conventionalCommits.scopes": ["shared"]
 }
