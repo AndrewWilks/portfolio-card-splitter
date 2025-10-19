@@ -1,9 +1,7 @@
 import { MiddlewareHandler, Context } from "hono";
 import { z } from "zod";
 
-export const validateBody = (
-  schema: z.ZodSchema
-) => {
+export const validateBody = (schema: z.ZodSchema) => {
   return (handler: (c: Context) => Promise<Response> | Response) => {
     return async (c: Context) => {
       try {
