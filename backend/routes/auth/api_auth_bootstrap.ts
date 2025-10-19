@@ -1,17 +1,16 @@
 import { Context } from "hono";
 import { db } from "@db";
 import { string, email, object } from "zod";
-import { passwordSchema } from "@zod";
-import { users } from "../../shared/db/db.schema.ts";
+import { users } from "../db/db.schema.ts";
 import { eq } from "drizzle-orm";
 import { STATUS_CODE } from "@std/http";
-import { hashPassword } from "../utilities/password.ts";
+import { PasswordService } from "@shared/services";
 
 const BootstrapRequestSchema = object({
   firstName: string().min(2),
   laseName: string().min(2),
   email: email(),
-  password: passwordSchema,
+  password: PasswordService.schema,
 });
 
 interface BootstrapResponseSchema {
@@ -59,7 +58,7 @@ export async function apiAuthBootstrap(c: Context) {
     .insert(users)
     .values({
       email,
-      passwordHash: hashPassword(password),
+      passwordHash: PasswordService.hashPassword(password),
       firstName,
       lastName: laseName,
       role: "admin",
