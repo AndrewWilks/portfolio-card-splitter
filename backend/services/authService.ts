@@ -4,6 +4,8 @@ import {
   Session,
   InviteToken,
   PasswordResetToken,
+  UserRole,
+  type UserRoleType,
 } from "@shared/entities";
 
 export class AuthService extends SharedAuthService {
@@ -38,9 +40,10 @@ export class AuthService extends SharedAuthService {
   }
 
   override invite(
+    _inviterUserId: string,
     _email: string,
-    _name?: string
-  ): Promise<{ invitation: InviteToken; message: string }> {
+    _role: UserRoleType = UserRole.USER
+  ): Promise<InviteToken> {
     // TODO: Implement invite method to create invite token and send email
     return Promise.reject(new Error("Not implemented"));
   }

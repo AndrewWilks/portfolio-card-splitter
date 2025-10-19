@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 import * as schema from "./db.schema.ts";
-import { DB_URL } from "./constant/DB_URL.ts";
+import { config } from "../config.ts";
 
 /**
  * Initialises and exports a configured database client instance using Drizzle ORM.
@@ -18,7 +18,7 @@ import { DB_URL } from "./constant/DB_URL.ts";
  */
 export const db = drizzle({
   client: new Pool({
-    connectionString: DB_URL,
+    connectionString: config.DATABASE_URL,
   }),
   schema: schema,
 });
