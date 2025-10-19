@@ -1,5 +1,6 @@
 import { Context } from "hono";
+import { AuthService } from "@backend/services";
 
-export async function apiAuthLogin(c: Context) {
-  // TODO: Implementation for handling user invitations
+export async function apiAuthLogin(_c: Context, _authService: AuthService) {
+  // TODO: Implementation for user login
 }

@@ -1,9 +1,10 @@
 import { Context } from "hono";
+import { TagRepository } from "@backend/repositories";
 
-export function apiTagsCreate(c: Context) {
+export function apiTagsCreate(_c: Context, _tagRepository: TagRepository) {
   // TODO: Implement POST /api/tags endpoint to create a new tag
   // - Validate request body with CreateTagSchema
-  // - Create tag using TagService
+  // - Create tag using TagRepository
   // - Return tag response with success message
-  return c.json({ message: "Not implemented" }, 501);
+  return _c.json({ message: "Not implemented" }, 501);
 }

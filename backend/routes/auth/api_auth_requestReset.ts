@@ -1,5 +1,9 @@
 import { Context } from "hono";
+import { AuthService } from "@backend/services";
 
-export async function apiAuthRequestReset(c: Context) {
-  // TODO: Implementation for handling user invitations
+export async function apiAuthRequestReset(
+  _c: Context,
+  _authService: AuthService
+) {
+  // TODO: Implementation for password reset request
 }

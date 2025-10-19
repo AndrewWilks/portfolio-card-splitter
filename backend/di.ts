@@ -190,167 +190,156 @@ export function createApiAuthBootstrap() {
 
 // TODO: Wire DI for auth routes - requires AuthService
 export function createApiAuthInvite() {
-  // const authService = createAuthService();
-  // return (c: any) => apiAuthInvite(c, authService);
-  return apiAuthInvite;
+  const authService = createAuthService();
+  return (c: Context) => apiAuthInvite(c, authService);
 }
 
 export function createApiAuthAcceptInvite() {
-  // TODO: Implement DI wiring for accept invite route
-  return apiAuthAcceptInvite;
+  const authService = createAuthService();
+  return (c: Context) => apiAuthAcceptInvite(c, authService);
 }
 
 export function createApiAuthLogin() {
-  // TODO: Implement DI wiring for login route
-  return apiAuthLogin;
+  const authService = createAuthService();
+  return (c: Context) => apiAuthLogin(c, authService);
 }
 
 export function createApiAuthLogout() {
-  // TODO: Implement DI wiring for logout route
-  return apiAuthLogout;
+  const authService = createAuthService();
+  return (c: Context) => apiAuthLogout(c, authService);
 }
 
 export function createApiAuthRequestReset() {
-  // TODO: Implement DI wiring for password reset request route
-  return apiAuthRequestReset;
+  const authService = createAuthService();
+  return (c: Context) => apiAuthRequestReset(c, authService);
 }
 
 export function createApiAuthResetPassword() {
-  // TODO: Implement DI wiring for password reset route
-  return apiAuthResetPassword;
+  const authService = createAuthService();
+  return (c: Context) => apiAuthResetPassword(c, authService);
 }
 
 // TODO: Wire DI for people routes - requires MemberService
 export function createApiPeopleList() {
-  // const memberService = createMemberService();
-  // return (c: any) => apiPeopleList(c, memberService);
-  return apiPeopleList;
+  const memberService = createMemberService();
+  return (c: Context) => apiPeopleList(c, memberService);
 }
 
 export function createApiPeopleCreate() {
-  // TODO: Implement DI wiring for people create route
-  return apiPeopleCreate;
+  const memberService = createMemberService();
+  return (c: Context) => apiPeopleCreate(c, memberService);
 }
 
 export function createApiPeopleUpdate() {
-  // TODO: Implement DI wiring for people update route
-  return apiPeopleUpdate;
+  const memberService = createMemberService();
+  return (c: Context) => apiPeopleUpdate(c, memberService);
 }
 
 // TODO: Wire DI for transaction routes - requires TransactionService
 export function createApiTransactionsList() {
-  // const transactionService = createTransactionService();
-  // return (c: any) => apiTransactionsList(c, transactionService);
-  return apiTransactionsList;
+  const transactionService = createTransactionService();
+  return (c: Context) => apiTransactionsList(c, transactionService);
 }
 
 export function createApiTransactionsCreate() {
-  // TODO: Implement DI wiring for transactions create route
-  return apiTransactionsCreate;
+  const transactionService = createTransactionService();
+  return (c: Context) => apiTransactionsCreate(c, transactionService);
 }
 
 export function createApiTransactionsUpdate() {
-  // TODO: Implement DI wiring for transactions update route
-  return apiTransactionsUpdate;
+  const transactionService = createTransactionService();
+  return (c: Context) => apiTransactionsUpdate(c, transactionService);
 }
 
 // TODO: Wire DI for merchant routes - requires MerchantService
 export function createApiMerchantsList() {
-  // const merchantService = createMerchantService();
-  // return (c: any) => apiMerchantsList(c, merchantService);
-  return apiMerchantsList;
+  const merchantService = createMerchantService();
+  return (c: Context) => apiMerchantsList(c, merchantService);
 }
 
 export function createApiMerchantsCreate() {
-  // TODO: Implement DI wiring for merchants create route
-  return apiMerchantsCreate;
+  const merchantService = createMerchantService();
+  return (c: Context) => apiMerchantsCreate(c, merchantService);
 }
 
 export function createApiMerchantsUpdate() {
-  // TODO: Implement DI wiring for merchants update route
-  return apiMerchantsUpdate;
+  const merchantService = createMerchantService();
+  return (c: Context) => apiMerchantsUpdate(c, merchantService);
 }
 
 // TODO: Wire DI for tag routes - requires TagService (if exists) or direct repository
 export function createApiTagsList() {
-  // const tagRepository = createTagRepository();
-  // return (c: any) => apiTagsList(c, tagRepository);
-  return apiTagsList;
+  const tagRepository = createTagRepository();
+  return (c: Context) => apiTagsList(c, tagRepository);
 }
 
 export function createApiTagsCreate() {
-  // TODO: Implement DI wiring for tags create route
-  return apiTagsCreate;
+  const tagRepository = createTagRepository();
+  return (c: Context) => apiTagsCreate(c, tagRepository);
 }
 
 export function createApiTagsUpdate() {
-  // TODO: Implement DI wiring for tags update route
-  return apiTagsUpdate;
+  const tagRepository = createTagRepository();
+  return (c: Context) => apiTagsUpdate(c, tagRepository);
 }
 
 // TODO: Wire DI for pot routes - requires PotService
 export function createApiPotsList() {
-  // const potService = createPotService();
-  // return (c: any) => apiPotsList(c, potService);
-  return apiPotsList;
+  const potService = createPotService();
+  return (c: Context) => apiPotsList(c, potService);
 }
 
 export function createApiPotsCreate() {
-  // TODO: Implement DI wiring for pots create route
-  return apiPotsCreate;
+  const potService = createPotService();
+  return (c: Context) => apiPotsCreate(c, potService);
 }
 
 export function createApiPotsUpdate() {
-  // TODO: Implement DI wiring for pots update route
-  return apiPotsUpdate;
+  const potService = createPotService();
+  return (c: Context) => apiPotsUpdate(c, potService);
 }
 
 export function createApiPotsDeposit() {
-  // TODO: Implement DI wiring for pots deposit route
-  return apiPotsDeposit;
+  const potService = createPotService();
+  return (c: Context) => apiPotsDeposit(c, potService);
 }
 
 // TODO: Wire DI for reservation routes - requires ReservationService
 export function createApiReservationsCreate() {
-  // const reservationService = createReservationService();
-  // return (c: any) => apiReservationsCreate(c, reservationService);
-  return apiReservationsCreate;
+  const reservationService = createReservationService();
+  return (c: Context) => apiReservationsCreate(c, reservationService);
 }
 
 export function createApiReservationsDelete() {
-  // TODO: Implement DI wiring for reservations delete route
-  return apiReservationsDelete;
+  const reservationService = createReservationService();
+  return (c: Context) => apiReservationsDelete(c, reservationService);
 }
 
 // TODO: Wire DI for transfer routes - requires TransferService
 export function createApiTransfersCreate() {
-  // const transferService = createTransferService();
-  // return (c: any) => apiTransfersCreate(c, transferService);
-  return apiTransfersCreate;
+  const transferService = createTransferService();
+  return (c: Context) => apiTransfersCreate(c, transferService);
 }
 
 // TODO: Wire DI for payment routes - requires PaymentService
 export function createApiPaymentsCreate() {
-  // const paymentService = createPaymentService();
-  // return (c: any) => apiPaymentsCreate(c, paymentService);
-  return apiPaymentsCreate;
+  const paymentService = createPaymentService();
+  return (c: Context) => apiPaymentsCreate(c, paymentService);
 }
 
 // TODO: Wire DI for ledger routes - requires LedgerService
 export function createApiLedgerGet() {
-  // const ledgerService = createLedgerService();
-  // return (c: any) => apiLedgerGet(c, ledgerService);
-  return apiLedgerGet;
+  const ledgerService = createLedgerService();
+  return (c: Context) => apiLedgerGet(c, ledgerService);
 }
 
 export function createApiAuditGet() {
-  // TODO: Implement DI wiring for audit get route
-  return apiAuditGet;
+  const auditService = createAuditService();
+  return (c: Context) => apiAuditGet(c, auditService);
 }
 
 // TODO: Wire DI for events routes - requires EventService (if exists)
 export function createApiEventsStream() {
-  // const eventService = createEventService();
-  // return (c: any) => apiEventsStream(c, eventService);
-  return apiEventsStream;
+  const eventRepository = createEventRepository();
+  return (c: Context) => apiEventsStream(c, eventRepository);
 }
