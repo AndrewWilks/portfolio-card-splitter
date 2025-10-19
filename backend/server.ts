@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
+import { authMiddleware } from "./middleware/auth.ts";
 import {
   createRootRoute,
   createApiAuthBootstrap,
@@ -76,11 +77,20 @@ backend.get("/health", (c) => {
   });
 });
 
-// API routes would be added here, e.g. backend.route("/api", apiRoutes);
-backend.use("/api/*", (_c, next) => {
-  // TODO: Add middleware logic here (e.g., authentication)
-  console.log("API route accessed");
-  return next();
+// Apply authentication middleware to all API routes except auth endpoints
+backend.use("/api/*", async (c, next) => {
+  const path = c.req.path;
+  // Skip auth middleware for auth endpoints and health/status endpoints
+  if (
+    path.startsWith("/api/auth/") ||
+    path === "/api/health" ||
+    path === "/api/status" ||
+    path === "/api"
+  ) {
+    await next();
+    return;
+  }
+  await authMiddleware(c, next);
 });
 
 backend.get("/api", (c) => c.text("Portfolio Card Splitter API Root"));
@@ -94,57 +104,63 @@ backend.get("/api/status", (c) => {
 
 // Authentication Endpoints
 backend.post("/api/auth/bootstrap", createApiAuthBootstrap());
-backend.post("/api/auth/invite", createApiAuthInvite()); // TODO: Implement invite functionality
-backend.post("/api/auth/accept-invite", createApiAuthAcceptInvite()); // TODO: Implement accept invite functionality
-backend.post("/api/auth/login", createApiAuthLogin()); // TODO: Implement login functionality
-backend.post("/api/auth/logout", createApiAuthLogout()); // TODO: Implement logout functionality
-backend.post("/api/auth/request-reset", createApiAuthRequestReset()); // TODO: Implement password reset request
-backend.post("/api/auth/reset", createApiAuthResetPassword()); // TODO: Implement password reset
+backend.post("/api/auth/invite", createApiAuthInvite());
+backend.post("/api/auth/accept-invite", createApiAuthAcceptInvite());
+backend.post("/api/auth/login", createApiAuthLogin());
+backend.post("/api/auth/logout", createApiAuthLogout());
+backend.post("/api/auth/request-reset", createApiAuthRequestReset());
+backend.post("/api/auth/reset", createApiAuthResetPassword());
 
 // People Management Endpoints
-backend.get("/api/people", createApiPeopleList()); // TODO: Implement people list endpoint
-backend.post("/api/people", createApiPeopleCreate()); // TODO: Implement people create endpoint
-backend.patch("/api/people/:id", createApiPeopleUpdate()); // TODO: Implement people update endpoint
+backend.get("/api/people", createApiPeopleList());
+backend.post("/api/people", createApiPeopleCreate());
+backend.patch("/api/people/:id", createApiPeopleUpdate());
 
 // Transaction Management Endpoints
-backend.get("/api/transactions", createApiTransactionsList()); // TODO: Implement transactions list endpoint
-backend.post("/api/transactions", createApiTransactionsCreate()); // TODO: Implement transactions create endpoint
-backend.patch("/api/transactions/:id", createApiTransactionsUpdate()); // TODO: Implement transactions update endpoint
+backend.get("/api/transactions", createApiTransactionsList());
+backend.post("/api/transactions", createApiTransactionsCreate());
+backend.patch("/api/transactions/:id", createApiTransactionsUpdate());
 
 // Merchant Management Endpoints
-backend.get("/api/merchants", createApiMerchantsList()); // TODO: Implement merchants list endpoint
-backend.post("/api/merchants", createApiMerchantsCreate()); // TODO: Implement merchants create endpoint
-backend.patch("/api/merchants/:id", createApiMerchantsUpdate()); // TODO: Implement merchants update endpoint
+backend.get("/api/merchants", createApiMerchantsList());
+backend.post("/api/merchants", createApiMerchantsCreate());
+backend.patch("/api/merchants/:id", createApiMerchantsUpdate());
 
 // Tag Management Endpoints
-backend.get("/api/tags", createApiTagsList()); // TODO: Implement tags list endpoint
-backend.post("/api/tags", createApiTagsCreate()); // TODO: Implement tags create endpoint
-backend.patch("/api/tags/:id", createApiTagsUpdate()); // TODO: Implement tags update endpoint
+backend.get("/api/tags", createApiTagsList());
+backend.post("/api/tags", createApiTagsCreate());
+backend.patch("/api/tags/:id", createApiTagsUpdate());
 
 // Pot Management Endpoints
-backend.get("/api/pots", createApiPotsList()); // TODO: Implement pots list endpoint
-backend.post("/api/pots", createApiPotsCreate()); // TODO: Implement pots create endpoint
-backend.patch("/api/pots/:id", createApiPotsUpdate()); // TODO: Implement pots update endpoint
-backend.post("/api/pots/:id/deposit", createApiPotsDeposit()); // TODO: Implement pots deposit endpoint
+backend.get("/api/pots", createApiPotsList());
+backend.post("/api/pots", createApiPotsCreate());
+backend.patch("/api/pots/:id", createApiPotsUpdate());
+backend.post("/api/pots/:id/deposit", createApiPotsDeposit());
 
 // Reservation Management Endpoints
-backend.post("/api/reservations", createApiReservationsCreate()); // TODO: Implement reservations create endpoint
-backend.delete("/api/reservations/:id", createApiReservationsDelete()); // TODO: Implement reservations delete endpoint
-
+backend.post("/api/reservations", createApiReservationsCreate());
+backend.delete("/api/reservations/:id", createApiReservationsDelete());
 // Transfer Management Endpoints
-backend.post("/api/transfers", createApiTransfersCreate()); // TODO: Implement transfers create endpoint
+backend.post("/api/transfers", createApiTransfersCreate());
 
 // Payment Management Endpoints
-backend.post("/api/payments", createApiPaymentsCreate()); // TODO: Implement payments create endpoint
+backend.post("/api/payments", createApiPaymentsCreate());
 
 // Ledger & Audit Endpoints
-backend.get("/api/ledger", createApiLedgerGet()); // TODO: Implement ledger get endpoint
-backend.get("/api/audit", createApiAuditGet()); // TODO: Implement audit get endpoint
+backend.get("/api/ledger", createApiLedgerGet());
+backend.get("/api/audit", createApiAuditGet());
 
 // Real-Time Events Endpoint
-backend.get("/api/events/stream", createApiEventsStream()); // TODO: Implement events stream endpoint
+backend.get("/api/events/stream", createApiEventsStream());
 
 // Health Check Endpoint
-backend.get("/api/health", (c) => c.json({ status: "ok" }));
+backend.get("/api/health", (c) =>
+  c.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    locale: "en-AU",
+    timezone: "Australia/Brisbane",
+  })
+);
 
 Deno.serve(backend.fetch);
