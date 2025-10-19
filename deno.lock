@@ -15,6 +15,7 @@
     "jsr:@std/path@^1.1.2": "1.1.2",
     "jsr:@std/streams@^1.0.13": "1.0.13",
     "jsr:@stdext/crypto@0.1": "0.1.0",
+    "npm:@cspell/dict-en-au@^1.1.7": "1.1.7",
     "npm:@types/pg@^8.15.5": "8.15.5",
     "npm:drizzle-kit@*": "0.31.5_esbuild@0.25.11",
     "npm:drizzle-kit@~0.31.5": "0.31.5_esbuild@0.25.11",
@@ -82,6 +83,9 @@
     }
   },
   "npm": {
+    "@cspell/dict-en-au@1.1.7": {
+      "integrity": "sha512-ejgcdYYCYn/9sRCpye9fRf45d/AstJmgTHn4HgZ2N5vrf/Xjsujozme6AGHm17HbeL4iv1nJMQliIz8yE2Y64g=="
+    },
     "@drizzle-team/brocli@0.10.2": {
       "integrity": "sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w=="
     },
@@ -559,6 +563,7 @@
       "jsr:@std/crypto@^1.0.5",
       "jsr:@std/http@^1.0.21",
       "jsr:@stdext/crypto@0.1",
+      "npm:@cspell/dict-en-au@^1.1.7",
       "npm:@types/pg@^8.15.5",
       "npm:drizzle-kit@~0.31.5",
       "npm:drizzle-orm@~0.44.6",
