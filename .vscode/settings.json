@@ -1,5 +1,9 @@
 {
   "deno.enablePaths": ["./"],
   "editor.inlayHints.enabled": "off",
-  "conventionalCommits.scopes": ["shared"]
+  "conventionalCommits.scopes": ["shared"],
+  "cSpell.enabled": true,
+  "cSpell.configPaths": [".cspell.cjs"],
+  "cSpell.language": "en-AU",
+  "cSpell.diagnosticLevel": "Hint"
 }

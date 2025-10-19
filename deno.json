@@ -33,7 +33,9 @@
     "db:empty": "deno -A --env-file=./.env backend/db/helpers/clearData.ts",
     "db:deploy": "deno run db:generate && db:migrate",
     "backend:start": "deno run --allow-net --allow-env --env-file=.env backend/server.ts",
-    "backend:dev": "deno run --allow-net --allow-env --watch=backend/ --env-file=.env backend/server.ts"
+    "backend:dev": "deno run --allow-net --allow-env --watch=backend/ --env-file=.env backend/server.ts",
+    "spell:check": "deno run -A npm:cspell --config .cspell.cjs '**/*.{ts,tsx,js,jsx,json,md}'",
+    "spell:fix": "deno run -A npm:cspell --config .cspell.cjs '**/*.{ts,tsx,js,jsx,json,md}' --fix"
   },
   "nodeModulesDir": "auto"
 }
