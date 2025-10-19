@@ -43,7 +43,7 @@ backend.get("/health", (c) => {
 });
 
 // API routes would be added here, e.g. backend.route("/api", apiRoutes);
-backend.use("/api/*", async (c, next) => {
+backend.use("/api/*", (_c, next) => {
   // TODO: Add middleware logic here (e.g., authentication)
   console.log("API route accessed");
   return next();
@@ -68,5 +68,46 @@ backend.post("/api/auth/request-reset", routes.apiAuthRequestReset);
 backend.post("/api/auth/reset", routes.apiAuthResetPassword);
 
 // People Management Endpoints
+backend.get("/api/people", routes.apiPeopleList);
+backend.post("/api/people", routes.apiPeopleCreate);
+backend.patch("/api/people/:id", routes.apiPeopleUpdate);
+
+// Transaction Management Endpoints
+backend.get("/api/transactions", routes.apiTransactionsList);
+backend.post("/api/transactions", routes.apiTransactionsCreate);
+backend.patch("/api/transactions/:id", routes.apiTransactionsUpdate);
+
+// Merchant Management Endpoints
+backend.get("/api/merchants", routes.apiMerchantsList);
+backend.post("/api/merchants", routes.apiMerchantsCreate);
+backend.patch("/api/merchants/:id", routes.apiMerchantsUpdate);
+
+// Tag Management Endpoints
+backend.get("/api/tags", routes.apiTagsList);
+backend.post("/api/tags", routes.apiTagsCreate);
+backend.patch("/api/tags/:id", routes.apiTagsUpdate);
+
+// Pot Management Endpoints
+backend.get("/api/pots", routes.apiPotsList);
+backend.post("/api/pots", routes.apiPotsCreate);
+backend.patch("/api/pots/:id", routes.apiPotsUpdate);
+backend.post("/api/pots/:id/deposit", routes.apiPotsDeposit);
+
+// Reservation Management Endpoints
+backend.post("/api/reservations", routes.apiReservationsCreate);
+backend.delete("/api/reservations/:id", routes.apiReservationsDelete);
+
+// Transfer Management Endpoints
+backend.post("/api/transfers", routes.apiTransfersCreate);
+
+// Payment Management Endpoints
+backend.post("/api/payments", routes.apiPaymentsCreate);
+
+// Ledger & Audit Endpoints
+backend.get("/api/ledger", routes.apiLedgerGet);
+backend.get("/api/audit", routes.apiAuditGet);
+
+// Real-Time Events Endpoint
+backend.get("/api/events/stream", routes.apiEventsStream);
 
 Deno.serve(backend.fetch);

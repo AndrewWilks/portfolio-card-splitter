@@ -1,7 +1,11 @@
 // .cspell.cjs
 module.exports = {
   version: "0.2",
-  import: ["@cspell/dict-en-au", "@cspell/dict-typescript", "@cspell/dict-node"],
+  import: [
+    "@cspell/dict-en-au",
+    "@cspell/dict-typescript",
+    "@cspell/dict-node",
+  ],
   language: "en-au",
   files: [
     "**/*.{ts,tsx,js,jsx,json,md,yml,yaml}",
