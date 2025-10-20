@@ -197,11 +197,17 @@ export function createSessionService() {
 }
 
 // Helper Functions for Route Factories
-function createValidatedRoute(schema: z.ZodSchema, handler: (c: Context) => Response) {
+function createValidatedRoute(
+  schema: z.ZodSchema,
+  handler: (c: Context) => Response
+) {
   return validateBody(schema)(handler);
 }
 
-function createListRoute<T>(serviceFactory: () => T, handler: (c: Context, service: T) => Response) {
+function createListRoute<T>(
+  serviceFactory: () => T,
+  handler: (c: Context, service: T) => Response
+) {
   const service = serviceFactory();
   return (c: Context) => {
     const query = QuerySchema.parse(c.req.query());
