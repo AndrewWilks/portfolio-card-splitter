@@ -34,7 +34,7 @@ import {
   createApiLedgerGet,
   createApiAuditGet,
   createApiEventsStream,
-} from "./di.ts";
+} from "./di/index.ts";
 
 const backend = new Hono();
 
