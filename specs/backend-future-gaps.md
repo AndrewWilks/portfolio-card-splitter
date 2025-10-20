@@ -60,3 +60,24 @@ This document tracks gaps identified in the backend scaffolding audit that will 
 - Configure per-route or global.
 - Test with load tools.
 - Document in API contracts.
+
+## Gap 7: Auth System Enhancements
+
+**Description**: Auth system is functional but lacks front-end DX helpers and some security hardening for production readiness.
+
+**Impact**: Front-end integration is manual (no shared auth utilities), and demo app misses basic security practices like brute-force protection.
+
+**Recommended Solution**:
+
+- Add front-end auth helpers in `shared/auth/client.ts` (e.g., `login()`, `logout()`, `isAuthenticated()`).
+- Implement rate limiting on auth endpoints (e.g., login attempts per IP).
+- Add security headers (HSTS, CSP) for production.
+- Enhance session management (e.g., configurable expiration, refresh logic).
+
+**Sprint Priority**: Medium (Before front-end integration, post-MVP).
+
+**Implementation Notes**:
+
+- Keep session-based auth (no JWTs for demo simplicity).
+- Front-end helpers should handle cookie management and API calls.
+- Test auth flows end-to-end.
