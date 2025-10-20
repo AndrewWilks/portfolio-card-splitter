@@ -1,6 +1,6 @@
 import { MiddlewareHandler } from "hono";
 import { getCookie } from "hono/cookie";
-import { createAuthService } from "../di.ts";
+import { createAuthService } from "../di/index.ts";
 
 export const authMiddleware: MiddlewareHandler = async (c, next) => {
   const sessionId = getCookie(c, "session_id");
