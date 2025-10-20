@@ -29,8 +29,24 @@ import { SessionService } from "@backend/services";
 
 // Routes
 import { Context } from "hono";
-import { z } from "zod";
 import { validateBody } from "./middleware/validation.ts";
+import { z } from "zod";
+import {
+  CreateMemberSchema,
+  UpdateMemberSchema,
+  CreateTransactionSchema,
+  UpdateTransactionSchema,
+  CreateMerchantSchema,
+  UpdateMerchantSchema,
+  CreateTagSchema,
+  UpdateTagSchema,
+  CreatePotSchema,
+  UpdatePotSchema,
+  CreateReservationSchema,
+  CreateTransferSchema,
+  CreatePaymentSchema,
+  QuerySchema,
+} from "../shared/schemas/api/index.ts";
 import { rootRoute } from "@backend/routes";
 import { apiAuthBootstrap } from "@backend/routes";
 import { apiAuthInvite } from "@backend/routes";
@@ -180,87 +196,19 @@ export function createSessionService() {
   return SessionService;
 }
 
-// Validation Schemas
-const CreateMemberSchema = z.object({
-  email: z.string().email(),
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-});
+// Helper Functions for Route Factories
+function createValidatedRoute(schema: z.ZodSchema, handler: (c: Context) => Response) {
+  return validateBody(schema)(handler);
+}
 
-const UpdateMemberSchema = z.object({
-  firstName: z.string().min(1).optional(),
-  lastName: z.string().min(1).optional(),
-});
-
-const CreateTransactionSchema = z.object({
-  amount: z.number().int().positive(),
-  description: z.string().min(1),
-  merchantId: z.string().uuid().optional(),
-  tags: z.array(z.string().uuid()).optional(),
-});
-
-const UpdateTransactionSchema = z.object({
-  description: z.string().min(1).optional(),
-  tags: z.array(z.string().uuid()).optional(),
-});
-
-const CreateMerchantSchema = z.object({
-  name: z.string().min(1),
-  category: z.string().min(1).optional(),
-});
-
-const UpdateMerchantSchema = z.object({
-  name: z.string().min(1).optional(),
-  category: z.string().min(1).optional(),
-});
-
-const CreateTagSchema = z.object({
-  name: z.string().min(1),
-  color: z
-    .string()
-    .regex(/^#[0-9A-F]{6}$/i)
-    .optional(),
-});
-
-const UpdateTagSchema = z.object({
-  name: z.string().min(1).optional(),
-  color: z
-    .string()
-    .regex(/^#[0-9A-F]{6}$/i)
-    .optional(),
-});
-
-const CreatePotSchema = z.object({
-  name: z.string().min(1),
-  targetAmount: z.number().int().positive().optional(),
-});
-
-const UpdatePotSchema = z.object({
-  name: z.string().min(1).optional(),
-  targetAmount: z.number().int().positive().optional(),
-});
-
-const CreateReservationSchema = z.object({
-  amount: z.number().int().positive(),
-  description: z.string().min(1),
-});
-
-const CreateTransferSchema = z.object({
-  fromPotId: z.string().uuid(),
-  toPotId: z.string().uuid(),
-  amount: z.number().int().positive(),
-  description: z.string().min(1),
-});
-
-const CreatePaymentSchema = z.object({
-  reservationId: z.string().uuid(),
-  amount: z.number().int().positive(),
-});
-
-const QuerySchema = z.object({
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-  offset: z.coerce.number().int().min(0).default(0),
-});
+function createListRoute<T>(serviceFactory: () => T, handler: (c: Context, service: T) => Response) {
+  const service = serviceFactory();
+  return (c: Context) => {
+    const query = QuerySchema.parse(c.req.query());
+    c.set("query", query);
+    return handler(c, service);
+  };
+}
 
 // Route Factories
 export function createRootRoute() {
@@ -305,17 +253,12 @@ export function createApiAuthResetPassword() {
 
 // People Routes - require MemberService
 export function createApiPeopleList() {
-  const memberService = createMemberService();
-  return (c: Context) => {
-    const query = QuerySchema.parse(c.req.query());
-    c.set("query", query);
-    return apiPeopleList(c, memberService);
-  };
+  return createListRoute(createMemberService, apiPeopleList);
 }
 
 export function createApiPeopleCreate() {
   const memberService = createMemberService();
-  return validateBody(CreateMemberSchema)((c: Context) =>
+  return createValidatedRoute(CreateMemberSchema, (c: Context) =>
     apiPeopleCreate(c, memberService)
   );
 }
@@ -329,12 +272,7 @@ export function createApiPeopleUpdate() {
 
 // Transaction Routes - require TransactionService
 export function createApiTransactionsList() {
-  const transactionService = createTransactionService();
-  return (c: Context) => {
-    const query = QuerySchema.parse(c.req.query());
-    c.set("query", query);
-    return apiTransactionsList(c, transactionService);
-  };
+  return createListRoute(createTransactionService, apiTransactionsList);
 }
 
 export function createApiTransactionsCreate() {
@@ -353,12 +291,7 @@ export function createApiTransactionsUpdate() {
 
 // Merchant Routes - require MerchantService
 export function createApiMerchantsList() {
-  const merchantService = createMerchantService();
-  return (c: Context) => {
-    const query = QuerySchema.parse(c.req.query());
-    c.set("query", query);
-    return apiMerchantsList(c, merchantService);
-  };
+  return createListRoute(createMerchantService, apiMerchantsList);
 }
 
 export function createApiMerchantsCreate() {
@@ -377,12 +310,7 @@ export function createApiMerchantsUpdate() {
 
 // Tag Routes - require TagRepository
 export function createApiTagsList() {
-  const tagRepository = createTagRepository();
-  return (c: Context) => {
-    const query = QuerySchema.parse(c.req.query());
-    c.set("query", query);
-    return apiTagsList(c, tagRepository);
-  };
+  return createListRoute(createTagRepository, apiTagsList);
 }
 
 export function createApiTagsCreate() {
