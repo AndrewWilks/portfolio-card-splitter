@@ -4,5 +4,7 @@
   "conventionalCommits.scopes": ["shared"],
   "cSpell.enabled": true,
   "cSpell.language": "en-AU",
-  "cSpell.diagnosticLevel": "Hint"
+  "cSpell.diagnosticLevel": "Hint",
+  "deno.envFile": ".env",
+  "deno.testing.args": ["--allow-all", "--no-check"]
 }
