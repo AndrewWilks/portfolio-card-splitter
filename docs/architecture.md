@@ -262,9 +262,7 @@ class MerchantService {
 
 ```typescript
 class MemberService {
-  constructor(
-    protected memberRepository: MemberRepository,
-  ) {}
+  constructor(protected memberRepository: MemberRepository) {}
 
   async createMember(request): Promise<Member>;
   async updateMember(id, request): Promise<Member>;
