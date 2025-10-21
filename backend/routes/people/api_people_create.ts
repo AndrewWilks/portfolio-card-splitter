@@ -3,7 +3,7 @@ import { MemberService } from "@backend/services";
 
 export async function apiPeopleCreate(
   c: Context,
-  memberService: MemberService
+  memberService: MemberService,
 ) {
   try {
     const body = await c.req.json();
@@ -16,7 +16,7 @@ export async function apiPeopleCreate(
         data: member.toJSON(),
         message: "Member created successfully",
       },
-      201
+      201,
     );
   } catch (error) {
     console.error("Error creating member:", error);
@@ -27,7 +27,7 @@ export async function apiPeopleCreate(
           success: false,
           error: error.message,
         },
-        409
+        409,
       );
     }
 
@@ -36,7 +36,7 @@ export async function apiPeopleCreate(
         success: false,
         error: "Failed to create member",
       },
-      500
+      500,
     );
   }
 }

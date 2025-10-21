@@ -17,7 +17,7 @@ export async function apiPeopleList(c: Context, memberService: MemberService) {
         success: false,
         error: "Failed to list members",
       },
-      500
+      500,
     );
   }
 }

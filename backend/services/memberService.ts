@@ -28,7 +28,7 @@ export class MemberService extends SharedMemberService {
   }
 
   override async listMembers(
-    query: Record<string, unknown>
+    query: Record<string, unknown>,
   ): Promise<Member[]> {
     const validatedQuery = ListMembersQuerySchema.parse(query);
 
@@ -51,12 +51,12 @@ export class MemberService extends SharedMemberService {
     const duplicate = existingMembers.find(
       (m: Member) =>
         m.displayName.toLowerCase() ===
-        validatedRequest.displayName.toLowerCase()
+          validatedRequest.displayName.toLowerCase(),
     );
 
     if (duplicate) {
       throw new Error(
-        `Member with display name '${validatedRequest.displayName}' already exists`
+        `Member with display name '${validatedRequest.displayName}' already exists`,
       );
     }
 
@@ -93,12 +93,12 @@ export class MemberService extends SharedMemberService {
         (m: Member) =>
           m.id !== id &&
           m.displayName.toLowerCase() ===
-            validatedRequest.displayName!.toLowerCase()
+            validatedRequest.displayName!.toLowerCase(),
       );
 
       if (duplicate) {
         throw new Error(
-          `Member with display name '${validatedRequest.displayName}' already exists`
+          `Member with display name '${validatedRequest.displayName}' already exists`,
         );
       }
     }
@@ -123,7 +123,7 @@ export class MemberService extends SharedMemberService {
   // Additional business methods
   async listMembersByUserId(
     userId: string,
-    includeArchived = false
+    includeArchived = false,
   ): Promise<Member[]> {
     const members = await (
       this.memberRepository as MemberRepository

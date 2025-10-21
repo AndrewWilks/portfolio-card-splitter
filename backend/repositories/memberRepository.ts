@@ -51,10 +51,10 @@ export class MemberRepository extends SharedMemberRepository {
     });
   }
 
-  override async findByEmail(_email: string): Promise<Member | null> {
+  override findByEmail(_email: string): Promise<Member | null> {
     // Members don't have emails directly - they're linked to users
     // This method doesn't make sense for members, but we implement it for interface compatibility
-    return null;
+    return Promise.resolve(null);
   }
 
   override async findByStatus(status: string): Promise<Member[]> {

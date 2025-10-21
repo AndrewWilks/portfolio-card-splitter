@@ -3,7 +3,7 @@ import { MemberService } from "@backend/services";
 
 export async function apiPeopleUpdate(
   c: Context,
-  memberService: MemberService
+  memberService: MemberService,
 ) {
   try {
     const id = c.req.param("id");
@@ -26,7 +26,7 @@ export async function apiPeopleUpdate(
             success: false,
             error: error.message,
           },
-          404
+          404,
         );
       }
       if (error.message.includes("already exists")) {
@@ -35,7 +35,7 @@ export async function apiPeopleUpdate(
             success: false,
             error: error.message,
           },
-          409
+          409,
         );
       }
     }
@@ -45,7 +45,7 @@ export async function apiPeopleUpdate(
         success: false,
         error: "Failed to update member",
       },
-      500
+      500,
     );
   }
 }

@@ -19,11 +19,11 @@ export class Member {
     public readonly displayName: string,
     public readonly archived: boolean = false,
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
   ) {}
 
   static create(
-    data: Omit<MemberData, "id" | "createdAt" | "updatedAt">
+    data: Omit<MemberData, "id" | "createdAt" | "updatedAt">,
   ): Member {
     const validated = MemberSchema.omit({
       id: true,
@@ -37,7 +37,7 @@ export class Member {
       validated.displayName,
       validated.archived,
       new Date(),
-      new Date()
+      new Date(),
     );
   }
 
@@ -49,7 +49,7 @@ export class Member {
       validated.displayName,
       validated.archived,
       validated.createdAt,
-      validated.updatedAt
+      validated.updatedAt,
     );
   }
 

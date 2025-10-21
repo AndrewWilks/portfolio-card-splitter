@@ -66,14 +66,14 @@ import { createEventRepository } from "./repositories.ts";
 // Helper Functions for Route Factories
 function createValidatedRoute(
   schema: z.ZodSchema,
-  handler: (c: Context) => Response | Promise<Response>
+  handler: (c: Context) => Response | Promise<Response>,
 ) {
   return validateBody(schema)(handler);
 }
 
 function createListRoute<T>(
   serviceFactory: () => T,
-  handler: (c: Context, service: T) => Response | Promise<Response>
+  handler: (c: Context, service: T) => Response | Promise<Response>,
 ) {
   const service = serviceFactory();
   return (c: Context) => {
@@ -131,8 +131,9 @@ export function createApiPeopleList() {
 
 export function createApiPeopleCreate() {
   const memberService = createMemberService();
-  return createValidatedRoute(CreateMemberSchema, (c: Context) =>
-    apiPeopleCreate(c, memberService)
+  return createValidatedRoute(
+    CreateMemberSchema,
+    (c: Context) => apiPeopleCreate(c, memberService),
   );
 }
 
