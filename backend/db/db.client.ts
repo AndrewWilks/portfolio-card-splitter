@@ -30,9 +30,9 @@ export const db = new Proxy({} as ReturnType<typeof drizzle>, {
       });
     }
     const value = dbInstance[prop as keyof typeof dbInstance];
-    if (typeof value === 'function') {
+    if (typeof value === "function") {
       return value.bind(dbInstance);
     }
     return value;
-  }
+  },
 });
