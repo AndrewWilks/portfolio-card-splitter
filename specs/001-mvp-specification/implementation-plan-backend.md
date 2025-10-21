@@ -69,7 +69,7 @@ Keep this file upto date with progress of each sprint. tracking the status and
 overview of the sprint where it is at, complated tasks, and any blockers
 encountered.
 
-1. **Create Branch:** `git checkout -b feature/{sprint-name}`
+1. **Create Branch:** `git checkout -b feature/{sprint-name}` from `Master`
 2. **TDD Implementation:** Red → Green → Refactor cycle
 3. **Commit Strategy:**
    - `feat: implement {feature} repository`
@@ -80,9 +80,11 @@ encountered.
    progress, challenges, and learnings. Following the `devlog-specification.md`
    guidelines and only create a new devlog entry for significant milestones or
    sprint completions otherwise update existing relevant entries.
-5. **Pull Request:** Create PR targeting `master` with GitHub CLI
-6. **Code Review:** Address feedback, ensure CI passes
-7. **Merge:** Squash merge with descriptive commit message
+5. **CI:** Ensure all tests pass, CI checks are green and all problems are fixed, before PR
+   submission.
+6. **Pull Request:** Create PR targeting `master` with GitHub CLI
+7. **Code Review:** Address feedback, ensure CI passes
+8. **Merge:** Squash merge with descriptive commit message
 
 ### **Quality Gates**
 
