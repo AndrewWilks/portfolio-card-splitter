@@ -8,7 +8,7 @@ const CreateMerchantRequestSchema = z.object({
 
 export async function apiMerchantsCreate(
   c: Context,
-  merchantService: MerchantService
+  merchantService: MerchantService,
 ) {
   try {
     const body = await c.req.json();

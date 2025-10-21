@@ -9,7 +9,7 @@ const MerchantQuerySchema = z.object({
 
 export async function apiMerchantsList(
   c: Context,
-  merchantService: MerchantService
+  merchantService: MerchantService,
 ) {
   try {
     const query = c.req.query();

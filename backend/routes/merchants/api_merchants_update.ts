@@ -9,7 +9,7 @@ const UpdateMerchantRequestSchema = z.object({
 
 export async function apiMerchantsUpdate(
   c: Context,
-  merchantService: MerchantService
+  merchantService: MerchantService,
 ) {
   try {
     const id = c.req.param("id");

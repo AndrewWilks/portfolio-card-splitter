@@ -21,11 +21,11 @@ export class Merchant {
     public readonly mergedIntoId?: string,
     public readonly isActive: boolean = true,
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
   ) {}
 
   static create(
-    data: Omit<MerchantData, "id" | "createdAt" | "updatedAt">
+    data: Omit<MerchantData, "id" | "createdAt" | "updatedAt">,
   ): Merchant {
     const validated = MerchantSchema.omit({
       id: true,
@@ -40,7 +40,7 @@ export class Merchant {
       validated.mergedIntoId,
       validated.isActive,
       new Date(),
-      new Date()
+      new Date(),
     );
   }
 
@@ -53,7 +53,7 @@ export class Merchant {
       validated.mergedIntoId,
       validated.isActive,
       validated.createdAt,
-      validated.updatedAt
+      validated.updatedAt,
     );
   }
 

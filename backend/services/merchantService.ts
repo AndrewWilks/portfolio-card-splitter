@@ -57,11 +57,11 @@ export class MerchantService extends SharedMerchantService {
 
     // Check if merchant with this name already exists
     const existing = await this.merchantRepository.findByName(
-      validatedRequest.name
+      validatedRequest.name,
     );
     if (existing) {
       throw new Error(
-        `Merchant with name "${validatedRequest.name}" already exists`
+        `Merchant with name "${validatedRequest.name}" already exists`,
       );
     }
 
@@ -77,7 +77,7 @@ export class MerchantService extends SharedMerchantService {
 
   override async updateMerchant(
     id: string,
-    request: unknown
+    request: unknown,
   ): Promise<Merchant> {
     const validatedRequest = UpdateMerchantRequestSchema.parse(request);
 
@@ -90,11 +90,11 @@ export class MerchantService extends SharedMerchantService {
     // Check name uniqueness if name is being updated
     if (validatedRequest.name && validatedRequest.name !== existing.name) {
       const nameExists = await this.merchantRepository.findByName(
-        validatedRequest.name
+        validatedRequest.name,
       );
       if (nameExists) {
         throw new Error(
-          `Merchant with name "${validatedRequest.name}" already exists`
+          `Merchant with name "${validatedRequest.name}" already exists`,
         );
       }
     }
@@ -121,7 +121,7 @@ export class MerchantService extends SharedMerchantService {
     const existing = await this.tagRepository.findByName(validatedRequest.name);
     if (existing) {
       throw new Error(
-        `Tag with name "${validatedRequest.name}" already exists`
+        `Tag with name "${validatedRequest.name}" already exists`,
       );
     }
 
@@ -147,11 +147,11 @@ export class MerchantService extends SharedMerchantService {
     // Check name uniqueness if name is being updated
     if (validatedRequest.name && validatedRequest.name !== existing.name) {
       const nameExists = await this.tagRepository.findByName(
-        validatedRequest.name
+        validatedRequest.name,
       );
       if (nameExists) {
         throw new Error(
-          `Tag with name "${validatedRequest.name}" already exists`
+          `Tag with name "${validatedRequest.name}" already exists`,
         );
       }
     }

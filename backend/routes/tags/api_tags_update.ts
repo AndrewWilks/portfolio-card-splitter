@@ -12,7 +12,7 @@ const UpdateTagRequestSchema = z.object({
 
 export async function apiTagsUpdate(
   c: Context,
-  merchantService: MerchantService
+  merchantService: MerchantService,
 ) {
   try {
     const id = c.req.param("id");

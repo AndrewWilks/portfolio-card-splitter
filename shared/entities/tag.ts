@@ -22,13 +22,13 @@ export class Tag {
     public readonly color: string = "#3b82f6",
     public readonly isActive: boolean = true,
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
   ) {}
 
   static create(
     data: Omit<TagData, "id" | "createdAt" | "updatedAt" | "color"> & {
       color?: string;
-    }
+    },
   ): Tag {
     const validated = TagSchema.omit({
       id: true,
@@ -45,7 +45,7 @@ export class Tag {
       validated.color,
       validated.isActive,
       new Date(),
-      new Date()
+      new Date(),
     );
   }
 
@@ -57,7 +57,7 @@ export class Tag {
       validated.color,
       validated.isActive,
       validated.createdAt,
-      validated.updatedAt
+      validated.updatedAt,
     );
   }
 

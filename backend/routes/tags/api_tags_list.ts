@@ -3,7 +3,7 @@ import { MerchantService } from "@backend/services";
 
 export async function apiTagsList(
   c: Context,
-  merchantService: MerchantService
+  merchantService: MerchantService,
 ) {
   try {
     const tags = await merchantService.listTags();

@@ -90,7 +90,7 @@ Deno.test(
     assert(result.name === "Test Merchant");
     assert(result.location === "Test Location");
     assert(result.isActive === true);
-  }
+  },
 );
 
 Deno.test("MerchantService - createMerchant prevents duplicates", async () => {
@@ -147,7 +147,7 @@ Deno.test(
     assert(updated.id === merchant.id);
     assert(updated.name === "Updated Name");
     assert(updated.location === "New Location");
-  }
+  },
 );
 
 Deno.test(
@@ -169,7 +169,7 @@ Deno.test(
       assert(error instanceof Error);
       assert(error.message.includes("already exists"));
     }
-  }
+  },
 );
 
 Deno.test("MerchantService - listTags returns all tags", async () => {

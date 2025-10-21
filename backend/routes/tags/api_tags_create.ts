@@ -9,7 +9,7 @@ const CreateTagRequestSchema = z.object({
 
 export async function apiTagsCreate(
   c: Context,
-  merchantService: MerchantService
+  merchantService: MerchantService,
 ) {
   try {
     const body = await c.req.json();
