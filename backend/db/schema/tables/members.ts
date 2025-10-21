@@ -10,12 +10,10 @@ import { users } from "./users.ts";
 export const members = pgTable("members", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: uuid("user_id")
-    .references(() => users.id)
+    .references(() => users.id, { onDelete: "cascade" })
     .notNull(),
-  firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
-  nickname: text("nickname"),
-  isActive: boolean("is_active").notNull().default(true),
+  displayName: text("display_name").notNull(),
+  archived: boolean("archived").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

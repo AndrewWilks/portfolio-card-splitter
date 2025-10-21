@@ -2,7 +2,7 @@ import { MemberRepository } from "../repositories/index.ts";
 import { Member } from "../entities/index.ts";
 
 export class MemberService {
-  constructor(private memberRepository: MemberRepository) {}
+  constructor(protected memberRepository: MemberRepository) {}
 
   listMembers(_query: Record<string, unknown>): Promise<Member[]> {
     throw new Error("Not implemented");
