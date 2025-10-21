@@ -124,6 +124,70 @@ class Tag {
 }
 ```
 
+#### Member Entity
+
+```typescript
+class Member {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly email: string,
+    public readonly role: "admin" | "member" = "member",
+    public readonly isActive: boolean = true,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date,
+  ) {}
+
+  static create(data): Member; // Factory method with validation
+  static from(data): Member; // Reconstruct from persisted data
+  toJSON(): MemberData; // Serialize for API responses
+}
+```
+
+#### Transaction Entity
+
+```typescript
+class Transaction {
+  constructor(
+    public readonly id: string,
+    public readonly merchantId: string,
+    public readonly description: string,
+    public readonly amountCents: number,
+    public readonly type: "expense" | "income",
+    public readonly transactionDate: Date,
+    public readonly createdById: string,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date,
+  ) {}
+
+  static create(data): Transaction; // Factory method with validation
+  static from(data): Transaction; // Reconstruct from persisted data
+  toJSON(): TransactionData; // Serialize for API responses
+}
+```
+
+#### Allocation Entity
+
+```typescript
+class Allocation {
+  constructor(
+    public readonly id: string,
+    public readonly transactionId: string,
+    public readonly memberId: string,
+    public readonly rule: "percentage" | "fixed_amount",
+    public readonly percentage?: number, // Basis points (5000 = 50%)
+    public readonly amountCents?: number,
+    public readonly calculatedAmountCents: number,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date,
+  ) {}
+
+  static create(data): Allocation; // Factory method with validation
+  static from(data): Allocation; // Reconstruct from persisted data
+  toJSON(): AllocationData; // Serialize for API responses
+}
+```
+
 ### Repositories
 
 Repositories handle data persistence using Drizzle ORM with type-safe queries.
@@ -150,6 +214,28 @@ class TagRepository {
 }
 ```
 
+#### MemberRepository
+
+```typescript
+class MemberRepository {
+  async save(member: Member): Promise<void>;
+  async findById(id: string): Promise<Member | null>;
+  async findAll(): Promise<Member[]>;
+  async findByEmail(email: string): Promise<Member | null>;
+}
+```
+
+#### TransactionRepository
+
+```typescript
+class TransactionRepository {
+  async save(transaction: Transaction): Promise<void>;
+  async findById(id: string): Promise<Transaction | null>;
+  async findByQuery(query: TransactionQuery): Promise<Transaction[]>;
+  async updateAllocations(id: string, allocations: Allocation[]): Promise<void>;
+}
+```
+
 ### Services
 
 Services contain business logic and orchestrate operations between repositories.
@@ -169,6 +255,37 @@ class MerchantService {
   async createTag(request): Promise<Tag>;
   async updateTag(id, request): Promise<Tag>;
   async listTags(): Promise<Tag[]>;
+}
+```
+
+#### MemberService
+
+```typescript
+class MemberService {
+  constructor(
+    protected memberRepository: MemberRepository,
+  ) {}
+
+  async createMember(request): Promise<Member>;
+  async updateMember(id, request): Promise<Member>;
+  async listMembers(): Promise<Member[]>;
+  async getMember(id): Promise<Member>;
+}
+```
+
+#### TransactionService
+
+```typescript
+class TransactionService {
+  constructor(
+    protected transactionRepository: TransactionRepository,
+    protected merchantRepository: MerchantRepository,
+  ) {}
+
+  async createTransaction(request): Promise<Transaction>;
+  async updateTransaction(id, request): Promise<Transaction>;
+  async listTransactions(query): Promise<Transaction[]>;
+  async getTransaction(id): Promise<Transaction>;
 }
 ```
 
@@ -216,6 +333,56 @@ CREATE TABLE tags (
 );
 ```
 
+### Members Table
+
+```sql
+CREATE TABLE members (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  role VARCHAR(50) DEFAULT 'member' CHECK (role IN ('admin', 'member')),
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Transactions Table
+
+```sql
+CREATE TABLE transactions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  merchant_id UUID NOT NULL REFERENCES merchants(id),
+  description VARCHAR(500) NOT NULL,
+  amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+  type VARCHAR(50) NOT NULL CHECK (type IN ('expense', 'income')),
+  transaction_date DATE NOT NULL,
+  created_by_id UUID NOT NULL REFERENCES members(id),
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Allocations Table
+
+```sql
+CREATE TABLE allocations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  transaction_id UUID NOT NULL REFERENCES transactions(id) ON DELETE CASCADE,
+  member_id UUID NOT NULL REFERENCES members(id),
+  rule VARCHAR(50) NOT NULL CHECK (rule IN ('percentage', 'fixed_amount')),
+  percentage INTEGER CHECK (percentage >= 0 AND percentage <= 10000),
+  amount_cents INTEGER CHECK (amount_cents >= 0),
+  calculated_amount_cents INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  CHECK (
+    (rule = 'percentage' AND percentage IS NOT NULL AND amount_cents IS NULL) OR
+    (rule = 'fixed_amount' AND amount_cents IS NOT NULL AND percentage IS NULL)
+  )
+);
+```
+
 ## API Design
 
 ### RESTful Endpoints
@@ -232,6 +399,18 @@ CREATE TABLE tags (
 - `POST /api/tags` - Create a new tag
 - `PATCH /api/tags/:id` - Update a tag
 
+#### Members
+
+- `GET /api/people` - List all members
+- `POST /api/people` - Create a new member
+- `PATCH /api/people/:id` - Update a member
+
+#### Transactions
+
+- `GET /api/transactions` - List transactions with filtering
+- `POST /api/transactions` - Create a transaction with allocations
+- `PATCH /api/transactions/:id` - Update a transaction and allocations
+
 ### Request/Response Format
 
 All API responses follow a consistent JSON structure:
@@ -244,6 +423,49 @@ All API responses follow a consistent JSON structure:
       "name": "Merchant Name",
       "location": "Location",
       "isActive": true,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "tags": [
+    {
+      "id": "uuid",
+      "name": "Tag Name",
+      "color": "#3b82f6",
+      "isActive": true,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "members": [
+    {
+      "id": "uuid",
+      "name": "Member Name",
+      "email": "member@example.com",
+      "role": "member",
+      "isActive": true,
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "uuid",
+      "merchantId": "uuid",
+      "description": "Coffee purchase",
+      "amountCents": 550,
+      "type": "expense",
+      "transactionDate": "2025-01-01",
+      "createdById": "uuid",
+      "allocations": [
+        {
+          "id": "uuid",
+          "memberId": "uuid",
+          "rule": "percentage",
+          "percentage": 5000,
+          "calculatedAmountCents": 275
+        }
+      ],
       "createdAt": "2025-01-01T00:00:00.000Z",
       "updatedAt": "2025-01-01T00:00:00.000Z"
     }
@@ -309,11 +531,12 @@ class MockMerchantRepository extends MerchantRepository {
 
 ### Git Workflow
 
-```Text
-main (protected)
-├── feature/sprint-1-merchants-tags
-├── feature/sprint-2-members-users
-└── feature/sprint-3-payments
+```text
+master (protected)
+├── feature/merchants-tags-foundation (Sprint 1 - ✅ Completed)
+├── feature/people-members-management (Sprint 2 - ✅ Completed)
+├── feature/transactions-management (Sprint 3 - ✅ Completed)
+└── feature/pots-management (Sprint 4 - 📋 Next)
 ```
 
 ## Deployment
