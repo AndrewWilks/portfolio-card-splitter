@@ -121,13 +121,13 @@ encountered.
 
 ### **Sprint 3: Transactions**
 
-| Component      | File                                                           | Status             | Implementation Notes                       |
-| -------------- | -------------------------------------------------------------- | ------------------ | ------------------------------------------ |
-| **Repository** | `backend/repositories/transactionRepository.ts`                | ❌ Not Implemented | Complex queries with allocations           |
-| **Service**    | `backend/services/transactionService.ts`                       | ❌ Not Implemented | Allocation logic, merchant/tag association |
-| **Routes**     | `backend/routes/transactions/api_transactions_*.ts`            | ❌ Not Implemented | Transaction CRUD with allocations          |
-| **Tests**      | `backend/__tests__/repositories/transactionRepository.test.ts` | ✅ Scaffolded      | Complex allocation testing                 |
-| **Tests**      | `backend/__tests__/services/transactionService.test.ts`        | ✅ Scaffolded      | Business logic testing                     |
+| Component      | File                                                           | Status         | Implementation Notes                       |
+| -------------- | -------------------------------------------------------------- | -------------- | ------------------------------------------ |
+| **Repository** | `backend/repositories/transactionRepository.ts`                | ✅ Implemented | Complex queries with allocations           |
+| **Service**    | `backend/services/transactionService.ts`                       | ✅ Implemented | Allocation logic, merchant/tag association |
+| **Routes**     | `backend/routes/transactions/api_transactions_*.ts`            | ✅ Implemented | Transaction CRUD with allocations          |
+| **Tests**      | `backend/__tests__/repositories/transactionRepository.test.ts` | ✅ Implemented | Complex allocation testing                 |
+| **Tests**      | `backend/__tests__/services/transactionService.test.ts`        | ✅ Implemented | Business logic testing                     |
 
 ### **Sprint 4: Pots**
 
@@ -201,5 +201,4 @@ adjustments needed before we begin implementation?
 
 ---
 
-**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 1: Merchants &
-Tags Foundation (In Progress) **Completed Sprints:** 0/9
+**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 4: Pot Management (Ready to Start) **Completed Sprints:** 3/9
