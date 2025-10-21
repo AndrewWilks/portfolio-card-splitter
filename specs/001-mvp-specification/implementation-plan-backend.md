@@ -79,9 +79,10 @@ Keep this file upto date with progress of each sprint. tracking the status and o
    - `feat: implement {feature} service`
    - `feat: implement {feature} routes`
    - `test: add {feature} tests`
-4. **Pull Request:** Create PR targeting `master`
-5. **Code Review:** Address feedback, ensure CI passes
-6. **Merge:** Squash merge with descriptive commit message
+4. **Devlog:** Create or update a devlog entry summarising the sprint's progress, challenges, and learnings. Following the `devlog-specification.md` guidelines and only create a new devlog entry for significant milestones or sprint completions otherwise update existing relevant entries.
+5. **Pull Request:** Create PR targeting `master`
+6. **Code Review:** Address feedback, ensure CI passes
+7. **Merge:** Squash merge with descriptive commit message
 
 ### **Quality Gates**
 
