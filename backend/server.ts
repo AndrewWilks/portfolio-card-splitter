@@ -35,6 +35,7 @@ import {
   createApiTransfersCreate,
   createRootRoute,
 } from "./di/index.ts";
+import { db } from "@db";
 
 const backend = new Hono();
 
@@ -47,11 +48,12 @@ backend.use("*", logger());
 backend.use(
   "*",
   cors({
-    origin: Deno.env.get("NODE_ENV") === "production"
-      ? [Deno.env.get("APP_URL") || ""]
-      : ["http://localhost:3000"],
+    origin:
+      Deno.env.get("NODE_ENV") === "production"
+        ? [Deno.env.get("APP_URL") || ""]
+        : ["http://localhost:3000"],
     credentials: true,
-  }),
+  })
 );
 
 // Error Handling Middleware
@@ -59,7 +61,7 @@ backend.onError((err, c) => {
   console.error("Error occurred:", err);
   return c.json(
     { message: "Internal Server Error", details: err.message },
-    500,
+    500
   );
 });
 
@@ -159,6 +161,13 @@ backend.get("/api/health", (c) =>
     timestamp: new Date().toISOString(),
     locale: "en-AU",
     timezone: "Australia/Brisbane",
-  }));
+  })
+);
 
-Deno.serve(backend.fetch);
+const server = Deno.serve(backend.fetch);
+
+Deno.addSignalListener("SIGINT", async () => {
+  console.log("Shutting down server...");
+  server.shutdown();
+  await db.$client.end();
+});
