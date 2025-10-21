@@ -1,11 +1,20 @@
 import { Context } from "hono";
 import { PotService } from "@backend/services";
 
-export function apiPotsDeposit(_c: Context, _potService: PotService) {
-  // TODO: Implement POST /api/pots/:id/deposit endpoint to deposit funds to a pot
-  // - Extract id from params
-  // - Validate request body with DepositSchema
-  // - Deposit using PotService
-  // - Return success message
-  return _c.json({ message: "Not implemented" }, 501);
+export async function apiPotsDeposit(c: Context, potService: PotService) {
+  try {
+    const id = c.req.param("id");
+    const body = await c.req.json();
+
+    await potService.deposit(id, body);
+
+    return c.json({
+      message: "Deposit successful",
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 400);
+    }
+    return c.json({ error: "Internal server error" }, 500);
+  }
 }

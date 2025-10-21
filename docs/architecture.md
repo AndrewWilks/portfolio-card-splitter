@@ -96,7 +96,7 @@ class Merchant {
     public readonly mergedIntoId?: string,
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Merchant; // Factory method with validation
@@ -115,7 +115,7 @@ class Tag {
     public readonly color: string = "#3b82f6",
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Tag; // Factory method with validation
@@ -135,7 +135,7 @@ class Member {
     public readonly role: "admin" | "member" = "member",
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Member; // Factory method with validation
@@ -157,7 +157,7 @@ class Transaction {
     public readonly transactionDate: Date,
     public readonly createdById: string,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Transaction; // Factory method with validation
@@ -179,12 +179,35 @@ class Allocation {
     public readonly amountCents?: number,
     public readonly calculatedAmountCents: number,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Allocation; // Factory method with validation
   static from(data): Allocation; // Reconstruct from persisted data
   toJSON(): AllocationData; // Serialize for API responses
+}
+```
+
+#### Pot Entity
+
+```typescript
+class Pot {
+  constructor(
+    public readonly id: string,
+    public readonly name: string,
+    public readonly description?: string,
+    public readonly type: "solo" | "shared",
+    public readonly location?: string,
+    public readonly ownerId: string,
+    public readonly balanceCents: number = 0,
+    public readonly isActive: boolean = true,
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date,
+  ) {}
+
+  static create(data): Pot; // Factory method with validation
+  static from(data): Pot; // Reconstruct from persisted data
+  toJSON(): PotData; // Serialize for API responses
 }
 ```
 
@@ -236,6 +259,18 @@ class TransactionRepository {
 }
 ```
 
+#### PotRepository
+
+```typescript
+class PotRepository {
+  async save(pot: Pot): Promise<void>;
+  async findById(id: string): Promise<Pot | null>;
+  async findByOwner(ownerId: string): Promise<Pot[]>;
+  async updateBalance(id: string, amount: number): Promise<void>;
+  async findAvailableBalances(): Promise<Record<string, number>>;
+}
+```
+
 ### Services
 
 Services contain business logic and orchestrate operations between repositories.
@@ -246,7 +281,7 @@ Services contain business logic and orchestrate operations between repositories.
 class MerchantService {
   constructor(
     protected merchantRepository: MerchantRepository,
-    protected tagRepository: TagRepository
+    protected tagRepository: TagRepository,
   ) {}
 
   async createMerchant(request): Promise<Merchant>;
@@ -277,13 +312,26 @@ class MemberService {
 class TransactionService {
   constructor(
     protected transactionRepository: TransactionRepository,
-    protected merchantRepository: MerchantRepository
+    protected merchantRepository: MerchantRepository,
   ) {}
 
   async createTransaction(request): Promise<Transaction>;
   async updateTransaction(id, request): Promise<Transaction>;
   async listTransactions(query): Promise<Transaction[]>;
   async getTransaction(id): Promise<Transaction>;
+}
+```
+
+#### PotService
+
+```typescript
+class PotService {
+  constructor(protected potRepository: PotRepository) {}
+
+  async createPot(request): Promise<Pot>;
+  async updatePot(id, request): Promise<Pot>;
+  async listPots(query): Promise<Pot[]>;
+  async deposit(id, request): Promise<void>;
 }
 ```
 
@@ -381,6 +429,23 @@ CREATE TABLE allocations (
 );
 ```
 
+### Pots Table
+
+```sql
+CREATE TABLE pots (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(100) NOT NULL,
+  description VARCHAR(500),
+  type VARCHAR(50) NOT NULL CHECK (type IN ('solo', 'shared')),
+  location VARCHAR(200),
+  owner_id UUID NOT NULL REFERENCES members(id),
+  balance_cents BIGINT NOT NULL DEFAULT 0 CHECK (balance_cents >= 0),
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
 ## API Design
 
 ### RESTful Endpoints
@@ -408,6 +473,13 @@ CREATE TABLE allocations (
 - `GET /api/transactions` - List transactions with filtering
 - `POST /api/transactions` - Create a transaction with allocations
 - `PATCH /api/transactions/:id` - Update a transaction and allocations
+
+#### Pots
+
+- `GET /api/pots` - List pots for an owner
+- `POST /api/pots` - Create a new pot
+- `PATCH /api/pots/:id` - Update a pot
+- `POST /api/pots/:id/deposit` - Deposit funds to a pot
 
 ### Request/Response Format
 
@@ -464,6 +536,20 @@ All API responses follow a consistent JSON structure:
           "calculatedAmountCents": 275
         }
       ],
+      "createdAt": "2025-01-01T00:00:00.000Z",
+      "updatedAt": "2025-01-01T00:00:00.000Z"
+    }
+  ],
+  "pots": [
+    {
+      "id": "uuid",
+      "name": "Credit Card Payback",
+      "description": "Funds for paying off credit card",
+      "type": "solo",
+      "location": "Bank Account",
+      "ownerId": "uuid",
+      "balanceCents": 15000,
+      "isActive": true,
       "createdAt": "2025-01-01T00:00:00.000Z",
       "updatedAt": "2025-01-01T00:00:00.000Z"
     }
@@ -534,7 +620,7 @@ master (protected)
 ├── feature/merchants-tags-foundation (Sprint 1 - ✅ Completed)
 ├── feature/people-members-management (Sprint 2 - ✅ Completed)
 ├── feature/transactions-management (Sprint 3 - ✅ Completed)
-└── feature/pots-management (Sprint 4 - 📋 Next)
+└── feature/pots-management (Sprint 4 - ✅ Completed)
 ```
 
 ## Deployment

@@ -2,7 +2,7 @@ import { PotRepository } from "../repositories/index.ts";
 import { Pot } from "../entities/index.ts";
 
 export class PotService {
-  constructor(private potRepository: PotRepository) {}
+  constructor(protected potRepository: PotRepository) {}
 
   listPots(_query: Record<string, unknown>): Promise<Pot[]> {
     throw new Error("Not implemented");
