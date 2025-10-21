@@ -96,16 +96,16 @@ Keep this file upto date with progress of each sprint. tracking the status and o
 
 ### **Sprint 1: Merchants & Tags**
 
-| Component      | File                                                        | Status             | Implementation Notes            |
-| -------------- | ----------------------------------------------------------- | ------------------ | ------------------------------- |
-| **Repository** | `backend/repositories/merchantRepository.ts`                | ❌ Not Implemented | CRUD operations with DB queries |
-| **Repository** | `backend/repositories/tagRepository.ts`                     | ❌ Not Implemented | CRUD operations with DB queries |
-| **Service**    | `backend/services/merchantService.ts`                       | ❌ Not Implemented | Business logic, validation      |
-| **Service**    | `backend/services/tagService.ts`                            | ❌ Not Implemented | Business logic, validation      |
-| **Routes**     | `backend/routes/merchants/api_merchants_*.ts`               | ❌ Not Implemented | GET/POST/PATCH handlers         |
-| **Routes**     | `backend/routes/tags/api_tags_*.ts`                         | ❌ Not Implemented | GET/POST/PATCH handlers         |
-| **Tests**      | `backend/__tests__/repositories/merchantRepository.test.ts` | ✅ Scaffolded      | TDD implementation needed       |
-| **Tests**      | `backend/__tests__/services/merchantService.test.ts`        | ✅ Scaffolded      | TDD implementation needed       |
+| Component      | File                                                        | Status         | Implementation Notes            |
+| -------------- | ----------------------------------------------------------- | -------------- | ------------------------------- |
+| **Repository** | `backend/repositories/merchantRepository.ts`                | ✅ Implemented | CRUD operations with DB queries |
+| **Repository** | `backend/repositories/tagRepository.ts`                     | ✅ Implemented | CRUD operations with DB queries |
+| **Service**    | `backend/services/merchantService.ts`                       | ✅ Implemented | Business logic, validation      |
+| **Service**    | `backend/services/tagService.ts`                            | ✅ Implemented | Business logic, validation      |
+| **Routes**     | `backend/routes/merchants/api_merchants_*.ts`               | ✅ Implemented | GET/POST/PATCH handlers         |
+| **Routes**     | `backend/routes/tags/api_tags_*.ts`                         | ✅ Implemented | GET/POST/PATCH handlers         |
+| **Tests**      | `backend/__tests__/repositories/merchantRepository.test.ts` | ✅ Implemented | TDD implementation completed    |
+| **Tests**      | `backend/__tests__/services/merchantService.test.ts`        | ✅ Implemented | TDD implementation completed    |
 
 ### **Sprint 2: People/Members**
 
@@ -198,5 +198,5 @@ Keep this file upto date with progress of each sprint. tracking the status and o
 ---
 
 **Last Updated:** October 21, 2025
-**Current Sprint:** None (Planning Phase)
+**Current Sprint:** Sprint 1: Merchants & Tags Foundation (In Progress)
 **Completed Sprints:** 0/9
