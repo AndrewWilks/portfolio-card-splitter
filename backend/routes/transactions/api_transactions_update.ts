@@ -16,7 +16,7 @@ const UpdateTransactionRequestSchema = z.object({
         rule: z.enum(["percentage", "fixed_amount"]),
         percentage: z.number().int().min(0).max(10000).optional(),
         amountCents: z.number().int().min(0).optional(),
-      })
+      }),
     )
     .min(1)
     .optional(),
@@ -24,7 +24,7 @@ const UpdateTransactionRequestSchema = z.object({
 
 export async function apiTransactionsUpdate(
   c: Context,
-  transactionService: TransactionService
+  transactionService: TransactionService,
 ) {
   try {
     const id = c.req.param("id");
@@ -37,7 +37,7 @@ export async function apiTransactionsUpdate(
 
     const transaction = await transactionService.updateTransaction(
       id,
-      validatedRequest
+      validatedRequest,
     );
 
     return c.json({

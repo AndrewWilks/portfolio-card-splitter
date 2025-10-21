@@ -2,24 +2,38 @@
 
 ## 🎯 What I Accomplished
 
-Holy moly, what a sprint! Sprint 3 delivered the **CORE FEATURE** of Portfolio Card Splitter - the complete transaction management system with allocations. This is what makes the app actually useful for splitting expenses between people. I built the most complex business logic yet, handling percentage-based and fixed-amount allocations, merchant associations, and all the financial calculations that power shared expense tracking.
+Holy moly, what a sprint! Sprint 3 delivered the **CORE FEATURE** of Portfolio
+Card Splitter - the complete transaction management system with allocations.
+This is what makes the app actually useful for splitting expenses between
+people. I built the most complex business logic yet, handling percentage-based
+and fixed-amount allocations, merchant associations, and all the financial
+calculations that power shared expense tracking.
 
-Starting from scaffolded tests and empty entities, I implemented a fully functional transaction system that can handle complex expense splitting scenarios. The system now supports creating transactions with multiple allocations (some percentage-based, some fixed amounts), validating that allocations add up correctly, and persisting everything to the database with proper relationships.
+Starting from scaffolded tests and empty entities, I implemented a fully
+functional transaction system that can handle complex expense splitting
+scenarios. The system now supports creating transactions with multiple
+allocations (some percentage-based, some fixed amounts), validating that
+allocations add up correctly, and persisting everything to the database with
+proper relationships.
 
 ## 🏗️ Technical Deep Dive
 
 ### The Allocation Challenge: Financial Logic at Scale
 
-The heart of Sprint 3 was implementing the allocation system - how to split expenses between multiple people. This involved some serious business logic:
+The heart of Sprint 3 was implementing the allocation system - how to split
+expenses between multiple people. This involved some serious business logic:
 
 #### Two Allocation Types
 
-- **Percentage Allocations**: Split based on percentages (e.g., 50% each for a couple)
-- **Fixed Amount Allocations**: Split with specific dollar amounts (e.g., $25 each)
+- **Percentage Allocations**: Split based on percentages (e.g., 50% each for a
+  couple)
+- **Fixed Amount Allocations**: Split with specific dollar amounts (e.g., $25
+  each)
 
 #### The Big Constraint
 
-You can't mix allocation types in a single transaction. Either everyone gets a percentage of the total, or specific fixed amounts are assigned.
+You can't mix allocation types in a single transaction. Either everyone gets a
+percentage of the total, or specific fixed amounts are assigned.
 
 ### Entity Design: Transactions + Allocations
 
@@ -35,7 +49,7 @@ export class Transaction {
     public readonly amountCents: number, // How much? (integer cents)
     public readonly type: "expense" | "income",
     public readonly transactionDate: Date,
-    public readonly createdById: string // ...timestamps
+    public readonly createdById: string, // ...timestamps
   ) {}
 }
 
@@ -48,7 +62,7 @@ export class Allocation {
     public readonly rule: "percentage" | "fixed_amount",
     public readonly percentage?: number, // Basis points (5000 = 50%)
     public readonly amountCents?: number, // Fixed amount
-    public readonly calculatedAmountCents: number // Final calculated amount // ...timestamps
+    public readonly calculatedAmountCents: number, // Final calculated amount // ...timestamps
   ) {}
 }
 ```
@@ -126,19 +140,22 @@ Implemented three complete API endpoints:
 }
 ```
 
-**GET /api/transactions** - List transactions with filtering
-**PATCH /api/transactions/:id** - Update transaction and allocations
+**GET /api/transactions** - List transactions with filtering **PATCH
+/api/transactions/:id** - Update transaction and allocations
 
 ## 💡 Key Learnings
 
 ### Complex Business Logic Requires Careful Design
 
-This sprint taught me that financial software demands meticulous attention to detail. A single misplaced decimal point or incorrect calculation could lead to incorrect expense splitting, which erodes trust in the application.
+This sprint taught me that financial software demands meticulous attention to
+detail. A single misplaced decimal point or incorrect calculation could lead to
+incorrect expense splitting, which erodes trust in the application.
 
 #### Validation Layering Saved Me
 
 - **Entity Level**: Basic data structure validation
-- **Service Level**: Business rule validation (allocation sums, merchant existence)
+- **Service Level**: Business rule validation (allocation sums, merchant
+  existence)
 - **API Level**: Request/response schema validation
 
 ### Database Relationships Are Tricky
@@ -151,7 +168,8 @@ Handling the transaction ↔ allocations relationship required careful thinking:
 
 ### TDD with Complex Logic
 
-Writing tests first for complex allocation logic was challenging but invaluable. The tests forced me to think through edge cases:
+Writing tests first for complex allocation logic was challenging but invaluable.
+The tests forced me to think through edge cases:
 
 - What happens with 0% allocations?
 - How to handle rounding errors in percentage calculations?
@@ -159,18 +177,23 @@ Writing tests first for complex allocation logic was challenging but invaluable.
 
 ### Financial Accuracy Matters
 
-Using integer cents instead of floating-point dollars was a great decision from the database schema. It eliminates rounding errors that could cause confusion about who owes what.
+Using integer cents instead of floating-point dollars was a great decision from
+the database schema. It eliminates rounding errors that could cause confusion
+about who owes what.
 
 ## 🚀 What's Next
 
-Sprint 4: Pot Management! Now that we can create and track transactions with allocations, we need money pots to actually hold and manage the funds. This will involve:
+Sprint 4: Pot Management! Now that we can create and track transactions with
+allocations, we need money pots to actually hold and manage the funds. This will
+involve:
 
 - Pot CRUD operations
 - Balance calculations
 - Deposit functionality
 - Linking pots to allocations
 
-The transaction foundation is solid and ready to support the financial operations that will make this app truly useful for managing shared expenses.
+The transaction foundation is solid and ready to support the financial
+operations that will make this app truly useful for managing shared expenses.
 
 ## 📊 Sprint 3 Stats
 
@@ -203,11 +226,21 @@ Validation Rules:
 
 ## 🔗 Resources & References
 
-- [Domain-Driven Design](https://dddcommunity.org/) - For complex business logic modeling
-- [Financial Data Best Practices](https://www.moderntreasury.com/journal/financial-data-best-practices) - Integer cents and precision handling
-- [REST API Design](https://restfulapi.net/) - For the transaction management endpoints
-- [Drizzle ORM Relations](https://orm.drizzle.team/docs/rqb) - Complex queries with relationships
+- [Domain-Driven Design](https://dddcommunity.org/) - For complex business logic
+  modeling
+- [Financial Data Best Practices](https://www.moderntreasury.com/journal/financial-data-best-practices) -
+  Integer cents and precision handling
+- [REST API Design](https://restfulapi.net/) - For the transaction management
+  endpoints
+- [Drizzle ORM Relations](https://orm.drizzle.team/docs/rqb) - Complex queries
+  with relationships
 
-Sprint 3 delivered the beating heart of Portfolio Card Splitter! The transaction management system can now handle the complex expense splitting scenarios that make this app valuable. From simple 50/50 splits to complex multi-person allocations, the foundation is rock-solid for the financial operations to come. 💪
+Sprint 3 delivered the beating heart of Portfolio Card Splitter! The transaction
+management system can now handle the complex expense splitting scenarios that
+make this app valuable. From simple 50/50 splits to complex multi-person
+allocations, the foundation is rock-solid for the financial operations to come.
+💪
 
-The journey from scaffolded tests to a fully functional expense tracking system has been incredibly rewarding. Each line of code brings us closer to solving real financial coordination problems for couples and groups! 🎉
+The journey from scaffolded tests to a fully functional expense tracking system
+has been incredibly rewarding. Each line of code brings us closer to solving
+real financial coordination problems for couples and groups! 🎉

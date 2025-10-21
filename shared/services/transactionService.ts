@@ -9,7 +9,7 @@ export class TransactionService {
   constructor(
     protected transactionRepository: TransactionRepository,
     protected merchantRepository: MerchantRepository,
-    protected tagRepository: TagRepository
+    protected tagRepository: TagRepository,
   ) {}
 
   listTransactions(_query: Record<string, unknown>): Promise<Transaction[]> {

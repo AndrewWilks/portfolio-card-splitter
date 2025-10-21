@@ -80,8 +80,8 @@ encountered.
    progress, challenges, and learnings. Following the `devlog-specification.md`
    guidelines and only create a new devlog entry for significant milestones or
    sprint completions otherwise update existing relevant entries.
-5. **CI:** Ensure all tests pass, CI checks are green and all problems are fixed, before PR
-   submission.
+5. **CI:** Ensure all tests pass, CI checks are green and all problems are
+   fixed, before PR submission.
 6. **Pull Request:** Create PR targeting `master` with GitHub CLI
 7. **Code Review:** Address feedback, ensure CI passes
 8. **Merge:** Squash merge with descriptive commit message
@@ -201,4 +201,5 @@ adjustments needed before we begin implementation?
 
 ---
 
-**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 4: Pot Management (Ready to Start) **Completed Sprints:** 3/9
+**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 4: Pot Management
+(Ready to Start) **Completed Sprints:** 3/9

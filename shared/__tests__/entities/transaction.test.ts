@@ -93,7 +93,7 @@ Deno.test("Transaction - can be reconstructed from data", () => {
   assert(transaction.amountCents === data.amountCents);
   assert(transaction.type === data.type);
   assert(
-    transaction.transactionDate.getTime() === data.transactionDate.getTime()
+    transaction.transactionDate.getTime() === data.transactionDate.getTime(),
   );
   assert(transaction.createdById === data.createdById);
   assert(transaction.createdAt.getTime() === data.createdAt.getTime());

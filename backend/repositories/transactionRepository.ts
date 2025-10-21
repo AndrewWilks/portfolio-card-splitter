@@ -1,7 +1,7 @@
 import { TransactionRepository as SharedTransactionRepository } from "@shared/repositories";
 import { Allocation, Transaction } from "@shared/entities";
 import { db, Schemas } from "@db";
-import { eq, and, desc, SQL } from "drizzle-orm";
+import { and, desc, eq, SQL } from "drizzle-orm";
 
 export class TransactionRepository extends SharedTransactionRepository {
   constructor(private dbClient = db) {
@@ -58,26 +58,32 @@ export class TransactionRepository extends SharedTransactionRepository {
   }
 
   override async findByQuery(
-    query: Record<string, unknown>
+    query: Record<string, unknown>,
   ): Promise<Transaction[]> {
     const conditions: SQL[] = [];
 
     // Build query conditions based on provided parameters
     if (query.merchantId) {
       conditions.push(
-        eq(Schemas.Tables.transactions.merchantId, query.merchantId as string)
+        eq(Schemas.Tables.transactions.merchantId, query.merchantId as string),
       );
     }
 
     if (query.createdById) {
       conditions.push(
-        eq(Schemas.Tables.transactions.createdById, query.createdById as string)
+        eq(
+          Schemas.Tables.transactions.createdById,
+          query.createdById as string,
+        ),
       );
     }
 
     if (query.type) {
       conditions.push(
-        eq(Schemas.Tables.transactions.type, query.type as "expense" | "income")
+        eq(
+          Schemas.Tables.transactions.type,
+          query.type as "expense" | "income",
+        ),
       );
     }
 
@@ -110,7 +116,7 @@ export class TransactionRepository extends SharedTransactionRepository {
 
   override async updateAllocations(
     id: string,
-    allocations: Allocation[]
+    allocations: Allocation[],
   ): Promise<void> {
     // First, delete existing allocations for this transaction
     await this.dbClient

@@ -1,5 +1,5 @@
 import { TransactionService as SharedTransactionService } from "@shared/services";
-import { Transaction, Allocation } from "@shared/entities";
+import { Allocation, Transaction } from "@shared/entities";
 import { z } from "zod";
 
 // Request schemas
@@ -23,7 +23,7 @@ const CreateAllocationRequestSchema = z
     {
       message:
         "Invalid allocation: percentage rule requires percentage, fixed_amount rule requires amountCents",
-    }
+    },
   );
 
 const CreateTransactionRequestSchema = z.object({
@@ -61,7 +61,7 @@ export class TransactionService extends SharedTransactionService {
   // which takes (transactionRepository, merchantRepository, tagRepository)
 
   override async listTransactions(
-    query: Record<string, unknown>
+    query: Record<string, unknown>,
   ): Promise<Transaction[]> {
     return await this.transactionRepository.findByQuery(query);
   }
@@ -71,11 +71,11 @@ export class TransactionService extends SharedTransactionService {
 
     // Validate that merchant exists
     const merchant = await this.merchantRepository.findById(
-      validatedRequest.merchantId
+      validatedRequest.merchantId,
     );
     if (!merchant) {
       throw new Error(
-        `Merchant with ID ${validatedRequest.merchantId} not found`
+        `Merchant with ID ${validatedRequest.merchantId} not found`,
       );
     }
 
@@ -92,7 +92,7 @@ export class TransactionService extends SharedTransactionService {
     // Validate allocations sum to 100% or total amount
     await this.validateAllocations(
       validatedRequest.allocations,
-      validatedRequest.amountCents
+      validatedRequest.amountCents,
     );
 
     // Create the transaction
@@ -127,7 +127,7 @@ export class TransactionService extends SharedTransactionService {
     const calculatedAllocations = allocations.map((allocation) => {
       if (allocation.rule === "percentage") {
         const calculatedAmount = allocation.calculateAmount(
-          transaction.amountCents
+          transaction.amountCents,
         );
         return Allocation.from({
           ...allocation.toJSON(),
@@ -139,7 +139,7 @@ export class TransactionService extends SharedTransactionService {
 
     await this.transactionRepository.updateAllocations(
       transaction.id,
-      calculatedAllocations
+      calculatedAllocations,
     );
 
     // TODO: Save transaction tags if provided
@@ -149,7 +149,7 @@ export class TransactionService extends SharedTransactionService {
 
   override async updateTransaction(
     id: string,
-    request: unknown
+    request: unknown,
   ): Promise<Transaction> {
     const validatedRequest = UpdateTransactionRequestSchema.parse(request);
 
@@ -162,19 +162,19 @@ export class TransactionService extends SharedTransactionService {
     // Validate merchant if provided
     if (validatedRequest.merchantId) {
       const merchant = await this.merchantRepository.findById(
-        validatedRequest.merchantId
+        validatedRequest.merchantId,
       );
       if (!merchant) {
         throw new Error(
-          `Merchant with ID ${validatedRequest.merchantId} not found`
+          `Merchant with ID ${validatedRequest.merchantId} not found`,
         );
       }
     }
 
     // Validate allocations if provided
     if (validatedRequest.allocations) {
-      const amountCents =
-        validatedRequest.amountCents || existingTransaction.amountCents;
+      const amountCents = validatedRequest.amountCents ||
+        existingTransaction.amountCents;
       await this.validateAllocations(validatedRequest.allocations, amountCents);
     }
 
@@ -208,7 +208,7 @@ export class TransactionService extends SharedTransactionService {
       const calculatedAllocations = allocations.map((allocation) => {
         if (allocation.rule === "percentage") {
           const calculatedAmount = allocation.calculateAmount(
-            updatedTransaction.amountCents
+            updatedTransaction.amountCents,
           );
           return Allocation.from({
             ...allocation.toJSON(),
@@ -220,7 +220,7 @@ export class TransactionService extends SharedTransactionService {
 
       await this.transactionRepository.updateAllocations(
         updatedTransaction.id,
-        calculatedAllocations
+        calculatedAllocations,
       );
     }
 
@@ -229,7 +229,7 @@ export class TransactionService extends SharedTransactionService {
 
   private validateAllocations(
     allocations: CreateAllocationRequest[],
-    totalAmountCents: number
+    totalAmountCents: number,
   ): void {
     if (allocations.length === 0) {
       throw new Error("At least one allocation is required");
@@ -251,14 +251,14 @@ export class TransactionService extends SharedTransactionService {
       throw new Error(
         `Percentage allocations must sum to 100% (currently ${
           totalPercentage / 100
-        }%)`
+        }%)`,
       );
     }
 
     // Validate fixed amount allocations don't exceed total
     if (totalFixedAmount > totalAmountCents) {
       throw new Error(
-        `Fixed amount allocations (${totalFixedAmount} cents) exceed transaction amount (${totalAmountCents} cents)`
+        `Fixed amount allocations (${totalFixedAmount} cents) exceed transaction amount (${totalAmountCents} cents)`,
       );
     }
 
@@ -268,7 +268,7 @@ export class TransactionService extends SharedTransactionService {
 
     if (hasPercentage && hasFixedAmount) {
       throw new Error(
-        "Cannot mix percentage and fixed amount allocations in the same transaction"
+        "Cannot mix percentage and fixed amount allocations in the same transaction",
       );
     }
   }

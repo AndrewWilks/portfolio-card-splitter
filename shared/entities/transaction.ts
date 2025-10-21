@@ -26,11 +26,11 @@ export class Transaction {
     public readonly transactionDate: Date,
     public readonly createdById: string,
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
   ) {}
 
   static create(
-    data: Omit<TransactionData, "id" | "createdAt" | "updatedAt">
+    data: Omit<TransactionData, "id" | "createdAt" | "updatedAt">,
   ): Transaction {
     const validated = TransactionSchema.omit({
       id: true,
@@ -47,7 +47,7 @@ export class Transaction {
       validated.transactionDate,
       validated.createdById,
       new Date(),
-      new Date()
+      new Date(),
     );
   }
 
@@ -62,7 +62,7 @@ export class Transaction {
       validated.transactionDate,
       validated.createdById,
       validated.createdAt,
-      validated.updatedAt
+      validated.updatedAt,
     );
   }
 

@@ -66,7 +66,7 @@ Deno.test(
     } catch (error) {
       assert(error instanceof Error);
     }
-  }
+  },
 );
 
 Deno.test(
@@ -83,7 +83,7 @@ Deno.test(
     } catch (error) {
       assert(error instanceof Error);
     }
-  }
+  },
 );
 
 Deno.test("Allocation - can be reconstructed from data", () => {

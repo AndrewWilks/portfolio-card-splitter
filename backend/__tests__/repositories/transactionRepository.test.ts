@@ -1,6 +1,5 @@
 import { assert } from "@std/assert";
 import { TransactionRepository } from "../../repositories/index.ts";
-import { Transaction, Allocation } from "@shared/entities";
 
 Deno.test("TransactionRepository - create", () => {
   // TODO: Test transaction creation

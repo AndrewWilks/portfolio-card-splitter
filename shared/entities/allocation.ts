@@ -29,7 +29,7 @@ export const AllocationSchema = z
     {
       message:
         "Invalid allocation: percentage rule requires percentage, fixed_amount rule requires amountCents",
-    }
+    },
   );
 
 export type AllocationData = z.infer<typeof AllocationSchema>;
@@ -44,14 +44,14 @@ export class Allocation {
     public readonly percentage?: number, // basis points (e.g., 5000 = 50%)
     public readonly amountCents?: number,
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
   ) {}
 
   static create(
     data: Omit<
       AllocationData,
       "id" | "createdAt" | "updatedAt" | "calculatedAmountCents"
-    >
+    >,
   ): Allocation {
     // Calculate the initial calculatedAmountCents
     let calculatedAmountCents: number;
@@ -82,7 +82,7 @@ export class Allocation {
       validated.percentage,
       validated.amountCents,
       new Date(),
-      new Date()
+      new Date(),
     );
   }
 
@@ -97,7 +97,7 @@ export class Allocation {
       validated.percentage,
       validated.amountCents,
       validated.createdAt,
-      validated.updatedAt
+      validated.updatedAt,
     );
   }
 

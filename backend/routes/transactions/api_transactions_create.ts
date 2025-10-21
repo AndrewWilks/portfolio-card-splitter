@@ -16,21 +16,21 @@ const CreateTransactionRequestSchema = z.object({
         rule: z.enum(["percentage", "fixed_amount"]),
         percentage: z.number().int().min(0).max(10000).optional(),
         amountCents: z.number().int().min(0).optional(),
-      })
+      }),
     )
     .min(1),
 });
 
 export async function apiTransactionsCreate(
   c: Context,
-  transactionService: TransactionService
+  transactionService: TransactionService,
 ) {
   try {
     const body = await c.req.json();
     const validatedRequest = CreateTransactionRequestSchema.parse(body);
 
     const transaction = await transactionService.createTransaction(
-      validatedRequest
+      validatedRequest,
     );
 
     return c.json({

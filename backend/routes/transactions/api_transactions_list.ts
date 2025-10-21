@@ -3,7 +3,7 @@ import { TransactionService } from "@backend/services";
 
 export async function apiTransactionsList(
   c: Context,
-  transactionService: TransactionService
+  transactionService: TransactionService,
 ) {
   try {
     // Parse query parameters
