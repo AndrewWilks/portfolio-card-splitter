@@ -7,9 +7,9 @@ import { Transaction } from "../entities/index.ts";
 
 export class TransactionService {
   constructor(
-    private transactionRepository: TransactionRepository,
-    private merchantRepository: MerchantRepository,
-    private tagRepository: TagRepository,
+    protected transactionRepository: TransactionRepository,
+    protected merchantRepository: MerchantRepository,
+    protected tagRepository: TagRepository
   ) {}
 
   listTransactions(_query: Record<string, unknown>): Promise<Transaction[]> {
