@@ -1,17 +1,17 @@
-// .cspell.cjs
-module.exports = {
-  version: "0.2",
-  import: [
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "import": [
     "@cspell/dict-en-au",
     "@cspell/dict-typescript",
-    "@cspell/dict-node",
+    "@cspell/dict-node"
   ],
-  language: "en-au",
-  files: [
+  "language": "en-au",
+  "files": [
     "**/*.{ts,tsx,js,jsx,json,md,yml,yaml}",
-    "**/.*.{ts,tsx,js,jsx,json,md,yml,yaml}",
+    "**/.*.{ts,tsx,js,jsx,json,md,yml,yaml}"
   ],
-  ignorePaths: [
+  "ignorePaths": [
     "node_modules",
     "dist",
     "build",
@@ -28,9 +28,11 @@ module.exports = {
     "deno.lock",
     ".DS_Store",
     "Thumbs.db",
+    ".cspell.config.cjs"
   ],
-  words: [
+  "words": [
     // Project specific terms
+    "devlog",
     "portfolio",
     "card",
     "splitter",
@@ -99,6 +101,14 @@ module.exports = {
     "aud",
     "cents",
 
+    // Australian English spellings
+    "realised",
+    "organised",
+    "recognised",
+    "coloured",
+    "centred",
+    "behaviour",
+
     // Common developer words
     "config",
     "utils",
@@ -156,10 +166,10 @@ module.exports = {
     "zip",
     "tar",
     "bz2",
-    "xz",
+    "xz"
   ],
-  flagWords: ["TODO", "FIXME", "HACK", "XXX", "NOTE", "BUG"],
-  ignoreRegExpList: [
+  "flagWords": ["TODO", "FIXME", "HACK", "XXX", "NOTE", "BUG"],
+  "ignoreRegExpList": [
     "/\\/\\/.*", // single-line comments
     "/\\/\\*[\\s\\S]*?\\*\\//", // block comments
     "\\b0x[0-9A-Fa-f]+\\b", // hex literals
@@ -169,11 +179,11 @@ module.exports = {
     "\\b[A-Z][a-zA-Z0-9]*\\b", // PascalCase identifiers
     "\\b[a-z][a-zA-Z0-9]*\\b", // camelCase identifiers
     "\\b_[a-zA-Z0-9]+\\b", // private identifiers
-    "\\b@[a-zA-Z0-9/-]+\\b", // import paths
+    "\\b@[a-zA-Z0-9/-]+\\b" // import paths
   ],
-  maxNumberOfProblems: 500,
-  minWordLength: 3,
-  allowCompoundWords: true,
-  caseSensitive: false,
-  useGitignore: true,
-};
+  "maxNumberOfProblems": 500,
+  "minWordLength": 3,
+  "allowCompoundWords": true,
+  "caseSensitive": false,
+  "useGitignore": true
+}
