@@ -70,6 +70,8 @@ This plan outlines the systematic completion of the Portfolio Card Splitter back
 
 ### **Sprint Workflow**
 
+Keep this file upto date with progress of each sprint. tracking the status and overview of the sprint where it is at, complated tasks, and any blockers encountered.
+
 1. **Create Branch:** `git checkout -b feature/{sprint-name}`
 2. **TDD Implementation:** Red → Green → Refactor cycle
 3. **Commit Strategy:**
