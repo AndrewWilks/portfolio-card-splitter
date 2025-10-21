@@ -69,7 +69,7 @@ Keep this file upto date with progress of each sprint. tracking the status and
 overview of the sprint where it is at, complated tasks, and any blockers
 encountered.
 
-1. **Create Branch:** `git checkout -b feature/{sprint-name}`
+1. **Create Branch:** `git checkout -b feature/{sprint-name}` from `Master`
 2. **TDD Implementation:** Red → Green → Refactor cycle
 3. **Commit Strategy:**
    - `feat: implement {feature} repository`
@@ -80,9 +80,11 @@ encountered.
    progress, challenges, and learnings. Following the `devlog-specification.md`
    guidelines and only create a new devlog entry for significant milestones or
    sprint completions otherwise update existing relevant entries.
-5. **Pull Request:** Create PR targeting `master` with GitHub CLI
-6. **Code Review:** Address feedback, ensure CI passes
-7. **Merge:** Squash merge with descriptive commit message
+5. **CI:** Ensure all tests pass, CI checks are green and all problems are
+   fixed, before PR submission.
+6. **Pull Request:** Create PR targeting `master` with GitHub CLI
+7. **Code Review:** Address feedback, ensure CI passes
+8. **Merge:** Squash merge with descriptive commit message
 
 ### **Quality Gates**
 
@@ -119,13 +121,13 @@ encountered.
 
 ### **Sprint 3: Transactions**
 
-| Component      | File                                                           | Status             | Implementation Notes                       |
-| -------------- | -------------------------------------------------------------- | ------------------ | ------------------------------------------ |
-| **Repository** | `backend/repositories/transactionRepository.ts`                | ❌ Not Implemented | Complex queries with allocations           |
-| **Service**    | `backend/services/transactionService.ts`                       | ❌ Not Implemented | Allocation logic, merchant/tag association |
-| **Routes**     | `backend/routes/transactions/api_transactions_*.ts`            | ❌ Not Implemented | Transaction CRUD with allocations          |
-| **Tests**      | `backend/__tests__/repositories/transactionRepository.test.ts` | ✅ Scaffolded      | Complex allocation testing                 |
-| **Tests**      | `backend/__tests__/services/transactionService.test.ts`        | ✅ Scaffolded      | Business logic testing                     |
+| Component      | File                                                           | Status         | Implementation Notes                       |
+| -------------- | -------------------------------------------------------------- | -------------- | ------------------------------------------ |
+| **Repository** | `backend/repositories/transactionRepository.ts`                | ✅ Implemented | Complex queries with allocations           |
+| **Service**    | `backend/services/transactionService.ts`                       | ✅ Implemented | Allocation logic, merchant/tag association |
+| **Routes**     | `backend/routes/transactions/api_transactions_*.ts`            | ✅ Implemented | Transaction CRUD with allocations          |
+| **Tests**      | `backend/__tests__/repositories/transactionRepository.test.ts` | ✅ Implemented | Complex allocation testing                 |
+| **Tests**      | `backend/__tests__/services/transactionService.test.ts`        | ✅ Implemented | Business logic testing                     |
 
 ### **Sprint 4: Pots**
 
@@ -199,5 +201,5 @@ adjustments needed before we begin implementation?
 
 ---
 
-**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 1: Merchants &
-Tags Foundation (In Progress) **Completed Sprints:** 0/9
+**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 4: Pot Management
+(Ready to Start) **Completed Sprints:** 3/9
