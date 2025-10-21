@@ -80,7 +80,7 @@ encountered.
    progress, challenges, and learnings. Following the `devlog-specification.md`
    guidelines and only create a new devlog entry for significant milestones or
    sprint completions otherwise update existing relevant entries.
-5. **Pull Request:** Create PR targeting `master`
+5. **Pull Request:** Create PR targeting `master` with GitHub CLI
 6. **Code Review:** Address feedback, ensure CI passes
 7. **Merge:** Squash merge with descriptive commit message
 
@@ -109,13 +109,13 @@ encountered.
 
 ### **Sprint 2: People/Members**
 
-| Component      | File                                                      | Status             | Implementation Notes    |
-| -------------- | --------------------------------------------------------- | ------------------ | ----------------------- |
-| **Repository** | `backend/repositories/memberRepository.ts`                | ❌ Not Implemented | User/member CRUD        |
-| **Service**    | `backend/services/memberService.ts`                       | ❌ Not Implemented | Member management logic |
-| **Routes**     | `backend/routes/people/api_people_*.ts`                   | ❌ Not Implemented | Member CRUD endpoints   |
-| **Tests**      | `backend/__tests__/repositories/memberRepository.test.ts` | ✅ Scaffolded      | TDD implementation      |
-| **Tests**      | `backend/__tests__/services/memberService.test.ts`        | ✅ Scaffolded      | TDD implementation      |
+| Component      | File                                                      | Status         | Implementation Notes    |
+| -------------- | --------------------------------------------------------- | -------------- | ----------------------- |
+| **Repository** | `backend/repositories/memberRepository.ts`                | ✅ Implemented | User/member CRUD        |
+| **Service**    | `backend/services/memberService.ts`                       | ✅ Implemented | Member management logic |
+| **Routes**     | `backend/routes/people/api_people_*.ts`                   | ✅ Implemented | Member CRUD endpoints   |
+| **Tests**      | `backend/__tests__/repositories/memberRepository.test.ts` | ✅ Implemented | TDD implementation      |
+| **Tests**      | `backend/__tests__/services/memberService.test.ts`        | ✅ Implemented | TDD implementation      |
 
 ### **Sprint 3: Transactions**
 

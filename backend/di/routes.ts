@@ -66,7 +66,7 @@ import { createEventRepository } from "./repositories.ts";
 // Helper Functions for Route Factories
 function createValidatedRoute(
   schema: z.ZodSchema,
-  handler: (c: Context) => Response,
+  handler: (c: Context) => Response | Promise<Response>,
 ) {
   return validateBody(schema)(handler);
 }
