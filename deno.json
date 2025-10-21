@@ -40,7 +40,7 @@
     "test": "deno test --allow-net --allow-env --env-file=.env backend/__tests__/",
     "test:watch": "deno test --allow-net --allow-env --watch --env-file=.env backend/__tests__/",
     "test:coverage": "deno test --allow-net --allow-env --coverage=./coverage --env-file=.env backend/__tests__/",
-    "spell:check": "deno run -A npm:cspell --config .cspell.cjs '**/*.{ts,tsx,js,jsx,json,md}'",
+    "spell:check": "deno run -A npm:cspell --config .config/cspell.json '**/*.{ts,tsx,js,jsx,json,md}'",
     "spell:fix": "deno run -A npm:cspell --config .cspell.cjs '**/*.{ts,tsx,js,jsx,json,md}' --fix"
   },
   "nodeModulesDir": "auto"
