@@ -22,8 +22,12 @@ export function loadConfig(): Config {
   const isTest = nodeEnv === "test";
 
   const config = {
-    DATABASE_URL: Deno.env.get("DATABASE_URL") || (isTest ? "postgresql://test:test@localhost:5432/test" : undefined),
-    JWT_SECRET: Deno.env.get("JWT_SECRET") || (isTest ? "test-jwt-secret-key-that-is-at-least-32-characters-long" : undefined),
+    DATABASE_URL: Deno.env.get("DATABASE_URL") ||
+      (isTest ? "postgresql://test:test@localhost:5432/test" : undefined),
+    JWT_SECRET: Deno.env.get("JWT_SECRET") ||
+      (isTest
+        ? "test-jwt-secret-key-that-is-at-least-32-characters-long"
+        : undefined),
     NODE_ENV: nodeEnv,
     PORT: Deno.env.get("PORT"),
   };
@@ -37,5 +41,5 @@ export const config: Config = new Proxy({} as Config, {
   get(_target, prop) {
     const realConfig = loadConfig();
     return realConfig[prop as keyof Config];
-  }
+  },
 });
