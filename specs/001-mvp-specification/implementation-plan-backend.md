@@ -2,75 +2,72 @@
 
 ## 🎯 **Overview**
 
-This plan outlines the systematic completion of the Portfolio Card Splitter backend MVP through focused TDD sprints. The goal is to implement all business logic while maintaining the established Clean Architecture, SOLID principles, and comprehensive test coverage.
+This plan outlines the systematic completion of the Portfolio Card Splitter
+backend MVP through focused TDD sprints. The goal is to implement all business
+logic while maintaining the established Clean Architecture, SOLID principles,
+and comprehensive test coverage.
 
 ## 📊 **Sprint Plan**
 
 ### **Sprint 1: Merchants & Tags Foundation**
 
 **Goal:** Establish TDD patterns and implement foundational entities
-**Duration:** 2-3 days
-**Priority:** HIGH (Required for transactions)
+**Duration:** 2-3 days **Priority:** HIGH (Required for transactions)
 
 ### **Sprint 2: People/Members Management**
 
-**Goal:** Complete user/member CRUD operations
-**Duration:** 2-3 days
+**Goal:** Complete user/member CRUD operations **Duration:** 2-3 days
 **Priority:** HIGH (Core user management)
 
 ### **Sprint 3: Transaction Management**
 
-**Goal:** Implement core expense tracking with allocations
-**Duration:** 4-5 days
-**Priority:** CRITICAL (Main app feature)
+**Goal:** Implement core expense tracking with allocations **Duration:** 4-5
+days **Priority:** CRITICAL (Main app feature)
 
 ### **Sprint 4: Pot Management**
 
-**Goal:** Money pot CRUD and deposit operations
-**Duration:** 3-4 days
+**Goal:** Money pot CRUD and deposit operations **Duration:** 3-4 days
 **Priority:** HIGH (Financial management)
 
 ### **Sprint 5: Transfers & Payments**
 
-**Goal:** Financial operations between pots
-**Duration:** 3-4 days
-**Priority:** HIGH (Money movement)
+**Goal:** Financial operations between pots **Duration:** 3-4 days **Priority:**
+HIGH (Money movement)
 
 ### **Sprint 6: Reservations**
 
-**Goal:** Fund reservation system
-**Duration:** 2-3 days
-**Priority:** MEDIUM (Planned spending)
+**Goal:** Fund reservation system **Duration:** 2-3 days **Priority:** MEDIUM
+(Planned spending)
 
 ### **Sprint 7: Ledger & Audit**
 
-**Goal:** Reporting and audit trail features
-**Duration:** 2-3 days
+**Goal:** Reporting and audit trail features **Duration:** 2-3 days
 **Priority:** MEDIUM (Read-only features)
 
 ### **Sprint 8: Authentication Completion**
 
-**Goal:** Polish auth flows and edge cases
-**Duration:** 2-3 days
-**Priority:** MEDIUM (User experience)
+**Goal:** Polish auth flows and edge cases **Duration:** 2-3 days **Priority:**
+MEDIUM (User experience)
 
 ### **Sprint 9: Event Streaming**
 
-**Goal:** Real-time updates via SSE
-**Duration:** 2-3 days
-**Priority:** LOW (Nice-to-have)
+**Goal:** Real-time updates via SSE **Duration:** 2-3 days **Priority:** LOW
+(Nice-to-have)
 
 ## 🔄 **Git Version Control Plan**
 
 ### **Branching Strategy**
 
 - **Base Branch:** `master` (production-ready code)
-- **Feature Branches:** `feature/{domain}-{operation}` (e.g., `feature/merchants-crud`)
+- **Feature Branches:** `feature/{domain}-{operation}` (e.g.,
+  `feature/merchants-crud`)
 - **Chore Branches:** `chore/{task}` (e.g., `chore/fix-ci-issues`)
 
 ### **Sprint Workflow**
 
-Keep this file upto date with progress of each sprint. tracking the status and overview of the sprint where it is at, complated tasks, and any blockers encountered.
+Keep this file upto date with progress of each sprint. tracking the status and
+overview of the sprint where it is at, complated tasks, and any blockers
+encountered.
 
 1. **Create Branch:** `git checkout -b feature/{sprint-name}`
 2. **TDD Implementation:** Red → Green → Refactor cycle
@@ -79,7 +76,10 @@ Keep this file upto date with progress of each sprint. tracking the status and o
    - `feat: implement {feature} service`
    - `feat: implement {feature} routes`
    - `test: add {feature} tests`
-4. **Devlog:** Create or update a devlog entry summarising the sprint's progress, challenges, and learnings. Following the `devlog-specification.md` guidelines and only create a new devlog entry for significant milestones or sprint completions otherwise update existing relevant entries.
+4. **Devlog:** Create or update a devlog entry summarising the sprint's
+   progress, challenges, and learnings. Following the `devlog-specification.md`
+   guidelines and only create a new devlog entry for significant milestones or
+   sprint completions otherwise update existing relevant entries.
 5. **Pull Request:** Create PR targeting `master`
 6. **Code Review:** Address feedback, ensure CI passes
 7. **Merge:** Squash merge with descriptive commit message
@@ -96,16 +96,16 @@ Keep this file upto date with progress of each sprint. tracking the status and o
 
 ### **Sprint 1: Merchants & Tags**
 
-| Component      | File                                                        | Status             | Implementation Notes            |
-| -------------- | ----------------------------------------------------------- | ------------------ | ------------------------------- |
-| **Repository** | `backend/repositories/merchantRepository.ts`                | ❌ Not Implemented | CRUD operations with DB queries |
-| **Repository** | `backend/repositories/tagRepository.ts`                     | ❌ Not Implemented | CRUD operations with DB queries |
-| **Service**    | `backend/services/merchantService.ts`                       | ❌ Not Implemented | Business logic, validation      |
-| **Service**    | `backend/services/tagService.ts`                            | ❌ Not Implemented | Business logic, validation      |
-| **Routes**     | `backend/routes/merchants/api_merchants_*.ts`               | ❌ Not Implemented | GET/POST/PATCH handlers         |
-| **Routes**     | `backend/routes/tags/api_tags_*.ts`                         | ❌ Not Implemented | GET/POST/PATCH handlers         |
-| **Tests**      | `backend/__tests__/repositories/merchantRepository.test.ts` | ✅ Scaffolded      | TDD implementation needed       |
-| **Tests**      | `backend/__tests__/services/merchantService.test.ts`        | ✅ Scaffolded      | TDD implementation needed       |
+| Component      | File                                                        | Status         | Implementation Notes            |
+| -------------- | ----------------------------------------------------------- | -------------- | ------------------------------- |
+| **Repository** | `backend/repositories/merchantRepository.ts`                | ✅ Implemented | CRUD operations with DB queries |
+| **Repository** | `backend/repositories/tagRepository.ts`                     | ✅ Implemented | CRUD operations with DB queries |
+| **Service**    | `backend/services/merchantService.ts`                       | ✅ Implemented | Business logic, validation      |
+| **Service**    | `backend/services/tagService.ts`                            | ✅ Implemented | Business logic, validation      |
+| **Routes**     | `backend/routes/merchants/api_merchants_*.ts`               | ✅ Implemented | GET/POST/PATCH handlers         |
+| **Routes**     | `backend/routes/tags/api_tags_*.ts`                         | ✅ Implemented | GET/POST/PATCH handlers         |
+| **Tests**      | `backend/__tests__/repositories/merchantRepository.test.ts` | ✅ Implemented | TDD implementation completed    |
+| **Tests**      | `backend/__tests__/services/merchantService.test.ts`        | ✅ Implemented | TDD implementation completed    |
 
 ### **Sprint 2: People/Members**
 
@@ -191,12 +191,13 @@ Keep this file upto date with progress of each sprint. tracking the status and o
 
 ## 🚀 **Next Steps**
 
-**Ready to start Sprint 1?** The Merchants & Tags foundation will establish our TDD workflow and provide the building blocks for transactions.
+**Ready to start Sprint 1?** The Merchants & Tags foundation will establish our
+TDD workflow and provide the building blocks for transactions.
 
-**Plan Approval:** Does this comprehensive plan align with your vision? Any adjustments needed before we begin implementation?
+**Plan Approval:** Does this comprehensive plan align with your vision? Any
+adjustments needed before we begin implementation?
 
 ---
 
-**Last Updated:** October 21, 2025
-**Current Sprint:** None (Planning Phase)
-**Completed Sprints:** 0/9
+**Last Updated:** October 21, 2025 **Current Sprint:** Sprint 1: Merchants &
+Tags Foundation (In Progress) **Completed Sprints:** 0/9

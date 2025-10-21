@@ -3,8 +3,8 @@ import { Merchant, Tag } from "../entities/index.ts";
 
 export class MerchantService {
   constructor(
-    private merchantRepository: MerchantRepository,
-    private tagRepository: TagRepository,
+    protected merchantRepository: MerchantRepository,
+    protected tagRepository: TagRepository,
   ) {}
 
   listMerchants(_query: Record<string, unknown>): Promise<Merchant[]> {

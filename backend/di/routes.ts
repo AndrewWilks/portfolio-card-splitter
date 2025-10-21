@@ -61,7 +61,7 @@ import {
   createTransactionService,
   createTransferService,
 } from "./services.ts";
-import { createEventRepository, createTagRepository } from "./repositories.ts";
+import { createEventRepository } from "./repositories.ts";
 
 // Helper Functions for Route Factories
 function createValidatedRoute(
@@ -73,7 +73,7 @@ function createValidatedRoute(
 
 function createListRoute<T>(
   serviceFactory: () => T,
-  handler: (c: Context, service: T) => Response,
+  handler: (c: Context, service: T) => Response | Promise<Response>,
 ) {
   const service = serviceFactory();
   return (c: Context) => {
@@ -182,22 +182,22 @@ export function createApiMerchantsUpdate() {
   );
 }
 
-// Tag Routes - require TagRepository
+// Tag Routes - require MerchantService
 export function createApiTagsList() {
-  return createListRoute(createTagRepository, apiTagsList);
+  return createListRoute(createMerchantService, apiTagsList);
 }
 
 export function createApiTagsCreate() {
-  const tagRepository = createTagRepository();
+  const merchantService = createMerchantService();
   return validateBody(CreateTagSchema)((c: Context) =>
-    apiTagsCreate(c, tagRepository)
+    apiTagsCreate(c, merchantService)
   );
 }
 
 export function createApiTagsUpdate() {
-  const tagRepository = createTagRepository();
+  const merchantService = createMerchantService();
   return validateBody(UpdateTagSchema)((c: Context) =>
-    apiTagsUpdate(c, tagRepository)
+    apiTagsUpdate(c, merchantService)
   );
 }
 

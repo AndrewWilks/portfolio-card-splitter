@@ -1,11 +1,44 @@
 import { Context } from "hono";
-import { TagRepository } from "@backend/repositories";
+import { MerchantService } from "@backend/services";
+import { z } from "zod";
 
-export function apiTagsUpdate(_c: Context, _tagRepository: TagRepository) {
-  // TODO: Implement PATCH /api/tags/:id endpoint to update a tag
-  // - Extract id from params
-  // - Validate request body with UpdateTagSchema
-  // - Update tag using TagRepository
-  // - Return tag response with success message
-  return _c.json({ message: "Not implemented" }, 501);
+const UpdateTagRequestSchema = z.object({
+  name: z.string().min(1).optional(),
+  color: z
+    .string()
+    .regex(/^#[0-9A-Fa-f]{6}$/)
+    .optional(),
+});
+
+export async function apiTagsUpdate(
+  c: Context,
+  merchantService: MerchantService,
+) {
+  try {
+    const id = c.req.param("id");
+    const body = await c.req.json();
+    const validatedRequest = UpdateTagRequestSchema.parse(body);
+
+    const tag = await merchantService.updateTag(id, validatedRequest);
+
+    return c.json({
+      tag: {
+        id: tag.id,
+        name: tag.name,
+        color: tag.color,
+        transactionCount: 0, // TODO: Implement transaction count
+        createdAt: tag.createdAt.toISOString(),
+        updatedAt: tag.updatedAt.toISOString(),
+      },
+      message: "Tag updated successfully",
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return c.json({ error: "Validation failed", details: error.issues }, 400);
+    }
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 400);
+    }
+    return c.json({ error: "Internal server error" }, 500);
+  }
 }
