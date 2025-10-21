@@ -10,7 +10,7 @@ Clean Architecture principles.
 
 ### Backend
 
-- **Runtime**: Deno 1.x (JavaScript/TypeScript runtime)
+- **Runtime**: Deno 2.5.x (JavaScript/TypeScript runtime)
 - **Web Framework**: Hono (lightweight web framework for APIs)
 - **Database**: PostgreSQL
 - **ORM**: Drizzle ORM (type-safe SQL query builder)
@@ -96,7 +96,7 @@ class Merchant {
     public readonly mergedIntoId?: string,
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date,
+    public readonly updatedAt: Date
   ) {}
 
   static create(data): Merchant; // Factory method with validation
@@ -115,7 +115,7 @@ class Tag {
     public readonly color: string = "#3b82f6",
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date,
+    public readonly updatedAt: Date
   ) {}
 
   static create(data): Tag; // Factory method with validation
@@ -135,7 +135,7 @@ class Member {
     public readonly role: "admin" | "member" = "member",
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date,
+    public readonly updatedAt: Date
   ) {}
 
   static create(data): Member; // Factory method with validation
@@ -157,7 +157,7 @@ class Transaction {
     public readonly transactionDate: Date,
     public readonly createdById: string,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date,
+    public readonly updatedAt: Date
   ) {}
 
   static create(data): Transaction; // Factory method with validation
@@ -179,7 +179,7 @@ class Allocation {
     public readonly amountCents?: number,
     public readonly calculatedAmountCents: number,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date,
+    public readonly updatedAt: Date
   ) {}
 
   static create(data): Allocation; // Factory method with validation
@@ -246,7 +246,7 @@ Services contain business logic and orchestrate operations between repositories.
 class MerchantService {
   constructor(
     protected merchantRepository: MerchantRepository,
-    protected tagRepository: TagRepository,
+    protected tagRepository: TagRepository
   ) {}
 
   async createMerchant(request): Promise<Merchant>;
@@ -277,7 +277,7 @@ class MemberService {
 class TransactionService {
   constructor(
     protected transactionRepository: TransactionRepository,
-    protected merchantRepository: MerchantRepository,
+    protected merchantRepository: MerchantRepository
   ) {}
 
   async createTransaction(request): Promise<Transaction>;
