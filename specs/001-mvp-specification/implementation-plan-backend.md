@@ -70,7 +70,7 @@ overview of the sprint where it is at, complated tasks, and any blockers
 encountered.
 
 1. **Create Branch:** `git checkout -b feature/{sprint-name}` from `Master`
-2. **TDD Implementation:** Red → Green → Refactor cycle
+2. **TDD Implementation:** Write the test and ensure Red → Green → Refactor cycle
 3. **Commit Strategy:**
    - `feat: implement {feature} repository`
    - `feat: implement {feature} service`
