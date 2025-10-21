@@ -178,7 +178,7 @@ Deno.test(
       assert(error instanceof Error);
       assert(error.message.includes("not found"));
     }
-  }
+  },
 );
 
 Deno.test("PotService - deposit adds funds to pot", async () => {
@@ -256,5 +256,5 @@ Deno.test(
       assert(error instanceof Error);
       assert(error.message.includes("not found"));
     }
-  }
+  },
 );

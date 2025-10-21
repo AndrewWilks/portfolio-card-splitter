@@ -23,7 +23,7 @@ export async function apiPotsCreate(c: Context, potService: PotService) {
         },
         message: "Pot created successfully",
       },
-      201
+      201,
     );
   } catch (error) {
     if (error instanceof Error) {

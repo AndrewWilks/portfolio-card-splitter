@@ -127,7 +127,7 @@ Deno.test(
       const updated = await repository.findById(pot.id);
       assert(updated!.balanceCents === 2500);
     });
-  }
+  },
 );
 
 Deno.test(
@@ -160,7 +160,7 @@ Deno.test(
       assert(balances[activePot.id] === 1000);
       assert(!(inactivePot.id in balances));
     });
-  }
+  },
 );
 
 Deno.test("PotRepository - save updates existing pot", async () => {
@@ -200,5 +200,5 @@ Deno.test(
       const found = await repository.findById("non-existent-id");
       assert(found === null);
     });
-  }
+  },
 );

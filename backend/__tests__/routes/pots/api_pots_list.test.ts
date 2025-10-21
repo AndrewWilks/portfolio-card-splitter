@@ -39,7 +39,7 @@ Deno.test("apiPotsList - returns pots for owner", async () => {
 
     await apiPotsList(
       mockC as unknown as Parameters<typeof apiPotsList>[0],
-      service
+      service,
     );
   });
 });
@@ -60,6 +60,6 @@ Deno.test("apiPotsList - handles errors", async () => {
 
   await apiPotsList(
     mockC as unknown as Parameters<typeof apiPotsList>[0],
-    service
+    service,
   );
 });

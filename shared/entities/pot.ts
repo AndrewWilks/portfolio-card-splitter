@@ -28,7 +28,7 @@ export class Pot {
     public readonly balanceCents: number = 0,
     public readonly isActive: boolean = true,
     public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date()
+    public readonly updatedAt: Date = new Date(),
   ) {}
 
   static create(data: Omit<PotData, "id" | "createdAt" | "updatedAt">): Pot {
@@ -48,7 +48,7 @@ export class Pot {
       validated.balanceCents,
       validated.isActive,
       new Date(),
-      new Date()
+      new Date(),
     );
   }
 
@@ -64,7 +64,7 @@ export class Pot {
       validated.balanceCents,
       validated.isActive,
       validated.createdAt,
-      validated.updatedAt
+      validated.updatedAt,
     );
   }
 

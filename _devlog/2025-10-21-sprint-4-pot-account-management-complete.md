@@ -2,20 +2,33 @@
 
 ## 🎯 What I Accomplished
 
-Sprint 4 brought **MONEY MANAGEMENT** to Portfolio Card Splitter! I implemented a complete pot account system that serves as financial buckets for storing allocated funds, specifically designed for credit card payback scenarios. These aren't just generic containers - they're purpose-built money accounts that track balances and enable users to deposit funds for paying off credit card transactions.
+Sprint 4 brought **MONEY MANAGEMENT** to Portfolio Card Splitter! I implemented
+a complete pot account system that serves as financial buckets for storing
+allocated funds, specifically designed for credit card payback scenarios. These
+aren't just generic containers - they're purpose-built money accounts that track
+balances and enable users to deposit funds for paying off credit card
+transactions.
 
-The sprint delivered a fully functional account management system with CRUD operations, balance tracking, deposit functionality, and comprehensive validation. Users can now create solo or shared pots, deposit funds, and track balances - perfect for the "save up to pay off credit card" use case that inspired this feature.
+The sprint delivered a fully functional account management system with CRUD
+operations, balance tracking, deposit functionality, and comprehensive
+validation. Users can now create solo or shared pots, deposit funds, and track
+balances - perfect for the "save up to pay off credit card" use case that
+inspired this feature.
 
 ## 🏗️ Technical Deep Dive
 
 ### The Money Account Concept: Beyond Simple Containers
 
-Early in the sprint, I had a crucial realization - pots aren't just generic containers for grouping transactions. They're **money accounts** specifically designed for credit card payback tracking. This shifted my entire approach:
+Early in the sprint, I had a crucial realization - pots aren't just generic
+containers for grouping transactions. They're **money accounts** specifically
+designed for credit card payback tracking. This shifted my entire approach:
 
-- **Balance Tracking**: Direct balance storage instead of calculating from transactions
+- **Balance Tracking**: Direct balance storage instead of calculating from
+  transactions
 - **Deposit Operations**: Explicit fund addition with validation
 - **Account Management**: Full CRUD with ownership and activity status
-- **Credit Card Focus**: Designed for the "save allocated money to pay off cards" workflow
+- **Credit Card Focus**: Designed for the "save allocated money to pay off
+  cards" workflow
 
 ### Entity Design: Financial Account Structure
 
@@ -31,7 +44,7 @@ export class Pot {
     public readonly location?: string, // Where funds are stored
     public readonly ownerId: string, // Account owner
     public readonly balanceCents: number = 0, // Current balance (integer cents)
-    public readonly isActive: boolean = true // Account status
+    public readonly isActive: boolean = true, // Account status
   ) // ...timestamps
   {}
 }
@@ -39,7 +52,8 @@ export class Pot {
 
 ### Database Schema: Balance-First Design
 
-Unlike the transaction system that calculates allocations, pots store balance directly:
+Unlike the transaction system that calculates allocations, pots store balance
+directly:
 
 ```sql
 CREATE TABLE pots (
@@ -149,7 +163,8 @@ Designing for both solo and shared accounts required thinking about:
 
 ## 🚀 What's Next
 
-With Sprint 4 complete, Portfolio Card Splitter now has all core financial primitives:
+With Sprint 4 complete, Portfolio Card Splitter now has all core financial
+primitives:
 
 - ✅ Merchants & Tags (foundation)
 - ✅ People & Members (users)
@@ -172,15 +187,18 @@ Future sprints could add:
 
 ## 📸 Visual Progress
 
-_Architecture diagram updated with pot account entities, repositories, services, and API endpoints_
+_Architecture diagram updated with pot account entities, repositories, services,
+and API endpoints_
 
 _Database schema expanded with pots table including balance tracking_
 
-_Test coverage increased to 200+ tests including comprehensive pot account validation_
+_Test coverage increased to 200+ tests including comprehensive pot account
+validation_
 
 ## 🔗 Resources & References
 
 - [Drizzle ORM Documentation](https://orm.drizzle.team/) - Type-safe SQL queries
 - [Zod Schema Validation](https://zod.dev/) - Runtime type checking
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) - System design principles
+- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) -
+  System design principles
 - [REST API Design](https://restfulapi.net/) - HTTP API best practices
