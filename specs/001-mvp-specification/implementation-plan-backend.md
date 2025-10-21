@@ -82,9 +82,11 @@ encountered.
    sprint completions otherwise update existing relevant entries.
 5. **CI:** Ensure all tests pass, CI checks are green and all problems are
    fixed, before PR submission.
-6. **Pull Request:** Create PR targeting `master` with GitHub CLI
-7. **Code Review:** Address feedback, ensure CI passes
-8. **Merge:** Squash merge with descriptive commit message
+6. **Docs:** Ensure any relevant documentation (e.g., API contracts, data
+   models) is updated to reflect new implementations or changes.
+7. **Pull Request:** Create PR targeting `master` with GitHub CLI
+8. **Code Review:** Address feedback, ensure CI passes
+9. **Merge:** Squash merge with descriptive commit message
 
 ### **Quality Gates**
 
