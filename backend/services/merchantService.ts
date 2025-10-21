@@ -1,7 +1,5 @@
 import { MerchantService as SharedMerchantService } from "@shared/services";
 import { Merchant, Tag } from "@shared/entities";
-import { MerchantRepository } from "../repositories/merchantRepository.ts";
-import { TagRepository } from "../repositories/tagRepository.ts";
 import { z } from "zod";
 
 // Request schemas

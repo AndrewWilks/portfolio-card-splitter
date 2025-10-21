@@ -159,7 +159,7 @@ Deno.test(
 
     // Create two merchants
     const merchant1 = await service.createMerchant({ name: "Merchant 1" });
-    const merchant2 = await service.createMerchant({ name: "Merchant 2" });
+    const _merchant2 = await service.createMerchant({ name: "Merchant 2" });
 
     // Try to rename merchant1 to merchant2's name
     try {
