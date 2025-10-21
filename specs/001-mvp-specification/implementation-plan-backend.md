@@ -80,7 +80,7 @@ encountered.
    progress, challenges, and learnings. Following the `devlog-specification.md`
    guidelines and only create a new devlog entry for significant milestones or
    sprint completions otherwise update existing relevant entries.
-5. **Pull Request:** Create PR targeting `master`
+5. **Pull Request:** Create PR targeting `master` with GitHub CLI
 6. **Code Review:** Address feedback, ensure CI passes
 7. **Merge:** Squash merge with descriptive commit message
 
