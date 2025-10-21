@@ -96,7 +96,7 @@ class Merchant {
     public readonly mergedIntoId?: string,
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Merchant; // Factory method with validation
@@ -115,7 +115,7 @@ class Tag {
     public readonly color: string = "#3b82f6",
     public readonly isActive: boolean = true,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data): Tag; // Factory method with validation
@@ -160,7 +160,7 @@ Services contain business logic and orchestrate operations between repositories.
 class MerchantService {
   constructor(
     protected merchantRepository: MerchantRepository,
-    protected tagRepository: TagRepository
+    protected tagRepository: TagRepository,
   ) {}
 
   async createMerchant(request): Promise<Merchant>;
