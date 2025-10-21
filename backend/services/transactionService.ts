@@ -3,7 +3,7 @@ import { Transaction } from "@shared/entities";
 
 export class TransactionService extends SharedTransactionService {
   override listTransactions(
-    _query: Record<string, unknown>
+    _query: Record<string, unknown>,
   ): Promise<Transaction[]> {
     // TODO: Implement listTransactions method to query and return transactions based on query
     return Promise.reject(new Error("Not implemented"));
@@ -16,7 +16,7 @@ export class TransactionService extends SharedTransactionService {
 
   override updateTransaction(
     _id: string,
-    _request: unknown
+    _request: unknown,
   ): Promise<Transaction> {
     // TODO: Implement updateTransaction method to update existing transaction
     return Promise.reject(new Error("Not implemented"));

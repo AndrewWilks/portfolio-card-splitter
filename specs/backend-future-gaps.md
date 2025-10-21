@@ -1,12 +1,16 @@
 # Backend Future Gaps
 
-This document tracks gaps identified in the backend scaffolding audit that will be addressed in future sprints. These are non-blocking for initial implementation but important for production readiness.
+This document tracks gaps identified in the backend scaffolding audit that will
+be addressed in future sprints. These are non-blocking for initial
+implementation but important for production readiness.
 
 ## Gap 4: Event Streaming Implementation
 
-**Description**: The `api_events_stream.ts` endpoint is scaffolded but lacks full Server-Sent Events (SSE) logic for real-time updates.
+**Description**: The `api_events_stream.ts` endpoint is scaffolded but lacks
+full Server-Sent Events (SSE) logic for real-time updates.
 
-**Impact**: Real-time features (e.g., live transaction updates) won't work without proper SSE implementation.
+**Impact**: Real-time features (e.g., live transaction updates) won't work
+without proper SSE implementation.
 
 **Recommended Solution**:
 
@@ -24,7 +28,8 @@ This document tracks gaps identified in the backend scaffolding audit that will 
 
 ## Gap 5: Health/Status Endpoints Enhancement
 
-**Description**: `/health` and `/api/status` endpoints are basic and don't test database connectivity as implied by contracts.
+**Description**: `/health` and `/api/status` endpoints are basic and don't test
+database connectivity as implied by contracts.
 
 **Impact**: Production monitoring won't have reliable health checks.
 
@@ -43,9 +48,11 @@ This document tracks gaps identified in the backend scaffolding audit that will 
 
 ## Gap 6: Rate Limiting & Security Headers
 
-**Description**: No rate limiting or security headers implemented, though production-ready backends need this.
+**Description**: No rate limiting or security headers implemented, though
+production-ready backends need this.
 
-**Impact**: Vulnerable to abuse (DDoS, brute force) and missing security best practices.
+**Impact**: Vulnerable to abuse (DDoS, brute force) and missing security best
+practices.
 
 **Recommended Solution**:
 
@@ -63,13 +70,16 @@ This document tracks gaps identified in the backend scaffolding audit that will 
 
 ## Gap 7: Auth System Enhancements
 
-**Description**: Auth system is functional but lacks front-end DX helpers and some security hardening for production readiness.
+**Description**: Auth system is functional but lacks front-end DX helpers and
+some security hardening for production readiness.
 
-**Impact**: Front-end integration is manual (no shared auth utilities), and demo app misses basic security practices like brute-force protection.
+**Impact**: Front-end integration is manual (no shared auth utilities), and demo
+app misses basic security practices like brute-force protection.
 
 **Recommended Solution**:
 
-- Add front-end auth helpers in `shared/auth/client.ts` (e.g., `login()`, `logout()`, `isAuthenticated()`).
+- Add front-end auth helpers in `shared/auth/client.ts` (e.g., `login()`,
+  `logout()`, `isAuthenticated()`).
 - Implement rate limiting on auth endpoints (e.g., login attempts per IP).
 - Add security headers (HSTS, CSP) for production.
 - Enhance session management (e.g., configurable expiration, refresh logic).

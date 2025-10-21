@@ -3,7 +3,7 @@ import { MerchantService } from "@backend/services";
 
 export function apiMerchantsList(
   _c: Context,
-  _merchantService: MerchantService
+  _merchantService: MerchantService,
 ) {
   // TODO: Implement GET /api/merchants endpoint to list merchants
   // - Handle query parameters: search, limit

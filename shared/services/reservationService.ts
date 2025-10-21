@@ -1,10 +1,10 @@
-import { ReservationRepository, PotRepository } from "../repositories/index.ts";
+import { PotRepository, ReservationRepository } from "../repositories/index.ts";
 import { Reservation } from "../entities/index.ts";
 
 export class ReservationService {
   constructor(
     private reservationRepository: ReservationRepository,
-    private potRepository: PotRepository
+    private potRepository: PotRepository,
   ) {}
 
   createReservation(_request: unknown): Promise<Reservation> {

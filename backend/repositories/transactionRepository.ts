@@ -1,5 +1,5 @@
 import { TransactionRepository as SharedTransactionRepository } from "@shared/repositories";
-import { Transaction, Allocation } from "@shared/entities";
+import { Allocation, Transaction } from "@shared/entities";
 
 export class TransactionRepository extends SharedTransactionRepository {
   override save(_transaction: Transaction): Promise<void> {
@@ -13,7 +13,7 @@ export class TransactionRepository extends SharedTransactionRepository {
   }
 
   override findByQuery(
-    _query: Record<string, unknown>
+    _query: Record<string, unknown>,
   ): Promise<Transaction[]> {
     // TODO: Implement findByQuery method to query transactions by query parameters from database
     return Promise.reject("Not implemented");
@@ -21,7 +21,7 @@ export class TransactionRepository extends SharedTransactionRepository {
 
   override updateAllocations(
     _id: string,
-    _allocations: Allocation[]
+    _allocations: Allocation[],
   ): Promise<void> {
     // TODO: Implement updateAllocations method to update transaction allocations in database
     return Promise.reject("Not implemented");

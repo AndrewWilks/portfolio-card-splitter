@@ -2,13 +2,16 @@
 
 ## Overview
 
-This specification ensures consistency across all dev log entries for the Portfolio Card Splitter project. Dev logs serve as both personal documentation and educational content for other developers viewing my GitHub portfolio.
+This specification ensures consistency across all dev log entries for the
+Portfolio Card Splitter project. Dev logs serve as both personal documentation
+and educational content for other developers viewing my GitHub portfolio.
 
 ## Writing Guidelines
 
 ### Tone & Voice
 
-- **Conversational & Friendly**: Write like you're chatting with a fellow developer over coffee
+- **Conversational & Friendly**: Write like you're chatting with a fellow
+  developer over coffee
 - **Educational Twist**: Explain technical concepts naturally, not lecture-style
 - **Authentic**: Share real struggles, decisions, and "aha!" moments
 - **Encouraging**: Show that learning and growth happen through iteration
@@ -46,7 +49,8 @@ This specification ensures consistency across all dev log entries for the Portfo
 ### Content Rules
 
 - **Length**: 800-1200 words (detailed but focused)
-- **Storytelling**: Frame technical work as a journey with challenges and victories
+- **Storytelling**: Frame technical work as a journey with challenges and
+  victories
 - **Educational Value**: Explain "why" behind technical choices
 - **Honesty**: Include mistakes, wrong turns, and how they were corrected
 - **Future-Focused**: Always end with what's next and why it matters
@@ -97,7 +101,8 @@ Always include in the log:
 
 ```markdown
 ![Architecture Overview](assets/YYYY-MM-DD-title/architecture-diagram.png)
-_Figure 1: Clean Architecture layers showing separation of concerns between entities, repositories, services, and routes_
+_Figure 1: Clean Architecture layers showing separation of concerns between
+entities, repositories, services, and routes_
 ```
 
 ### Technical Standards
@@ -135,4 +140,5 @@ _Figure 1: Clean Architecture layers showing separation of concerns between enti
 
 ### Evolution
 
-This specification can evolve as the project progresses. Document changes in future dev logs when significant updates are made.
+This specification can evolve as the project progresses. Document changes in
+future dev logs when significant updates are made.

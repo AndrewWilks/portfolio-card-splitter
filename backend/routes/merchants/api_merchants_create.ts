@@ -3,7 +3,7 @@ import { MerchantService } from "@backend/services";
 
 export function apiMerchantsCreate(
   _c: Context,
-  _merchantService: MerchantService
+  _merchantService: MerchantService,
 ) {
   // TODO: Implement POST /api/merchants endpoint to create a new merchant
   // - Validate request body with CreateMerchantSchema

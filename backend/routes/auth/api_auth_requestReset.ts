@@ -3,7 +3,7 @@ import { AuthService } from "@backend/services";
 
 export async function apiAuthRequestReset(
   _c: Context,
-  _authService: AuthService
+  _authService: AuthService,
 ) {
   // TODO: Implementation for password reset request
 }

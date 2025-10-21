@@ -3,37 +3,37 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { authMiddleware } from "./middleware/auth.ts";
 import {
-  createRootRoute,
+  createApiAuditGet,
+  createApiAuthAcceptInvite,
   createApiAuthBootstrap,
   createApiAuthInvite,
-  createApiAuthAcceptInvite,
   createApiAuthLogin,
   createApiAuthLogout,
   createApiAuthRequestReset,
   createApiAuthResetPassword,
-  createApiPeopleList,
-  createApiPeopleCreate,
-  createApiPeopleUpdate,
-  createApiTransactionsList,
-  createApiTransactionsCreate,
-  createApiTransactionsUpdate,
-  createApiMerchantsList,
+  createApiEventsStream,
+  createApiLedgerGet,
   createApiMerchantsCreate,
+  createApiMerchantsList,
   createApiMerchantsUpdate,
-  createApiTagsList,
-  createApiTagsCreate,
-  createApiTagsUpdate,
-  createApiPotsList,
+  createApiPaymentsCreate,
+  createApiPeopleCreate,
+  createApiPeopleList,
+  createApiPeopleUpdate,
   createApiPotsCreate,
-  createApiPotsUpdate,
   createApiPotsDeposit,
+  createApiPotsList,
+  createApiPotsUpdate,
   createApiReservationsCreate,
   createApiReservationsDelete,
+  createApiTagsCreate,
+  createApiTagsList,
+  createApiTagsUpdate,
+  createApiTransactionsCreate,
+  createApiTransactionsList,
+  createApiTransactionsUpdate,
   createApiTransfersCreate,
-  createApiPaymentsCreate,
-  createApiLedgerGet,
-  createApiAuditGet,
-  createApiEventsStream,
+  createRootRoute,
 } from "./di/index.ts";
 
 const backend = new Hono();
@@ -47,12 +47,11 @@ backend.use("*", logger());
 backend.use(
   "*",
   cors({
-    origin:
-      Deno.env.get("NODE_ENV") === "production"
-        ? [Deno.env.get("APP_URL") || ""]
-        : ["http://localhost:3000"],
+    origin: Deno.env.get("NODE_ENV") === "production"
+      ? [Deno.env.get("APP_URL") || ""]
+      : ["http://localhost:3000"],
     credentials: true,
-  })
+  }),
 );
 
 // Error Handling Middleware
@@ -60,7 +59,7 @@ backend.onError((err, c) => {
   console.error("Error occurred:", err);
   return c.json(
     { message: "Internal Server Error", details: err.message },
-    500
+    500,
   );
 });
 
@@ -160,7 +159,6 @@ backend.get("/api/health", (c) =>
     timestamp: new Date().toISOString(),
     locale: "en-AU",
     timezone: "Australia/Brisbane",
-  })
-);
+  }));
 
 Deno.serve(backend.fetch);

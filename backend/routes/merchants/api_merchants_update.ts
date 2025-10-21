@@ -3,7 +3,7 @@ import { MerchantService } from "@backend/services";
 
 export function apiMerchantsUpdate(
   _c: Context,
-  _merchantService: MerchantService
+  _merchantService: MerchantService,
 ) {
   // TODO: Implement PATCH /api/merchants/:id endpoint to update a merchant
   // - Extract id from params

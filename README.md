@@ -4,7 +4,9 @@ A mobile-first expense sharing application that tracks shared credit card spend
 across multiple users. Built with TypeScript, React, and modern web
 technologies.
 
-> **🚧 Work in Progress**: This project is under active development and is currently being migrated from Node.js to Deno v2.5.x. Features and documentation may be incomplete or subject to change.
+> **🚧 Work in Progress**: This project is under active development and is
+> currently being migrated from Node.js to Deno v2.5.x. Features and
+> documentation may be incomplete or subject to change.
 
 [![CI](https://github.com/AndrewWilks/portfolio-card-splitter/actions/workflows/ci.yml/badge.svg)](https://github.com/AndrewWilks/portfolio-card-splitter/actions/workflows/ci.yml)
 [![Lighthouse Score](https://img.shields.io/badge/lighthouse-95%2B-brightgreen.svg)](https://github.com/AndrewWilks/portfolio-card-splitter/actions/workflows/ci.yml)

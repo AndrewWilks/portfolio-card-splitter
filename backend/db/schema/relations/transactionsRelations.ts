@@ -27,5 +27,5 @@ export const transactionsRelations = relations(
     reservations: many(reservations),
     payments: many(payments),
     transactionTags: many(transactionTags),
-  })
+  }),
 );

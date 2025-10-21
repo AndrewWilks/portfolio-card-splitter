@@ -4,7 +4,10 @@
 
 ## Overview
 
-Normalised PostgreSQL schema designed for financial accuracy using integer cents, with comprehensive audit trail through append-only events. Supports multi-user expense sharing with pot-based money management and real-time collaboration.
+Normalised PostgreSQL schema designed for financial accuracy using integer
+cents, with comprehensive audit trail through append-only events. Supports
+multi-user expense sharing with pot-based money management and real-time
+collaboration.
 
 ## Entity Relationship Diagram
 
@@ -395,4 +398,6 @@ GROUP BY p.id, p.name, p.balance_cents;
 - Composite indexes on allocation transaction_id and member_id
 - Consider partitioning events table for large datasets
 
-This data model provides a solid foundation for financial accuracy, audit trail completeness, and real-time collaboration while maintaining referential integrity and supporting the application's business rules.
+This data model provides a solid foundation for financial accuracy, audit trail
+completeness, and real-time collaboration while maintaining referential
+integrity and supporting the application's business rules.

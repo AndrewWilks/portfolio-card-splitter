@@ -6,7 +6,7 @@ export class PasswordResetToken {
     public readonly userId: string,
     public readonly expiresAt: Date,
     public readonly createdAt: Date,
-    public readonly usedAt?: Date
+    public readonly usedAt?: Date,
   ) {}
 
   static create(data: {
@@ -16,7 +16,7 @@ export class PasswordResetToken {
   }): PasswordResetToken {
     const now = new Date();
     const expiresAt = new Date(
-      now.getTime() + (data.expirationHours || 24) * 60 * 60 * 1000
+      now.getTime() + (data.expirationHours || 24) * 60 * 60 * 1000,
     );
 
     return new PasswordResetToken(data.id, data.userId, expiresAt, now);
@@ -40,7 +40,7 @@ export class PasswordResetToken {
       this.userId,
       this.expiresAt,
       this.createdAt,
-      new Date()
+      new Date(),
     );
   }
 

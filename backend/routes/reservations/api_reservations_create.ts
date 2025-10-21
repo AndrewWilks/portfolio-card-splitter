@@ -3,7 +3,7 @@ import { ReservationService } from "@backend/services";
 
 export function apiReservationsCreate(
   _c: Context,
-  _reservationService: ReservationService
+  _reservationService: ReservationService,
 ) {
   // TODO: Implement POST /api/reservations endpoint to create a reservation
   // - Validate request body with CreateReservationSchema

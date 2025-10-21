@@ -3,7 +3,7 @@ import { TransactionService } from "@backend/services";
 
 export function apiTransactionsList(
   _c: Context,
-  _transactionService: TransactionService
+  _transactionService: TransactionService,
 ) {
   // TODO: Implement GET /api/transactions endpoint to list transactions
   // - Handle query parameters: limit, offset, memberId, potId, tagId, dateFrom, dateTo

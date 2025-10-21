@@ -8,7 +8,7 @@ export class InviteToken {
     public readonly role: UserRoleType,
     public readonly expiresAt: Date,
     public readonly createdAt: Date,
-    public readonly usedAt?: Date
+    public readonly usedAt?: Date,
   ) {}
 
   static create(data: {
@@ -19,7 +19,7 @@ export class InviteToken {
   }): InviteToken {
     const now = new Date();
     const expiresAt = new Date(
-      now.getTime() + (data.expirationHours || 24) * 60 * 60 * 1000
+      now.getTime() + (data.expirationHours || 24) * 60 * 60 * 1000,
     );
 
     return new InviteToken(
@@ -27,7 +27,7 @@ export class InviteToken {
       data.email.toLowerCase().trim(),
       data.role || UserRole.USER,
       expiresAt,
-      now
+      now,
     );
   }
 
@@ -50,7 +50,7 @@ export class InviteToken {
       this.role,
       this.expiresAt,
       this.createdAt,
-      new Date()
+      new Date(),
     );
   }
 
