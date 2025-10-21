@@ -1,29 +1,115 @@
 import { PotRepository as SharedPotRepository } from "@shared/repositories";
 import { Pot } from "@shared/entities";
+import { db, Schemas } from "@db";
+import { eq } from "drizzle-orm";
 
 export class PotRepository extends SharedPotRepository {
-  override save(_pot: Pot): Promise<void> {
-    // TODO: Implement save method to insert pot into database
-    return Promise.reject("Not implemented");
+  constructor(private dbClient = db) {
+    super();
   }
 
-  override findById(_id: string): Promise<Pot | null> {
-    // TODO: Implement findById method to query pot by ID from database
-    return Promise.reject("Not implemented");
+  override async save(pot: Pot): Promise<void> {
+    const data = pot.toJSON();
+    await this.dbClient
+      .insert(Schemas.Tables.pots)
+      .values({
+        id: data.id,
+        name: data.name,
+        description: data.description,
+        type: data.type,
+        location: data.location,
+        ownerId: data.ownerId,
+        balanceCents: data.balanceCents,
+        isActive: data.isActive,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+      })
+      .onConflictDoUpdate({
+        target: Schemas.Tables.pots.id,
+        set: {
+          name: data.name,
+          description: data.description,
+          type: data.type,
+          location: data.location,
+          ownerId: data.ownerId,
+          balanceCents: data.balanceCents,
+          isActive: data.isActive,
+          updatedAt: data.updatedAt,
+        },
+      });
   }
 
-  override findByOwner(_ownerId: string): Promise<Pot[]> {
-    // TODO: Implement findByOwner method to query pots by owner ID from database
-    return Promise.reject("Not implemented");
+  override async findById(id: string): Promise<Pot | null> {
+    const result = await this.dbClient
+      .select()
+      .from(Schemas.Tables.pots)
+      .where(eq(Schemas.Tables.pots.id, id))
+      .limit(1);
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const row = result[0];
+    return Pot.from({
+      id: row.id,
+      name: row.name,
+      description: row.description ?? undefined,
+      type: row.type,
+      location: row.location ?? undefined,
+      ownerId: row.ownerId,
+      balanceCents: row.balanceCents,
+      isActive: row.isActive,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    });
   }
 
-  override updateBalance(_id: string, _amount: number): Promise<void> {
-    // TODO: Implement updateBalance method to update pot balance in database
-    return Promise.reject("Not implemented");
+  override async findByOwner(ownerId: string): Promise<Pot[]> {
+    const results = await this.dbClient
+      .select()
+      .from(Schemas.Tables.pots)
+      .where(eq(Schemas.Tables.pots.ownerId, ownerId));
+
+    return results.map((row) =>
+      Pot.from({
+        id: row.id,
+        name: row.name,
+        description: row.description ?? undefined,
+        type: row.type,
+        location: row.location ?? undefined,
+        ownerId: row.ownerId,
+        balanceCents: row.balanceCents,
+        isActive: row.isActive,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+      })
+    );
   }
 
-  override findAvailableBalances(): Promise<Record<string, number>> {
-    // TODO: Implement findAvailableBalances method to query available balances for all pots from database
-    return Promise.reject("Not implemented");
+  override async updateBalance(id: string, amount: number): Promise<void> {
+    await this.dbClient
+      .update(Schemas.Tables.pots)
+      .set({
+        balanceCents: amount,
+        updatedAt: new Date(),
+      })
+      .where(eq(Schemas.Tables.pots.id, id));
+  }
+
+  override async findAvailableBalances(): Promise<Record<string, number>> {
+    const results = await this.dbClient
+      .select({
+        id: Schemas.Tables.pots.id,
+        balanceCents: Schemas.Tables.pots.balanceCents,
+      })
+      .from(Schemas.Tables.pots)
+      .where(eq(Schemas.Tables.pots.isActive, true));
+
+    const balances: Record<string, number> = {};
+    for (const row of results) {
+      balances[row.id] = row.balanceCents;
+    }
+    return balances;
   }
 }

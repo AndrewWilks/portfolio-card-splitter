@@ -1,4 +1,11 @@
-import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  bigint,
+  boolean,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 import { potType } from "../enums/potType.ts";
 
@@ -18,6 +25,9 @@ export const pots = pgTable("pots", {
   ownerId: uuid("owner_id")
     .references(() => users.id)
     .notNull(),
+  balanceCents: bigint("balance_cents", { mode: "number" })
+    .notNull()
+    .default(0),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
