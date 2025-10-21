@@ -1,5 +1,5 @@
 import { assert as _assert } from "@std/assert";
-import { CreateMerchantSchema as _CreateMerchantSchema, UpdateMerchantSchema as _UpdateMerchantSchema } from "../../../../../shared/schemas/api/merchants.ts";
+import { CreateMerchantSchema as _CreateMerchantSchema, UpdateMerchantSchema as _UpdateMerchantSchema } from "../../../schemas/api/merchants.ts";
 
 Deno.test("CreateMerchantSchema", () => {
   // TODO: Test valid input parsing

@@ -1,5 +1,5 @@
 import { assert as _assert } from "@std/assert";
-import { CreateTransferSchema as _CreateTransferSchema } from "../../../../../shared/schemas/api/transfers.ts";
+import { CreateTransferSchema as _CreateTransferSchema } from "../../../schemas/api/transfers.ts";
 
 Deno.test("CreateTransferSchema", () => {
   // TODO: Test valid input parsing
