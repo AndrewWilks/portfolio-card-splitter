@@ -1,5 +1,5 @@
 import { Context } from "hono";
-import { string, email, object } from "zod";
+import { email, object, string } from "zod";
 import { STATUS_CODE } from "@std/http";
 import { PasswordService } from "@shared/services";
 import { AuthService } from "@backend/services";
@@ -58,7 +58,7 @@ export async function apiAuthBootstrap(c: Context, authService: AuthService) {
   } catch (error) {
     return c.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      STATUS_CODE.BadRequest
+      STATUS_CODE.BadRequest,
     );
   }
 }

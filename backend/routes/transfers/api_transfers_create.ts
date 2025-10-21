@@ -3,7 +3,7 @@ import { TransferService } from "@backend/services";
 
 export function apiTransfersCreate(
   _c: Context,
-  _transferService: TransferService
+  _transferService: TransferService,
 ) {
   // TODO: Implement POST /api/transfers endpoint to create a transfer
   // - Validate request body with CreateTransferSchema

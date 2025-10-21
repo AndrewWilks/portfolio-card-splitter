@@ -1,4 +1,4 @@
-import { pgTable, uuid, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { tags } from "./tags.ts";
 import { transactions } from "./transactions.ts";

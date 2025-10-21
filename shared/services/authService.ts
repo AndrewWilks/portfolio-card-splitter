@@ -5,10 +5,10 @@ import {
   UserRepository,
 } from "@shared/repositories";
 import {
+  InviteToken,
   PasswordResetToken,
   Session,
   User,
-  InviteToken,
   UserRole,
   type UserRoleType,
 } from "@shared/entities";
@@ -20,7 +20,7 @@ export class AuthService {
     private userRepository: UserRepository,
     private sessionRepository: SessionRepository,
     private inviteTokenRepository?: InviteTokenRepository,
-    private passwordResetTokenRepository?: PasswordResetTokenRepository
+    private passwordResetTokenRepository?: PasswordResetTokenRepository,
   ) {}
 
   async bootstrap(data: {
@@ -33,7 +33,7 @@ export class AuthService {
     const existingAdmins = await this.userRepository.findByRole("admin");
     if (existingAdmins.length > 0) {
       throw new Error(
-        "Admin user already exists. Bootstrap is only allowed once."
+        "Admin user already exists. Bootstrap is only allowed once.",
       );
     }
 
@@ -42,9 +42,11 @@ export class AuthService {
 
     if (!passwordValidation.success) {
       throw new Error(
-        `Password validation failed: ${passwordValidation.error.issues
-          .map((e) => e.message)
-          .join(", ")}`
+        `Password validation failed: ${
+          passwordValidation.error.issues
+            .map((e) => e.message)
+            .join(", ")
+        }`,
       );
     }
 
@@ -74,11 +76,11 @@ export class AuthService {
 
   async login(
     email: string,
-    password: string
+    password: string,
   ): Promise<{ user: User; session: Session }> {
     // Find user by email
     const user = await this.userRepository.findByEmail(
-      email.toLowerCase().trim()
+      email.toLowerCase().trim(),
     );
     if (!user) {
       throw new Error("Invalid email or password");
@@ -92,7 +94,7 @@ export class AuthService {
     // Verify password
     const isPasswordValid = PasswordService.verifyPassword(
       password,
-      user.passwordHash
+      user.passwordHash,
     );
     if (!isPasswordValid) {
       throw new Error("Invalid email or password");
@@ -110,7 +112,7 @@ export class AuthService {
   }
 
   async validateSession(
-    sessionId: string
+    sessionId: string,
   ): Promise<{ user: User; session: Session } | null> {
     const session = await this.sessionRepository.findById(sessionId);
     if (!session || !SessionService.isValid(session)) {
@@ -128,7 +130,7 @@ export class AuthService {
   async invite(
     inviterUserId: string,
     email: string,
-    role: UserRoleType = UserRole.USER
+    role: UserRoleType = UserRole.USER,
   ): Promise<InviteToken> {
     if (!this.inviteTokenRepository) {
       throw new Error("Invite token repository not configured");
@@ -142,7 +144,7 @@ export class AuthService {
 
     // Check if user already exists
     const existingUser = await this.userRepository.findByEmail(
-      email.toLowerCase().trim()
+      email.toLowerCase().trim(),
     );
     if (existingUser) {
       throw new Error("User with this email already exists");
@@ -173,7 +175,7 @@ export class AuthService {
       password: string;
       firstName: string;
       lastName: string;
-    }
+    },
   ): Promise<{ user: User; session: Session }> {
     if (!this.inviteTokenRepository) {
       throw new Error("Invite token repository not configured");
@@ -189,9 +191,11 @@ export class AuthService {
     const passwordValidation = PasswordService.validatePassword(data.password);
     if (!passwordValidation.success) {
       throw new Error(
-        `Password validation failed: ${passwordValidation.error.issues
-          .map((e) => e.message)
-          .join(", ")}`
+        `Password validation failed: ${
+          passwordValidation.error.issues
+            .map((e) => e.message)
+            .join(", ")
+        }`,
       );
     }
 
@@ -229,7 +233,7 @@ export class AuthService {
 
     // Find user
     const user = await this.userRepository.findByEmail(
-      email.toLowerCase().trim()
+      email.toLowerCase().trim(),
     );
     if (!user || !user.isActive) {
       throw new Error("No active user found with this email");
@@ -237,7 +241,7 @@ export class AuthService {
 
     // Check for existing valid reset token
     const existingTokens = await this.passwordResetTokenRepository.findByUserId(
-      user.id
+      user.id,
     );
     const validToken = existingTokens.find((token) => token.isValid());
     if (validToken) {
@@ -257,7 +261,7 @@ export class AuthService {
 
   async resetPassword(
     tokenId: string,
-    newPassword: string
+    newPassword: string,
   ): Promise<{ user: User; session: Session }> {
     if (!this.passwordResetTokenRepository) {
       throw new Error("Password reset token repository not configured");
@@ -273,9 +277,11 @@ export class AuthService {
     const passwordValidation = PasswordService.validatePassword(newPassword);
     if (!passwordValidation.success) {
       throw new Error(
-        `Password validation failed: ${passwordValidation.error.issues
-          .map((e) => e.message)
-          .join(", ")}`
+        `Password validation failed: ${
+          passwordValidation.error.issues
+            .map((e) => e.message)
+            .join(", ")
+        }`,
       );
     }
 
@@ -297,7 +303,7 @@ export class AuthService {
       user.role,
       user.isActive,
       user.createdAt,
-      new Date()
+      new Date(),
     );
 
     await this.userRepository.save(updatedUser);

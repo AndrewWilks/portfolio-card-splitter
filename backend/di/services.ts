@@ -12,19 +12,19 @@ import { PasswordService } from "@backend/services";
 import { PotService } from "@backend/services";
 import { SessionService } from "@backend/services";
 import {
-  createUserRepository,
-  createSessionRepository,
+  createEventRepository,
   createInviteTokenRepository,
-  createPasswordResetTokenRepository,
   createMemberRepository,
   createMerchantRepository,
-  createTagRepository,
-  createTransactionRepository,
+  createPasswordResetTokenRepository,
+  createPaymentRepository,
   createPotRepository,
   createReservationRepository,
+  createSessionRepository,
+  createTagRepository,
+  createTransactionRepository,
   createTransferRepository,
-  createPaymentRepository,
-  createEventRepository,
+  createUserRepository,
 } from "./repositories.ts";
 
 // Service Factories
@@ -33,7 +33,7 @@ export function createAuthService() {
     createUserRepository(),
     createSessionRepository(),
     createInviteTokenRepository(),
-    createPasswordResetTokenRepository()
+    createPasswordResetTokenRepository(),
   );
 }
 
@@ -49,14 +49,14 @@ export function createTransactionService() {
   return new TransactionService(
     createTransactionRepository(),
     createMerchantRepository(),
-    createTagRepository()
+    createTagRepository(),
   );
 }
 
 export function createReservationService() {
   return new ReservationService(
     createReservationRepository(),
-    createPotRepository()
+    createPotRepository(),
   );
 }
 
@@ -67,7 +67,7 @@ export function createTransferService() {
 export function createPaymentService() {
   return new PaymentService(
     createPaymentRepository(),
-    createReservationRepository()
+    createReservationRepository(),
   );
 }
 

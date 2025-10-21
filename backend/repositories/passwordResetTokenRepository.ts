@@ -1,7 +1,8 @@
 import { PasswordResetTokenRepository as SharedPasswordResetTokenRepository } from "@shared/repositories";
 import { PasswordResetToken } from "@shared/entities";
 
-export class PasswordResetTokenRepository extends SharedPasswordResetTokenRepository {
+export class PasswordResetTokenRepository
+  extends SharedPasswordResetTokenRepository {
   override save(_token: PasswordResetToken): Promise<void> {
     // TODO: Implement save method to insert password reset token into database
     return Promise.reject("Not implemented");

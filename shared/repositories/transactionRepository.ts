@@ -1,4 +1,4 @@
-import { Transaction, Allocation } from "../entities/index.ts";
+import { Allocation, Transaction } from "../entities/index.ts";
 
 interface I_TransactionRepository {
   save(transaction: Transaction): Promise<void>;

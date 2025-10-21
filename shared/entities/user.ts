@@ -12,7 +12,7 @@ export class User {
     public readonly role: UserRoleType,
     public readonly isActive: boolean,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
   ) {}
 
   static create(data: {
@@ -35,7 +35,7 @@ export class User {
       data.role || UserRole.USER,
       data.isActive ?? true,
       now,
-      now
+      now,
     );
   }
 

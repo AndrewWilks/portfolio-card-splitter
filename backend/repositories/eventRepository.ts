@@ -9,7 +9,7 @@ export class EventRepository extends SharedEventRepository {
 
   override findByEntity(
     _entityType: string,
-    _entityId: string
+    _entityId: string,
   ): Promise<Event[]> {
     // TODO: Implement findByEntity method to query events by entity type and ID from database
     return Promise.reject("Not implemented");

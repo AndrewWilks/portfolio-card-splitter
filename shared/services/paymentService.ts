@@ -7,7 +7,7 @@ import { Payment } from "../entities/index.ts";
 export class PaymentService {
   constructor(
     private paymentRepository: PaymentRepository,
-    private reservationRepository: ReservationRepository
+    private reservationRepository: ReservationRepository,
   ) {}
 
   createPayment(_request: unknown): Promise<Payment> {

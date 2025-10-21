@@ -3,7 +3,7 @@ import { TransactionService } from "@backend/services";
 
 export function apiTransactionsCreate(
   _c: Context,
-  _transactionService: TransactionService
+  _transactionService: TransactionService,
 ) {
   // TODO: Implement POST /api/transactions endpoint to create a new transaction
   // - Validate request body with CreateTransactionSchema

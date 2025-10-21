@@ -1,9 +1,9 @@
-import { MiddlewareHandler, Context } from "hono";
+import { Context, MiddlewareHandler } from "hono";
 import { z } from "zod";
 
 export const validateBody = (schema: z.ZodType) => {
   return (
-    handler: (c: Context) => Promise<Response> | Response
+    handler: (c: Context) => Promise<Response> | Response,
   ): MiddlewareHandler => {
     return async (c: Context) => {
       try {
@@ -15,7 +15,7 @@ export const validateBody = (schema: z.ZodType) => {
         if (error instanceof z.ZodError) {
           return c.json(
             { error: "Validation failed", details: error.issues },
-            400
+            400,
           );
         }
         return c.json({ error: "Invalid JSON" }, 400);

@@ -14,7 +14,7 @@ export class TestServer {
     this.controller = new AbortController();
     this.server = await Deno.serve(
       { port: this.port, signal: this.controller.signal },
-      this.app.fetch
+      this.app.fetch,
     );
 
     return `http://localhost:${this.port}`;

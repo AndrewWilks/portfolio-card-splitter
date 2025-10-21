@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, bigint, timestamp } from "drizzle-orm/pg-core";
+import { bigint, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { transactionType } from "../enums/transactionType.ts";
 

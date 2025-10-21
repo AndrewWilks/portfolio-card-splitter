@@ -3,7 +3,7 @@ import { TransactionService } from "@backend/services";
 
 export function apiTransactionsUpdate(
   _c: Context,
-  _transactionService: TransactionService
+  _transactionService: TransactionService,
 ) {
   // TODO: Implement PATCH /api/transactions/:id endpoint to update a transaction
   // - Extract id from params

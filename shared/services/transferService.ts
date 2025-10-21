@@ -1,10 +1,10 @@
-import { TransferRepository, PotRepository } from "../repositories/index.ts";
+import { PotRepository, TransferRepository } from "../repositories/index.ts";
 import { Transfer } from "../entities/index.ts";
 
 export class TransferService {
   constructor(
     private transferRepository: TransferRepository,
-    private potRepository: PotRepository
+    private potRepository: PotRepository,
   ) {}
 
   createTransfer(_request: unknown): Promise<Transfer> {

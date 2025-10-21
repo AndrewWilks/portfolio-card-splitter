@@ -1,4 +1,4 @@
-import { pgTable, uuid, bigint, text, timestamp } from "drizzle-orm/pg-core";
+import { bigint, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { pots } from "./pots.ts";
 import { users } from "./users.ts";

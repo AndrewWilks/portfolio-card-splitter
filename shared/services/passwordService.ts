@@ -16,7 +16,7 @@ export class PasswordService {
       {
         message:
           "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
-      }
+      },
     );
 
   static async hashPassword(password: string): Promise<string> {
@@ -29,7 +29,7 @@ export class PasswordService {
 
   static async verifyPassword(
     password: string,
-    hashedPassword: string
+    hashedPassword: string,
   ): Promise<boolean> {
     const hash = await this.hashPassword(password);
     return hash === hashedPassword;

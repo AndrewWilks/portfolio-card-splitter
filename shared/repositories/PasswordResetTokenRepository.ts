@@ -9,8 +9,7 @@ interface I_PasswordResetTokenRepository {
 }
 
 export class PasswordResetTokenRepository
-  implements I_PasswordResetTokenRepository
-{
+  implements I_PasswordResetTokenRepository {
   save(_token: PasswordResetToken): Promise<void> {
     return Promise.reject("Not implemented");
   }

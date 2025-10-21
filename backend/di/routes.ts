@@ -4,19 +4,19 @@ import { validateBody } from "../middleware/validation.ts";
 import { z } from "zod";
 import {
   CreateMemberSchema,
-  UpdateMemberSchema,
-  CreateTransactionSchema,
-  UpdateTransactionSchema,
   CreateMerchantSchema,
-  UpdateMerchantSchema,
-  CreateTagSchema,
-  UpdateTagSchema,
-  CreatePotSchema,
-  UpdatePotSchema,
-  CreateReservationSchema,
-  CreateTransferSchema,
   CreatePaymentSchema,
+  CreatePotSchema,
+  CreateReservationSchema,
+  CreateTagSchema,
+  CreateTransactionSchema,
+  CreateTransferSchema,
   QuerySchema,
+  UpdateMemberSchema,
+  UpdateMerchantSchema,
+  UpdatePotSchema,
+  UpdateTagSchema,
+  UpdateTransactionSchema,
 } from "../../shared/schemas/api/index.ts";
 import { rootRoute } from "@backend/routes";
 import { apiAuthBootstrap } from "@backend/routes";
@@ -50,30 +50,30 @@ import { apiLedgerGet } from "@backend/routes";
 import { apiAuditGet } from "@backend/routes";
 import { apiEventsStream } from "@backend/routes";
 import {
+  createAuditService,
   createAuthService,
+  createLedgerService,
   createMemberService,
   createMerchantService,
-  createTransactionService,
+  createPaymentService,
   createPotService,
   createReservationService,
+  createTransactionService,
   createTransferService,
-  createPaymentService,
-  createLedgerService,
-  createAuditService,
 } from "./services.ts";
-import { createTagRepository, createEventRepository } from "./repositories.ts";
+import { createEventRepository, createTagRepository } from "./repositories.ts";
 
 // Helper Functions for Route Factories
 function createValidatedRoute(
   schema: z.ZodSchema,
-  handler: (c: Context) => Response
+  handler: (c: Context) => Response,
 ) {
   return validateBody(schema)(handler);
 }
 
 function createListRoute<T>(
   serviceFactory: () => T,
-  handler: (c: Context, service: T) => Response
+  handler: (c: Context, service: T) => Response,
 ) {
   const service = serviceFactory();
   return (c: Context) => {
@@ -131,8 +131,9 @@ export function createApiPeopleList() {
 
 export function createApiPeopleCreate() {
   const memberService = createMemberService();
-  return createValidatedRoute(CreateMemberSchema, (c: Context) =>
-    apiPeopleCreate(c, memberService)
+  return createValidatedRoute(
+    CreateMemberSchema,
+    (c: Context) => apiPeopleCreate(c, memberService),
   );
 }
 

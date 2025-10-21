@@ -3,7 +3,7 @@ import { EventRepository } from "@backend/repositories";
 
 export function apiEventsStream(
   _c: Context,
-  _eventRepository: EventRepository
+  _eventRepository: EventRepository,
 ) {
   // TODO: Implement GET /api/events/stream endpoint for real-time events
   // - Set up Server-Sent Events (SSE) stream

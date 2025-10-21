@@ -26,5 +26,5 @@ export const reservationsRelations = relations(
       references: [users.id],
     }),
     payments: many(payments),
-  })
+  }),
 );

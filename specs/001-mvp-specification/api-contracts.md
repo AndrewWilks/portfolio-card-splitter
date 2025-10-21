@@ -1,18 +1,20 @@
 # API Contracts: Portfolio Card Splitter MVP
 
-**Created**: 2025-10-17  
+**Created**: 2025-10-17\
 **Data Model**: [data-model.md](./data-model.md)
 
 ## Overview
 
-RESTful API with Zod schema validation at boundaries. All endpoints return JSON with consistent error handling. Money amounts transmitted as integer cents. Dates in ISO 8601 format with Australia/Brisbane timezone.
+RESTful API with Zod schema validation at boundaries. All endpoints return JSON
+with consistent error handling. Money amounts transmitted as integer cents.
+Dates in ISO 8601 format with Australia/Brisbane timezone.
 
 ## Base Configuration
 
-**Base URL**: `/api`  
-**Content-Type**: `application/json`  
-**Authentication**: HTTP-only session cookies  
-**Timezone**: Australia/Brisbane (AEST/AEDT)  
+**Base URL**: `/api`\
+**Content-Type**: `application/json`\
+**Authentication**: HTTP-only session cookies\
+**Timezone**: Australia/Brisbane (AEST/AEDT)\
 **Currency**: AUD (amounts in cents)
 
 ## Authentication Endpoints
@@ -846,4 +848,6 @@ data: {"entity": "member", "id": "member-789", "action": "archived"}
 }
 ```
 
-This API contract provides a comprehensive interface for the Portfolio Card Splitter MVP, ensuring type safety with Zod schemas and consistent error handling across all endpoints.
+This API contract provides a comprehensive interface for the Portfolio Card
+Splitter MVP, ensuring type safety with Zod schemas and consistent error
+handling across all endpoints.
