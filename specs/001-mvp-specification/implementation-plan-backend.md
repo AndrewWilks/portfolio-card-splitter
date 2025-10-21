@@ -109,13 +109,13 @@ encountered.
 
 ### **Sprint 2: People/Members**
 
-| Component      | File                                                      | Status             | Implementation Notes    |
-| -------------- | --------------------------------------------------------- | ------------------ | ----------------------- |
-| **Repository** | `backend/repositories/memberRepository.ts`                | ✅ Implemented     | User/member CRUD        |
-| **Service**    | `backend/services/memberService.ts`                       | ✅ Implemented     | Member management logic |
-| **Routes**     | `backend/routes/people/api_people_*.ts`                   | ✅ Implemented     | Member CRUD endpoints   |
-| **Tests**      | `backend/__tests__/repositories/memberRepository.test.ts` | ✅ Implemented     | TDD implementation      |
-| **Tests**      | `backend/__tests__/services/memberService.test.ts`        | ✅ Implemented     | TDD implementation      |
+| Component      | File                                                      | Status         | Implementation Notes    |
+| -------------- | --------------------------------------------------------- | -------------- | ----------------------- |
+| **Repository** | `backend/repositories/memberRepository.ts`                | ✅ Implemented | User/member CRUD        |
+| **Service**    | `backend/services/memberService.ts`                       | ✅ Implemented | Member management logic |
+| **Routes**     | `backend/routes/people/api_people_*.ts`                   | ✅ Implemented | Member CRUD endpoints   |
+| **Tests**      | `backend/__tests__/repositories/memberRepository.test.ts` | ✅ Implemented | TDD implementation      |
+| **Tests**      | `backend/__tests__/services/memberService.test.ts`        | ✅ Implemented | TDD implementation      |
 
 ### **Sprint 3: Transactions**
 

@@ -9,6 +9,7 @@ I built out the entire member management stack from database schema to API endpo
 ## 🏗️ Technical Deep Dive
 
 ### Clean Architecture in Action
+
 Following the layered architecture we established in Sprint 1, I implemented:
 
 - **Entity Layer** (`shared/entities/member.ts`): The Member class with Zod validation, factory methods (`create()`, `from()`), and proper encapsulation
@@ -17,6 +18,7 @@ Following the layered architecture we established in Sprint 1, I implemented:
 - **Routes Layer** (`backend/routes/people/`): REST API endpoints with proper HTTP responses
 
 ### SOLID Principles Applied
+
 - **Single Responsibility**: Each class has one clear purpose
 - **Open/Closed**: Extended shared interfaces without modifying them
 - **Liskov Substitution**: Backend implementations work seamlessly with shared interfaces
@@ -24,7 +26,9 @@ Following the layered architecture we established in Sprint 1, I implemented:
 - **Dependency Inversion**: Dependencies on abstractions, not concretions
 
 ### TDD Workflow
+
 I followed the Red-Green-Refactor cycle religiously:
+
 1. **Red**: Write failing tests first
 2. **Green**: Implement minimal code to make tests pass
 3. **Refactor**: Clean up code while maintaining test coverage
@@ -34,10 +38,13 @@ The tests were already scaffolded from Sprint 1, so I focused on making them pas
 ## 💡 Key Learnings
 
 ### Repository Pattern Power
+
 The repository pattern really shines with Drizzle ORM. The `save()` method with `onConflictDoUpdate` handles both inserts and updates elegantly - no more manual checking if records exist.
 
 ### Validation at Every Layer
+
 I implemented Zod schemas at multiple levels:
+
 - Entity level: Core data validation
 - Service level: Request validation with business rules
 - Route level: HTTP request validation
@@ -45,6 +52,7 @@ I implemented Zod schemas at multiple levels:
 This creates a robust defense-in-depth approach.
 
 ### Async Route Handlers
+
 Had to fix the route registration system to properly support async handlers. The `createValidatedRoute` helper now accepts `Promise<Response>` return types.
 
 ## 🚀 What's Next
@@ -52,6 +60,7 @@ Had to fix the route registration system to properly support async handlers. The
 Sprint 3: Transaction Management - the core feature! This will be the most complex sprint yet, dealing with allocations, merchant associations, and financial calculations. I'm excited to tackle the business logic that makes this app actually useful for tracking shared expenses.
 
 ## 📊 Sprint 2 Stats
+
 - **Files Modified**: 9
 - **Tests Passing**: 102/102 ✅
 - **API Endpoints**: 3 (GET, POST, PATCH)
