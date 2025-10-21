@@ -37,7 +37,7 @@ Events ──────────┴─── captures all mutations
 
 ### Core Identity
 
-**users**
+#### **users**
 
 ```sql
 CREATE TABLE users (
@@ -55,7 +55,7 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_status ON users(status);
 ```
 
-**members**
+#### **members**
 
 ```sql
 CREATE TABLE members (
@@ -73,7 +73,7 @@ CREATE INDEX idx_members_archived ON members(archived);
 
 ### Transaction Management
 
-**merchants**
+#### **merchants**
 
 ```sql
 CREATE TABLE merchants (
@@ -89,7 +89,7 @@ CREATE INDEX idx_merchants_normalized_name ON merchants(normalized_name);
 CREATE INDEX idx_merchants_merged_into ON merchants(merged_into_id);
 ```
 
-**tags**
+#### **tags**
 
 ```sql
 CREATE TABLE tags (
@@ -103,7 +103,7 @@ CREATE TABLE tags (
 CREATE INDEX idx_tags_name ON tags(name);
 ```
 
-**transactions**
+#### **transactions**
 
 ```sql
 CREATE TABLE transactions (
@@ -122,7 +122,7 @@ CREATE INDEX idx_transactions_merchant_id ON transactions(merchant_id);
 CREATE INDEX idx_transactions_amount_cents ON transactions(amount_cents);
 ```
 
-**transaction_tags**
+#### **transaction_tags**
 
 ```sql
 CREATE TABLE transaction_tags (
@@ -134,7 +134,7 @@ CREATE TABLE transaction_tags (
 CREATE INDEX idx_transaction_tags_tag_id ON transaction_tags(tag_id);
 ```
 
-**allocations**
+#### **allocations**
 
 ```sql
 CREATE TABLE allocations (
@@ -153,7 +153,7 @@ CREATE INDEX idx_allocations_member_id ON allocations(member_id);
 
 ### Money Management
 
-**pots**
+#### **pots**
 
 ```sql
 CREATE TABLE pots (
@@ -177,7 +177,7 @@ CREATE INDEX idx_pots_owner_member_id ON pots(owner_member_id);
 CREATE INDEX idx_pots_scope ON pots(scope);
 ```
 
-**reservations**
+#### **reservations**
 
 ```sql
 CREATE TABLE reservations (
@@ -193,7 +193,7 @@ CREATE INDEX idx_reservations_pot_id ON reservations(pot_id);
 CREATE INDEX idx_reservations_transaction_id ON reservations(transaction_id);
 ```
 
-**transfers**
+#### **transfers**
 
 ```sql
 CREATE TABLE transfers (
@@ -212,7 +212,7 @@ CREATE INDEX idx_transfers_to_pot_id ON transfers(to_pot_id);
 CREATE INDEX idx_transfers_occurred_on ON transfers(occurred_on);
 ```
 
-**payments**
+#### **payments**
 
 ```sql
 CREATE TABLE payments (
@@ -233,7 +233,7 @@ CREATE INDEX idx_payments_reservation_id ON payments(reservation_id);
 
 ### Audit and Events
 
-**events**
+#### **events**
 
 ```sql
 CREATE TABLE events (
@@ -384,14 +384,14 @@ GROUP BY p.id, p.name, p.balance_cents;
 
 ### Data Integrity Checks
 
-**Deployment Validation**
+#### **Deployment Validation**
 
 - Verify all foreign key constraints are properly enforced
 - Test allocation sum validation in application layer
 - Validate pot balance calculations with reserved amounts
 - Confirm event emission for all mutation operations
 
-**Performance Considerations**
+#### **Performance Considerations**
 
 - Index on transaction posted_on for date-range queries
 - Index on events created_at for audit pagination

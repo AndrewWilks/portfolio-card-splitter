@@ -21,7 +21,7 @@ Dates in ISO 8601 format with Australia/Brisbane timezone.
 
 ### Bootstrap System
 
-**POST /api/auth/bootstrap**
+#### **POST /api/auth/bootstrap**
 
 Creates the first admin user for fresh installations.
 
@@ -58,7 +58,7 @@ Creates the first admin user for fresh installations.
 
 ### User Invitation
 
-**POST /api/auth/invite**
+#### **POST /api/auth/invite**
 
 Sends invitation email to new user (admin only).
 
@@ -92,7 +92,7 @@ Sends invitation email to new user (admin only).
 
 ### Accept Invitation
 
-**POST /api/auth/accept-invite**
+#### **POST /api/auth/accept-invite**
 
 Completes user registration from invitation token.
 
@@ -118,7 +118,7 @@ Completes user registration from invitation token.
 
 ### Login/Logout
 
-**POST /api/auth/login**
+#### **POST /api/auth/login**
 
 ```typescript
 // Request Schema: LoginRequestSchema
@@ -139,7 +139,7 @@ Completes user registration from invitation token.
 }
 ```
 
-**POST /api/auth/logout**
+#### **POST /api/auth/logout**
 
 ```typescript
 // Request: No body required
@@ -151,7 +151,7 @@ Completes user registration from invitation token.
 
 ### Password Reset
 
-**POST /api/auth/request-reset**
+#### **POST /api/auth/request-reset**
 
 ```typescript
 // Request Schema: RequestResetSchema
@@ -165,7 +165,7 @@ Completes user registration from invitation token.
 }
 ```
 
-**POST /api/auth/reset**
+#### **POST /api/auth/reset**
 
 ```typescript
 // Request Schema: ResetPasswordSchema
@@ -184,7 +184,7 @@ Completes user registration from invitation token.
 
 ### List Members
 
-**GET /api/people**
+#### **GET /api/people**
 
 ```typescript
 // Query Parameters: PeopleQuerySchema
@@ -221,7 +221,7 @@ Completes user registration from invitation token.
 
 ### Create Member
 
-**POST /api/people**
+#### **POST /api/people**
 
 ```typescript
 // Request Schema: CreateMemberSchema
@@ -246,7 +246,7 @@ Completes user registration from invitation token.
 
 ### Update Member
 
-**PATCH /api/people/:id**
+#### **PATCH /api/people/:id**
 
 ```typescript
 // Request Schema: UpdateMemberSchema
@@ -262,7 +262,7 @@ Completes user registration from invitation token.
 
 ### List Transactions
 
-**GET /api/transactions**
+#### **GET /api/transactions**
 
 ```typescript
 // Query Parameters: TransactionQuerySchema
@@ -315,7 +315,7 @@ Completes user registration from invitation token.
 
 ### Create Transaction
 
-**POST /api/transactions**
+#### **POST /api/transactions**
 
 ```typescript
 // Request Schema: CreateTransactionSchema
@@ -345,7 +345,7 @@ Completes user registration from invitation token.
 
 ### Update Transaction
 
-**PATCH /api/transactions/:id**
+#### **PATCH /api/transactions/:id**
 
 ```typescript
 // Request Schema: UpdateTransactionSchema
@@ -371,7 +371,7 @@ Completes user registration from invitation token.
 
 ### List Merchants
 
-**GET /api/merchants**
+#### **GET /api/merchants**
 
 ```typescript
 // Query Parameters: MerchantQuerySchema
@@ -396,7 +396,7 @@ Completes user registration from invitation token.
 
 ### Create Merchant
 
-**POST /api/merchants**
+#### **POST /api/merchants**
 
 ```typescript
 // Request Schema: CreateMerchantSchema
@@ -420,7 +420,7 @@ Completes user registration from invitation token.
 
 ### Update/Merge Merchant
 
-**PATCH /api/merchants/:id**
+#### **PATCH /api/merchants/:id**
 
 ```typescript
 // Request Schema: UpdateMerchantSchema
@@ -434,7 +434,7 @@ Completes user registration from invitation token.
 
 ### List Tags
 
-**GET /api/tags**
+#### **GET /api/tags**
 
 ```typescript
 // Response Schema: TagsResponseSchema
@@ -452,7 +452,7 @@ Completes user registration from invitation token.
 
 ### Create Tag
 
-**POST /api/tags**
+#### **POST /api/tags**
 
 ```typescript
 // Request Schema: CreateTagSchema
@@ -466,7 +466,7 @@ Completes user registration from invitation token.
 
 ### Update Tag
 
-**PATCH /api/tags/:id**
+#### **PATCH /api/tags/:id**
 
 ```typescript
 // Request Schema: UpdateTagSchema
@@ -482,7 +482,7 @@ Completes user registration from invitation token.
 
 ### List Pots
 
-**GET /api/pots**
+#### **GET /api/pots**
 
 ```typescript
 // Query Parameters: PotsQuerySchema
@@ -520,7 +520,7 @@ Completes user registration from invitation token.
 
 ### Create Pot
 
-**POST /api/pots**
+#### **POST /api/pots**
 
 ```typescript
 // Request Schema: CreatePotSchema
@@ -541,7 +541,7 @@ Completes user registration from invitation token.
 
 ### Update Pot
 
-**PATCH /api/pots/:id**
+#### **PATCH /api/pots/:id**
 
 ```typescript
 // Request Schema: UpdatePotSchema
@@ -558,7 +558,7 @@ Completes user registration from invitation token.
 
 ### Deposit to Pot
 
-**POST /api/pots/:id/deposit**
+#### **POST /api/pots/:id/deposit**
 
 ```typescript
 // Request Schema: DepositSchema
@@ -574,7 +574,7 @@ Completes user registration from invitation token.
 
 ### Create Reservation
 
-**POST /api/reservations**
+#### **POST /api/reservations**
 
 ```typescript
 // Request Schema: CreateReservationSchema
@@ -606,7 +606,7 @@ Completes user registration from invitation token.
 
 ### Delete Reservation
 
-**DELETE /api/reservations/:id**
+#### **DELETE /api/reservations/:id**
 
 ```typescript
 // Response Schema: MessageResponseSchema
@@ -619,7 +619,7 @@ Completes user registration from invitation token.
 
 ### Create Transfer
 
-**POST /api/transfers**
+#### **POST /api/transfers**
 
 ```typescript
 // Request Schema: CreateTransferSchema
@@ -654,7 +654,7 @@ Completes user registration from invitation token.
 
 ### Create Payment
 
-**POST /api/payments**
+#### **POST /api/payments**
 
 ```typescript
 // Request Schema: CreatePaymentSchema
@@ -695,7 +695,7 @@ Completes user registration from invitation token.
 
 ### Get Ledger
 
-**GET /api/ledger**
+#### **GET /api/ledger**
 
 ```typescript
 // Response Schema: LedgerResponseSchema
@@ -729,7 +729,7 @@ Completes user registration from invitation token.
 
 ### Get Audit Trail
 
-**GET /api/audit**
+#### **GET /api/audit**
 
 ```typescript
 // Query Parameters: AuditQuerySchema
@@ -769,7 +769,7 @@ Completes user registration from invitation token.
 
 ### SSE Event Stream
 
-**GET /api/events/stream**
+#### **GET /api/events/stream**
 
 ```typescript
 // Headers
