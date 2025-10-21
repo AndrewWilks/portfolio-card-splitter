@@ -16,9 +16,23 @@ import { config } from "../config.ts";
  *
  * @see {@link https://orm.drizzle.team/docs/overview Drizzle ORM Documentation}
  */
-export const db = drizzle({
-  client: new Pool({
-    connectionString: config.DATABASE_URL,
-  }),
-  schema: schema,
+
+let dbInstance: ReturnType<typeof drizzle> | null = null;
+
+export const db = new Proxy({} as ReturnType<typeof drizzle>, {
+  get(_target, prop) {
+    if (!dbInstance) {
+      dbInstance = drizzle({
+        client: new Pool({
+          connectionString: config.DATABASE_URL,
+        }),
+        schema: schema,
+      });
+    }
+    const value = dbInstance[prop as keyof typeof dbInstance];
+    if (typeof value === 'function') {
+      return value.bind(dbInstance);
+    }
+    return value;
+  }
 });
