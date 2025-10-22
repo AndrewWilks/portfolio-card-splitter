@@ -30,8 +30,7 @@ export class UserRepository {
           eq(users.id, _id),
           _isActive !== undefined ? eq(users.isActive, _isActive) : undefined
         )
-      )
-      .limit(1);
+      );
 
     if (found.length === 0) {
       return null;
@@ -53,8 +52,7 @@ export class UserRepository {
           eq(users.email, _email),
           _isActive !== undefined ? eq(users.isActive, _isActive) : undefined
         )
-      )
-      .limit(1);
+      );
 
     if (found.length === 0) {
       return null;

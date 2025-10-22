@@ -1,117 +1,106 @@
-import { MemberRepository as SharedMemberRepository } from "@shared/repositories";
 import { Member } from "@shared/entities";
-import { db, Schemas } from "@db";
-import { eq } from "drizzle-orm";
+import { db } from "@db";
+import { eq, and } from "drizzle-orm";
+import { members, users } from "../db/db.schema.ts";
 
-export class MemberRepository extends SharedMemberRepository {
+export class MemberRepository {
   constructor(private dbClient = db) {
-    super();
+    this.dbClient = dbClient;
   }
 
-  override async save(member: Member): Promise<void> {
-    const data = member.toJSON();
-    await this.dbClient
-      .insert(Schemas.Tables.members)
-      .values({
-        id: data.id,
-        userId: data.userId,
-        displayName: data.displayName,
-        archived: data.archived,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      })
-      .onConflictDoUpdate({
-        target: Schemas.Tables.members.id,
-        set: {
-          displayName: data.displayName,
-          archived: data.archived,
-          updatedAt: data.updatedAt,
-        },
-      });
+  async save(_member: Member) {
+    const hasMember = await this.findById(_member.id);
+
+    if (hasMember !== null) {
+      return await this.dbClient
+        .update(members)
+        .set(_member)
+        .where(eq(members.id, _member.id));
+    }
+
+    return await this.dbClient.insert(members).values(_member);
   }
 
-  override async findById(id: string): Promise<Member | null> {
-    const result = await this.dbClient
+  async findById(_id: string, _isActive?: boolean): Promise<Member | null> {
+    const found = await this.dbClient
       .select()
-      .from(Schemas.Tables.members)
-      .where(eq(Schemas.Tables.members.id, id))
-      .limit(1);
+      .from(members)
+      .where(
+        and(
+          eq(members.id, _id),
+          _isActive !== undefined ? eq(members.archived, !_isActive) : undefined
+        )
+      );
 
-    if (result.length === 0) {
+    if (found.length === 0) {
       return null;
     }
 
-    return Member.from({
-      id: result[0].id,
-      userId: result[0].userId,
-      displayName: result[0].displayName,
-      archived: result[0].archived,
-      createdAt: result[0].createdAt,
-      updatedAt: result[0].updatedAt,
-    });
+    if (found.length > 1) {
+      throw new Error(`Multiple members found with id: ${_id}`);
+    }
+
+    return Member.create(found[0]);
   }
 
-  override findByEmail(_email: string): Promise<Member | null> {
-    // Members don't have emails directly - they're linked to users
-    // This method doesn't make sense for members, but we implement it for interface compatibility
-    return Promise.resolve(null);
-  }
-
-  override async findByStatus(status: string): Promise<Member[]> {
-    // Interpret status as archived state: "active" = not archived, "archived" = archived
-    const isArchived = status === "archived";
-
-    const results = await this.dbClient
+  async findByEmail(
+    _email: string,
+    _isActive?: boolean
+  ): Promise<Member | null> {
+    const found = await this.dbClient
       .select()
-      .from(Schemas.Tables.members)
-      .where(eq(Schemas.Tables.members.archived, isArchived));
+      .from(members)
+      .innerJoin(users, eq(members.userId, users.id))
+      .where(
+        and(
+          eq(users.email, _email),
+          _isActive !== undefined ? eq(members.archived, !_isActive) : undefined
+        )
+      );
 
-    return results.map((row) =>
-      Member.from({
-        id: row.id,
-        userId: row.userId,
-        displayName: row.displayName,
-        archived: row.archived,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      })
-    );
+    if (found.length === 0) {
+      return null;
+    }
+
+    if (found.length > 1) {
+      throw new Error(`Multiple members found with email: ${_email}`);
+    }
+
+    return Member.create(found[0].members);
+  }
+
+  async findByStatus(_status: string): Promise<Member[]> {
+    const isActive = _status === "active" ? true : false;
+
+    const found = await this.dbClient
+      .select()
+      .from(members)
+      .where(eq(members.archived, !isActive))
+      .orderBy(members.createdAt);
+
+    return found.map((row) => Member.create(row));
   }
 
   // Additional methods specific to members
   async findByUserId(userId: string): Promise<Member[]> {
-    const results = await this.dbClient
+    const found = await this.dbClient
       .select()
-      .from(Schemas.Tables.members)
-      .where(eq(Schemas.Tables.members.userId, userId));
+      .from(members)
+      .where(eq(members.userId, userId));
 
-    return results.map((row) =>
-      Member.from({
-        id: row.id,
-        userId: row.userId,
-        displayName: row.displayName,
-        archived: row.archived,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      })
-    );
+    return found.map((row) => Member.create(row));
   }
 
   async findAll(): Promise<Member[]> {
-    const results = await this.dbClient
+    const found = await this.dbClient
       .select()
-      .from(Schemas.Tables.members)
-      .orderBy(Schemas.Tables.members.createdAt);
+      .from(members)
+      .orderBy(members.createdAt);
 
-    return results.map((row) =>
-      Member.from({
-        id: row.id,
-        userId: row.userId,
-        displayName: row.displayName,
-        archived: row.archived,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      })
-    );
+    return found.map((row) => Member.create(row));
+  }
+
+  async delete(_id: string) {
+    return await this.dbClient.delete(members).where(eq(members.id, _id));
   }
 }
