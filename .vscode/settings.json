@@ -5,6 +5,9 @@
   "cSpell.enabled": true,
   "cSpell.language": "en-AU",
   "cSpell.diagnosticLevel": "Hint",
+  "deno.enable": true,
   "deno.envFile": ".env",
-  "deno.testing.args": ["--allow-all", "--no-check"]
+  "deno.testing.args": ["--allow-all", "--no-check"],
+  "deno.codeLens.test": true,
+  "deno.codeLens.testArgs": ["--allow-all", "--no-check"]
 }
