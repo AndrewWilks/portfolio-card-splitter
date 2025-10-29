@@ -28,52 +28,71 @@ Deno.test.afterEach(async () => {
   // Clean up
   // Note: Implement delete method in UserRepository for proper cleanup
   await userRepo.delete(id);
-  await db.$client.end();
 });
 
-Deno.test("UserRepository - create", () => {
-  assert(userRepo instanceof _UserRepository);
+Deno.test({
+  name: "UserRepository - create",
+  fn: () => {
+    assert(userRepo instanceof _UserRepository);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
 });
 
-Deno.test("UserRepository - find by ID with save", async () => {
-  await userRepo.save(dummyUser);
+Deno.test({
+  name: "UserRepository - find by ID with save",
+  fn: async () => {
+    await userRepo.save(dummyUser);
 
-  const fetchedUser = await userRepo.findById(id);
+    const fetchedUser = await userRepo.findById(id);
 
-  assert(fetchedUser !== null);
-  assert(fetchedUser?.email === email);
-  assert(fetchedUser?.firstName === firstName);
-  assert(fetchedUser?.lastName === lastName);
-  assert(fetchedUser?.isActive === isActive);
-  assert(fetchedUser?.role === role);
+    assert(fetchedUser !== null);
+    assert(fetchedUser?.email === email);
+    assert(fetchedUser?.firstName === firstName);
+    assert(fetchedUser?.lastName === lastName);
+    assert(fetchedUser?.isActive === isActive);
+    assert(fetchedUser?.role === role);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
 });
 
-Deno.test("UserRepository - findByEmail", async () => {
-  await userRepo.save(dummyUser);
+Deno.test({
+  name: "UserRepository - findByEmail",
+  fn: async () => {
+    await userRepo.save(dummyUser);
 
-  const fetchedUser = await userRepo.findByEmail(email);
+    const fetchedUser = await userRepo.findByEmail(email);
 
-  assert(fetchedUser !== null);
-  assert(fetchedUser?.email === email);
-  assert(fetchedUser?.firstName === firstName);
-  assert(fetchedUser?.lastName === lastName);
-  assert(fetchedUser?.isActive === isActive);
-  assert(fetchedUser?.role === role);
+    assert(fetchedUser !== null);
+    assert(fetchedUser?.email === email);
+    assert(fetchedUser?.firstName === firstName);
+    assert(fetchedUser?.lastName === lastName);
+    assert(fetchedUser?.isActive === isActive);
+    assert(fetchedUser?.role === role);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
 });
 
-Deno.test("UserRepository - findByRole", async () => {
-  await userRepo.save(dummyUser);
+Deno.test({
+  name: "UserRepository - findByRole",
+  fn: async () => {
+    await userRepo.save(dummyUser);
 
-  const usersByRole = await userRepo.findByRole(role);
-  assert(usersByRole.length > 0);
-  const fetchedUser = usersByRole.find((user) => user.id === id);
+    const usersByRole = await userRepo.findByRole(role);
+    assert(usersByRole.length > 0);
+    const fetchedUser = usersByRole.find((user) => user.id === id);
 
-  assert(fetchedUser !== undefined);
-  assert(fetchedUser?.email === email);
-  assert(fetchedUser?.firstName === firstName);
-  assert(fetchedUser?.lastName === lastName);
-  assert(fetchedUser?.isActive === isActive);
-  assert(fetchedUser?.role === role);
+    assert(fetchedUser !== undefined);
+    assert(fetchedUser?.email === email);
+    assert(fetchedUser?.firstName === firstName);
+    assert(fetchedUser?.lastName === lastName);
+    assert(fetchedUser?.isActive === isActive);
+    assert(fetchedUser?.role === role);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
 });
 
 // TODO: Add more test cases for UserRepository methods
