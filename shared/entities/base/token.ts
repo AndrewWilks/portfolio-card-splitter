@@ -6,7 +6,6 @@ export interface TokenData extends EntityData {
   expiresAt: Date;
   usedAt?: Date;
 }
-// TODO: Token ergonomics, your create({ expirationHours }) factory is right, add isExpired(), markUsed() that is idempotent, and a guard that prevents reuse.
 
 export class Token extends Entity {
   protected _expiresAt: Date;
@@ -37,9 +36,32 @@ export class Token extends Entity {
     return !this.isExpired() && !this.isUsed();
   }
 
-  markUsed(): this {
+  /**
+   * Mark the token as used. This method is idempotent: calling it multiple
+   * times will not change the originally recorded usedAt timestamp.
+   */
+  private markUsed(): this {
+    if (this._usedAt) return this; // idempotent
     this._usedAt = new Date();
     return this;
+  }
+
+  /**
+   * Assert that the token can be used — not expired and not already used.
+   * Throws an Error if the token is not usable.
+   */
+  private assertCanUse(): void {
+    if (this.isExpired()) throw new Error("Token is expired");
+    if (this.isUsed()) throw new Error("Token has already been used");
+  }
+
+  /**
+   * High-level helper that enforces the guard and marks the token used.
+   * Throws if the token is expired or already used. Returns `this`.
+   */
+  use(): this {
+    this.assertCanUse();
+    return this.markUsed();
   }
 
   get tojSON() {
