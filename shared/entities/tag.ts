@@ -1,74 +1,55 @@
 import { z } from "zod";
+import { EntityData, Entity } from "@shared/entities";
+import { HexColor, zHexColor } from "@shared/types";
 
 // For tags table. Manages colors and uniqueness.
-export const TagSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1).max(100),
-  color: z
-    .string()
-    .regex(/^#[0-9A-Fa-f]{6}$/)
-    .default("#3b82f6"),
-  isActive: z.boolean().default(true),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+export interface TagData extends EntityData {
+  name: string;
+  color: HexColor;
+  isActive: boolean;
+}
 
-export type TagData = z.infer<typeof TagSchema>;
+export class Tag extends Entity {
+  static readonly DEFAULT_COLOR = "#3b82f6" as HexColor;
+  static readonly DEFAULT_NAME = "Untitled Tag";
+  static readonly DEFAULT_IS_ACTIVE = true;
 
-export class Tag {
-  constructor(
-    public readonly id: string,
-    public readonly name: string,
-    public readonly color: string = "#3b82f6",
-    public readonly isActive: boolean = true,
-    public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date(),
-  ) {}
+  private _name: string = Tag.DEFAULT_NAME;
+  private _color: HexColor = Tag.DEFAULT_COLOR;
+  private _isActive: boolean = Tag.DEFAULT_IS_ACTIVE;
 
-  static create(
-    data: Omit<TagData, "id" | "createdAt" | "updatedAt" | "color"> & {
-      color?: string;
-    },
-  ): Tag {
-    const validated = TagSchema.omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-    }).parse({
-      color: "#3b82f6", // Provide default
-      ...data,
-    });
-
-    return new Tag(
-      crypto.randomUUID(),
-      validated.name,
-      validated.color,
-      validated.isActive,
-      new Date(),
-      new Date(),
-    );
+  constructor({ id, createdAt, updatedAt, name, color, isActive }: TagData) {
+    super({ id, createdAt, updatedAt });
+    this._name = name;
+    this._color = color;
+    this._isActive = isActive;
   }
 
-  static from(data: TagData): Tag {
-    const validated = TagSchema.parse(data);
-    return new Tag(
-      validated.id,
-      validated.name,
-      validated.color,
-      validated.isActive,
-      validated.createdAt,
-      validated.updatedAt,
-    );
-  }
-
-  toJSON(): TagData {
+  get toJSON() {
     return {
       id: this.id,
-      name: this.name,
-      color: this.color,
-      isActive: this.isActive,
+      name: this._name,
+      color: this._color,
+      isActive: this._isActive,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
+  }
+
+  static parse(data: unknown): Tag {
+    const parsed = this.schema.parse(data) as TagData;
+    return new Tag(parsed);
+  }
+
+  static get schema() {
+    return z.object({
+      name: z.string().min(1).max(100),
+      color: zHexColor.default(Tag.DEFAULT_COLOR),
+      isActive: z.boolean().default(Tag.DEFAULT_IS_ACTIVE),
+    });
+  }
+
+  static override get bodySchema() {
+    return super.bodySchema.extend(this.schema.shape);
   }
 }

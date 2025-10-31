@@ -1,133 +1,133 @@
-// For allocations table. Handles share types (percent/amount) and sum validation.
+import { object, uuid, enum as zEnum } from "zod";
+import { Entity, EntityData } from "./base/entity.ts";
+import { calculateAmountUsingBasisPoints } from "../utilities/calculateAmountUsingBasisPoints.ts";
+import { Cents, basisPoints, zCents, zBasisPoints } from "@shared/types";
 
-import { z } from "zod";
+export interface AllocationData extends EntityData {
+  transactionId: string;
+  memberId: string;
+  rule: AllocationRule;
+  calculatedAmountCents?: Cents;
+  basisPoints: basisPoints;
+  amountCents: Cents;
+}
 
-export const AllocationSchema = z
-  .object({
-    id: z.string().uuid(),
-    transactionId: z.string().uuid(),
-    memberId: z.string().uuid(),
-    rule: z.enum(["percentage", "fixed_amount"]),
-    percentage: z.number().int().min(0).max(10000).optional(), // 0-100% in basis points
-    amountCents: z.number().int().min(0).optional(),
-    calculatedAmountCents: z.number().int().min(0),
-    createdAt: z.date(),
-    updatedAt: z.date(),
-  })
-  .refine(
-    (data) => {
-      // For percentage rule, percentage must be provided and amountCents must be undefined
-      if (data.rule === "percentage") {
-        return data.percentage !== undefined && data.amountCents === undefined;
-      }
-      // For fixed_amount rule, amountCents must be provided and percentage must be undefined
-      if (data.rule === "fixed_amount") {
-        return data.amountCents !== undefined && data.percentage === undefined;
-      }
-      return false;
-    },
-    {
-      message:
-        "Invalid allocation: percentage rule requires percentage, fixed_amount rule requires amountCents",
-    },
-  );
+enum AllocationRule {
+  basisPoints = "basisPoints",
+  FIXED_AMOUNT = "fixed_amount",
+}
 
-export type AllocationData = z.infer<typeof AllocationSchema>;
+// TODO: enforce one of, if rule is percentage then compute calculatedAmountCents from basisPoints, if rule is fixed amount then require amountCents, do not allow both to be set.
+export class Allocation extends Entity {
+  static Rules = AllocationRule;
 
-export class Allocation {
-  constructor(
-    public readonly id: string,
-    public readonly transactionId: string,
-    public readonly memberId: string,
-    public readonly rule: "percentage" | "fixed_amount",
-    public readonly calculatedAmountCents: number,
-    public readonly percentage?: number, // basis points (e.g., 5000 = 50%)
-    public readonly amountCents?: number,
-    public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date(),
-  ) {}
+  private _transactionId: string;
+  private _memberId: string;
+  private _rule: AllocationRule;
+  private _calculatedAmountCents: Cents;
+  /**
+   * The basisPoints of the transaction allocated to the member, in basis points.
+   * For example, 5000 basis points = 50%
+   */
+  private _basisPoints: basisPoints;
+  private _amountCents: Cents;
 
-  static create(
-    data: Omit<
-      AllocationData,
-      "id" | "createdAt" | "updatedAt" | "calculatedAmountCents"
-    >,
-  ): Allocation {
+  constructor({
+    id,
+    createdAt,
+    updatedAt,
+    transactionId,
+    memberId,
+    rule,
+    calculatedAmountCents,
+    basisPoints,
+    amountCents,
+  }: AllocationData) {
+    super({ id, createdAt, updatedAt });
+    this._transactionId = transactionId;
+    this._memberId = memberId;
+    this._rule = rule;
+    this._amountCents = amountCents;
+    this._calculatedAmountCents =
+      calculatedAmountCents || this.calculateAmount(amountCents);
+    this._basisPoints = basisPoints;
+  }
+
+  static create(data: AllocationData): Allocation {
     // Calculate the initial calculatedAmountCents
-    let calculatedAmountCents: number;
+    let calculatedAmountCents: Cents;
 
-    if (data.rule === "fixed_amount" && data.amountCents !== undefined) {
+    if (
+      data.rule === this.Rules.FIXED_AMOUNT &&
+      data.amountCents !== undefined
+    ) {
       calculatedAmountCents = data.amountCents;
-    } else if (data.rule === "percentage") {
-      // For percentage allocations, we'll set calculatedAmountCents to 0 initially
+    } else if (data.rule === this.Rules.basisPoints) {
+      // For basisPoints allocations, we'll set calculatedAmountCents to 0 initially
       // It will be calculated later when the transaction amount is known
-      calculatedAmountCents = 0;
+      calculatedAmountCents = 0 as Cents;
     } else {
       throw new Error("Invalid allocation data");
     }
 
-    const validated = AllocationSchema.omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-      calculatedAmountCents: true,
-    }).parse({ ...data, calculatedAmountCents });
+    const validated = this.schema.parse({ ...data, calculatedAmountCents });
 
-    return new Allocation(
-      crypto.randomUUID(),
-      validated.transactionId,
-      validated.memberId,
-      validated.rule,
-      calculatedAmountCents,
-      validated.percentage,
-      validated.amountCents,
-      new Date(),
-      new Date(),
-    );
-  }
-
-  static from(data: AllocationData): Allocation {
-    const validated = AllocationSchema.parse(data);
-    return new Allocation(
-      validated.id,
-      validated.transactionId,
-      validated.memberId,
-      validated.rule,
-      validated.calculatedAmountCents,
-      validated.percentage,
-      validated.amountCents,
-      validated.createdAt,
-      validated.updatedAt,
-    );
+    return new Allocation(validated);
   }
 
   /**
    * Calculate the allocated amount based on transaction total
-   * For percentage allocations, this calculates the actual amount
+   * For basisPoints allocations, this calculates the actual amount
    * For fixed amount allocations, this returns the fixed amount
    */
-  calculateAmount(transactionAmountCents: number): number {
-    if (this.rule === "fixed_amount") {
-      return this.amountCents || 0;
-    } else if (this.rule === "percentage" && this.percentage !== undefined) {
-      // Convert basis points to decimal (5000 basis points = 50%)
-      const percentageDecimal = this.percentage / 10000;
-      return Math.round(transactionAmountCents * percentageDecimal);
+  calculateAmount(transactionAmountCents: Cents): Cents {
+    switch (this._rule) {
+      case "fixed_amount":
+        return this._amountCents || (0 as Cents);
+
+      case "basisPoints":
+        return calculateAmountUsingBasisPoints(
+          this._basisPoints,
+          transactionAmountCents
+        );
+
+      default:
+        throw new Error("Invalid allocation rule");
     }
-    return 0;
   }
 
-  toJSON(): AllocationData {
+  get toJSON() {
     return {
       id: this.id,
-      transactionId: this.transactionId,
-      memberId: this.memberId,
-      rule: this.rule,
-      percentage: this.percentage,
-      amountCents: this.amountCents,
-      calculatedAmountCents: this.calculatedAmountCents,
+      transactionId: this._transactionId,
+      memberId: this._memberId,
+      rule: this._rule,
+      basisPoints: this._basisPoints,
+      amountCents: this._amountCents,
+      calculatedAmountCents: this._calculatedAmountCents,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
+  }
+
+  static parse(data: unknown): Allocation {
+    const parsed = this.schema.parse(data);
+    return new Allocation(parsed);
+  }
+
+  // Validation schema
+  static get schema() {
+    return object({
+      transactionId: uuid(),
+      memberId: uuid(),
+      rule: zEnum(AllocationRule),
+      calculatedAmountCents: zCents.min(0),
+      basisPoints: zBasisPoints,
+      amountCents: zCents.min(0),
+    });
+  }
+
+  static override get bodySchema() {
+    return super.bodySchema.extend(this.schema.shape);
   }
 }

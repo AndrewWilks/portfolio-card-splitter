@@ -1,51 +1,60 @@
-import z from "zod";
+import { date, object, uuid } from "zod";
+import { Token, TokenData } from "@shared/entities";
+import { calculateExpirationDate } from "../utilities/calculateExpirationDate.ts";
 
-export class PasswordResetToken {
-  constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly expiresAt: Date,
-    public readonly createdAt: Date,
-    public readonly usedAt?: Date,
-  ) {}
+interface PasswordResetTokenData extends TokenData {
+  userId: string;
+}
 
-  static create(data: {
+export class PasswordResetToken extends Token {
+  private _userId: string;
+
+  constructor({
+    id,
+    createdAt,
+    updatedAt,
+    userId,
+    expiresAt,
+    usedAt,
+  }: PasswordResetTokenData) {
+    super({ id, createdAt, updatedAt, expiresAt, usedAt });
+    this._userId = userId;
+  }
+
+  static override create(data: {
     id: string;
     userId: string;
     expirationHours?: number;
   }): PasswordResetToken {
-    const now = new Date();
-    const expiresAt = new Date(
-      now.getTime() + (data.expirationHours || 24) * 60 * 60 * 1000,
-    );
+    const expiresAt = calculateExpirationDate(data.expirationHours ?? 1);
 
-    return new PasswordResetToken(data.id, data.userId, expiresAt, now);
+    return new PasswordResetToken({
+      userId: data.userId,
+      expiresAt,
+    });
   }
 
-  isExpired(): boolean {
-    return new Date() > this.expiresAt;
-  }
-
-  isUsed(): boolean {
-    return this.usedAt !== undefined;
-  }
-
-  isValid(): boolean {
-    return !this.isExpired() && !this.isUsed();
-  }
-
-  markUsed(): PasswordResetToken {
-    return new PasswordResetToken(
-      this.id,
-      this.userId,
-      this.expiresAt,
-      this.createdAt,
-      new Date(),
-    );
+  get toJSON() {
+    return {
+      id: this.id,
+      userId: this._userId,
+      expiresAt: this._expiresAt,
+      usedAt: this._usedAt,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
   }
 
   // Validation schema
-  static readonly schema = z.object({
-    userId: z.uuid(),
-  });
+  static override get schema() {
+    return object({
+      userId: uuid(),
+      expiresAt: date(),
+      usedAt: date().optional(),
+    });
+  }
+
+  static override get bodySchema() {
+    return super.bodySchema.extend(this.schema.shape);
+  }
 }

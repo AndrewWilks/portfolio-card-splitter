@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import { MemberService } from "@backend/services";
 
-export async function apiPeopleList(c: Context, memberService: MemberService) {
+export async function apiMemberList(c: Context, memberService: MemberService) {
   try {
     const query = c.req.query();
     const members = await memberService.listMembers(query);
@@ -17,7 +17,7 @@ export async function apiPeopleList(c: Context, memberService: MemberService) {
         success: false,
         error: "Failed to list members",
       },
-      500,
+      500
     );
   }
 }

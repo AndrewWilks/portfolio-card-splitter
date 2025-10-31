@@ -1,12 +1,11 @@
-import { MemberService as SharedMemberService } from "@shared/services";
 import { Member } from "@shared/entities";
-import { MemberRepository } from "../repositories/memberRepository.ts";
+import { MemberRepository } from "@backend/repositories";
 import { z } from "zod";
 
 // Request schemas
 const CreateMemberRequestSchema = z.object({
   displayName: z.string().min(1).max(255),
-  userId: z.string().uuid(),
+  userId: z.uuid(),
 });
 
 const UpdateMemberRequestSchema = z.object({
@@ -22,13 +21,13 @@ export type CreateMemberRequest = z.infer<typeof CreateMemberRequestSchema>;
 export type UpdateMemberRequest = z.infer<typeof UpdateMemberRequestSchema>;
 export type ListMembersQuery = z.infer<typeof ListMembersQuerySchema>;
 
-export class MemberService extends SharedMemberService {
-  constructor(memberRepository: MemberRepository) {
-    super(memberRepository);
+export class MemberService {
+  constructor(private memberRepository: MemberRepository) {
+    this.memberRepository = memberRepository;
   }
 
   override async listMembers(
-    query: Record<string, unknown>,
+    query: Record<string, unknown>
   ): Promise<Member[]> {
     const validatedQuery = ListMembersQuerySchema.parse(query);
 
@@ -51,12 +50,12 @@ export class MemberService extends SharedMemberService {
     const duplicate = existingMembers.find(
       (m: Member) =>
         m.displayName.toLowerCase() ===
-          validatedRequest.displayName.toLowerCase(),
+        validatedRequest.displayName.toLowerCase()
     );
 
     if (duplicate) {
       throw new Error(
-        `Member with display name '${validatedRequest.displayName}' already exists`,
+        `Member with display name '${validatedRequest.displayName}' already exists`
       );
     }
 
@@ -93,12 +92,12 @@ export class MemberService extends SharedMemberService {
         (m: Member) =>
           m.id !== id &&
           m.displayName.toLowerCase() ===
-            validatedRequest.displayName!.toLowerCase(),
+            validatedRequest.displayName!.toLowerCase()
       );
 
       if (duplicate) {
         throw new Error(
-          `Member with display name '${validatedRequest.displayName}' already exists`,
+          `Member with display name '${validatedRequest.displayName}' already exists`
         );
       }
     }
@@ -123,7 +122,7 @@ export class MemberService extends SharedMemberService {
   // Additional business methods
   async listMembersByUserId(
     userId: string,
-    includeArchived = false,
+    includeArchived = false
   ): Promise<Member[]> {
     const members = await (
       this.memberRepository as MemberRepository

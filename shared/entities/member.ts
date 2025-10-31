@@ -1,66 +1,57 @@
-import { z } from "zod";
+import { uuid, object, string, boolean } from "zod";
+import { Entity, EntityData } from "@shared/entities";
 
 // For members table. Links to users, handles display names and archiving.
-export const MemberSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  displayName: z.string().min(1).max(255),
-  archived: z.boolean().default(false),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
 
-export type MemberData = z.infer<typeof MemberSchema>;
+interface MemberData extends EntityData {
+  userId: string;
+  displayName: string;
+  archived: boolean;
+}
 
-export class Member {
-  constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    public readonly displayName: string,
-    public readonly archived: boolean = false,
-    public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date(),
-  ) {}
+export class Member extends Entity {
+  private _userId: string;
+  private _displayName: string;
+  private _archived: boolean;
 
-  static create(
-    data: Omit<MemberData, "id" | "createdAt" | "updatedAt">,
-  ): Member {
-    const validated = MemberSchema.omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-    }).parse(data);
-
-    return new Member(
-      crypto.randomUUID(),
-      validated.userId,
-      validated.displayName,
-      validated.archived,
-      new Date(),
-      new Date(),
-    );
+  constructor({
+    id,
+    createdAt,
+    updatedAt,
+    userId,
+    displayName,
+    archived,
+  }: MemberData) {
+    super({ id, createdAt, updatedAt });
+    this._userId = userId;
+    this._displayName = displayName;
+    this._archived = archived;
   }
 
-  static from(data: MemberData): Member {
-    const validated = MemberSchema.parse(data);
-    return new Member(
-      validated.id,
-      validated.userId,
-      validated.displayName,
-      validated.archived,
-      validated.createdAt,
-      validated.updatedAt,
-    );
-  }
-
-  toJSON(): MemberData {
+  get toJSON() {
     return {
       id: this.id,
-      userId: this.userId,
-      displayName: this.displayName,
-      archived: this.archived,
+      userId: this._userId,
+      displayName: this._displayName,
+      archived: this._archived,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
+  }
+
+  static parse(data: unknown): Member {
+    const parsed = this.schema.parse(data) as MemberData;
+    return new Member(parsed);
+  }
+
+  // Validation schema
+  static schema = object({
+    userId: uuid(),
+    displayName: string().min(1).max(255),
+    archived: boolean().default(false),
+  });
+
+  static override get bodySchema() {
+    return super.bodySchema.extend(this.schema.shape);
   }
 }

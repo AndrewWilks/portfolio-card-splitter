@@ -1,92 +1,78 @@
 // Services
-import { AuthService } from "@backend/services";
-import { MemberService } from "@backend/services";
-import { MerchantService } from "@backend/services";
-import { TransactionService } from "@backend/services";
-import { ReservationService } from "@backend/services";
-import { TransferService } from "@backend/services";
-import { PaymentService } from "@backend/services";
-import { AuditService } from "@backend/services";
-import { LedgerService } from "@backend/services";
-import { PasswordService } from "@backend/services";
-import { PotService } from "@backend/services";
-import { SessionService } from "@backend/services";
-import {
-  createEventRepository,
-  createInviteTokenRepository,
-  createMemberRepository,
-  createMerchantRepository,
-  createPasswordResetTokenRepository,
-  createPaymentRepository,
-  createPotRepository,
-  createReservationRepository,
-  createSessionRepository,
-  createTagRepository,
-  createTransactionRepository,
-  createTransferRepository,
-  createUserRepository,
-} from "./repositories.ts";
+import * as services from "@backend/services";
+import * as repositories from "./repositories.ts";
+import { createSessionRepository } from "@backend/di";
 
 // Service Factories
 export function createAuthService() {
-  return new AuthService(
-    createUserRepository(),
-    createSessionRepository(),
-    createInviteTokenRepository(),
-    createPasswordResetTokenRepository(),
-  );
+  // return new services.AuthService(
+  //   repositories.createUserRepository(),
+  //   repositories.createSessionRepository(),
+  //   repositories.createInviteTokenRepository(),
+  //   repositories.createPasswordResetTokenRepository()
+  // );
 }
 
 export function createMemberService() {
-  return new MemberService(createMemberRepository());
+  return new services.MemberService(repositories.createMemberRepository());
+}
+
+export function createUserService() {
+  return new services.UserService(repositories.createUserRepository());
 }
 
 export function createMerchantService() {
-  return new MerchantService(createMerchantRepository(), createTagRepository());
+  return new services.MerchantService(
+    repositories.createMerchantRepository(),
+    repositories.createTagRepository()
+  );
 }
 
 export function createTransactionService() {
-  return new TransactionService(
-    createTransactionRepository(),
-    createMerchantRepository(),
-    createTagRepository(),
+  return new services.TransactionService(
+    repositories.createTransactionRepository(),
+    repositories.createMerchantRepository(),
+    repositories.createTagRepository()
   );
 }
 
 export function createReservationService() {
-  return new ReservationService(
-    createReservationRepository(),
-    createPotRepository(),
+  return new services.ReservationService(
+    repositories.createReservationRepository(),
+    repositories.createPotRepository()
   );
 }
 
 export function createTransferService() {
-  return new TransferService(createTransferRepository(), createPotRepository());
+  return new services.TransferService(
+    repositories.createTransferRepository(),
+    repositories.createPotRepository()
+  );
 }
 
 export function createPaymentService() {
-  return new PaymentService(
-    createPaymentRepository(),
-    createReservationRepository(),
+  return new services.PaymentService(
+    repositories.createPaymentRepository(),
+    repositories.createReservationRepository()
   );
 }
 
 export function createAuditService() {
-  return new AuditService(createEventRepository());
+  return new services.AuditService(repositories.createEventRepository());
 }
 
 export function createLedgerService() {
-  return new LedgerService();
+  return new services.LedgerService();
 }
 
 export function createPasswordService() {
-  return new PasswordService();
+  return new services.PasswordService();
 }
 
 export function createPotService() {
-  return new PotService(createPotRepository());
+  return new services.PotService(repositories.createPotRepository());
 }
 
 export function createSessionService() {
-  return SessionService;
+  // return new services.SessionService(createSessionRepository());
 }

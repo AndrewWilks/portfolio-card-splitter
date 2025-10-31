@@ -1,83 +1,30 @@
 // Routes
 import { Context } from "hono";
-import { validateBody } from "../middleware/validation.ts";
 import { z } from "zod";
-import {
-  CreateMemberSchema,
-  CreateMerchantSchema,
-  CreatePaymentSchema,
-  CreatePotSchema,
-  CreateReservationSchema,
-  CreateTagSchema,
-  CreateTransactionSchema,
-  CreateTransferSchema,
-  QuerySchema,
-  UpdateMemberSchema,
-  UpdateMerchantSchema,
-  UpdatePotSchema,
-  UpdateTagSchema,
-  UpdateTransactionSchema,
-} from "../../shared/schemas/api/index.ts";
-import { rootRoute } from "@backend/routes";
-import { apiAuthBootstrap } from "@backend/routes";
-import { apiAuthInvite } from "@backend/routes";
-import { apiAuthAcceptInvite } from "@backend/routes";
-import { apiAuthLogin } from "@backend/routes";
-import { apiAuthLogout } from "@backend/routes";
-import { apiAuthRequestReset } from "@backend/routes";
-import { apiAuthResetPassword } from "@backend/routes";
-import { apiPeopleList } from "@backend/routes";
-import { apiPeopleCreate } from "@backend/routes";
-import { apiPeopleUpdate } from "@backend/routes";
-import { apiTransactionsList } from "@backend/routes";
-import { apiTransactionsCreate } from "@backend/routes";
-import { apiTransactionsUpdate } from "@backend/routes";
-import { apiMerchantsList } from "@backend/routes";
-import { apiMerchantsCreate } from "@backend/routes";
-import { apiMerchantsUpdate } from "@backend/routes";
-import { apiTagsList } from "@backend/routes";
-import { apiTagsCreate } from "@backend/routes";
-import { apiTagsUpdate } from "@backend/routes";
-import { apiPotsList } from "@backend/routes";
-import { apiPotsCreate } from "@backend/routes";
-import { apiPotsUpdate } from "@backend/routes";
-import { apiPotsDeposit } from "@backend/routes";
-import { apiReservationsCreate } from "@backend/routes";
-import { apiReservationsDelete } from "@backend/routes";
-import { apiTransfersCreate } from "@backend/routes";
-import { apiPaymentsCreate } from "@backend/routes";
-import { apiLedgerGet } from "@backend/routes";
-import { apiAuditGet } from "@backend/routes";
-import { apiEventsStream } from "@backend/routes";
-import {
-  createAuditService,
-  createAuthService,
-  createLedgerService,
-  createMemberService,
-  createMerchantService,
-  createPaymentService,
-  createPotService,
-  createReservationService,
-  createTransactionService,
-  createTransferService,
-} from "./services.ts";
+
+import { validateBody } from "../middleware/validation.ts";
 import { createEventRepository } from "./repositories.ts";
+
+import * as schemas from "@shared/schemas/api";
+import * as routes from "@backend/routes";
+import * as services from "./services.ts";
+import { User } from "@shared/entities";
 
 // Helper Functions for Route Factories
 function createValidatedRoute(
   schema: z.ZodSchema,
-  handler: (c: Context) => Response | Promise<Response>,
+  handler: (c: Context) => Response | Promise<Response>
 ) {
   return validateBody(schema)(handler);
 }
 
 function createListRoute<T>(
   serviceFactory: () => T,
-  handler: (c: Context, service: T) => Response | Promise<Response>,
+  handler: (c: Context, service: T) => Response | Promise<Response>
 ) {
   const service = serviceFactory();
   return (c: Context) => {
-    const query = QuerySchema.parse(c.req.query());
+    const query = schemas.QuerySchema.parse(c.req.query());
     c.set("query", query);
     return handler(c, service);
   };
@@ -85,193 +32,233 @@ function createListRoute<T>(
 
 // Route Factories
 export function createRootRoute() {
-  return rootRoute;
+  return routes.rootRoute;
 }
 
 export function createApiAuthBootstrap() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthBootstrap(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthBootstrap(c, authService);
 }
 
 // Auth Routes - require AuthService for business logic
 export function createApiAuthInvite() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthInvite(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthInvite(c, authService);
 }
 
 export function createApiAuthAcceptInvite() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthAcceptInvite(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthAcceptInvite(c, authService);
 }
 
 export function createApiAuthLogin() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthLogin(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthLogin(c, authService);
 }
 
 export function createApiAuthLogout() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthLogout(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthLogout(c, authService);
 }
 
 export function createApiAuthRequestReset() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthRequestReset(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthRequestReset(c, authService);
 }
 
 export function createApiAuthResetPassword() {
-  const authService = createAuthService();
-  return (c: Context) => apiAuthResetPassword(c, authService);
+  const authService = services.createAuthService();
+  return (c: Context) => routes.apiAuthResetPassword(c, authService);
 }
 
-// People Routes - require MemberService
-export function createApiPeopleList() {
-  return createListRoute(createMemberService, apiPeopleList);
+// Member Routes - require MemberService
+export function createApiMemberList() {
+  return createListRoute(services.createMemberService, routes.apiMemberList);
 }
 
-export function createApiPeopleCreate() {
-  const memberService = createMemberService();
-  return createValidatedRoute(
-    CreateMemberSchema,
-    (c: Context) => apiPeopleCreate(c, memberService),
+export function createApiMemberCreate() {
+  const memberService = services.createMemberService();
+  return createValidatedRoute(schemas.CreateMemberSchema, (c: Context) =>
+    routes.apiMemberCreate(c, memberService)
   );
 }
 
-export function createApiPeopleUpdate() {
-  const memberService = createMemberService();
-  return validateBody(UpdateMemberSchema)((c: Context) =>
-    apiPeopleUpdate(c, memberService)
+export function createApiMemberUpdate() {
+  const memberService = services.createMemberService();
+  return validateBody(schemas.UpdateMemberSchema)((c: Context) =>
+    routes.apiMemberUpdate(c, memberService)
   );
+}
+
+// User Routes - require UserService
+export function createApiUserList() {
+  return createListRoute(services.createUserService, routes.apiUserList);
+}
+
+export function createApiUserGet() {
+  const userService = services.createUserService();
+  return (c: Context) => {
+    const params = User.urlParamsSchema.parse(c.req.param());
+    return routes.apiUserGet(c, userService, params);
+  };
+}
+
+export function createApiUserCreate() {
+  const userService = services.createUserService();
+  return createValidatedRoute(User.createSchema, (c: Context) =>
+    routes.apiUserCreate(c, userService)
+  );
+}
+
+export function createApiUserUpdate() {
+  const userService = services.createUserService();
+  return validateBody(User.updateSchema)((c: Context) =>
+    routes.apiUserUpdate(c, userService)
+  );
+}
+
+export function createApiUserDelete() {
+  const userService = services.createUserService();
+  return (c: Context) => {
+    const params = User.urlParamsSchema.parse(c.req.param());
+    return routes.apiUserDelete(c, userService, params);
+  };
 }
 
 // Transaction Routes - require TransactionService
 export function createApiTransactionsList() {
-  return createListRoute(createTransactionService, apiTransactionsList);
+  return createListRoute(
+    services.createTransactionService,
+    routes.apiTransactionsList
+  );
 }
 
 export function createApiTransactionsCreate() {
-  const transactionService = createTransactionService();
-  return validateBody(CreateTransactionSchema)((c: Context) =>
-    apiTransactionsCreate(c, transactionService)
+  const transactionService = services.createTransactionService();
+  return validateBody(schemas.CreateTransactionSchema)((c: Context) =>
+    routes.apiTransactionsCreate(c, transactionService)
   );
 }
 
 export function createApiTransactionsUpdate() {
-  const transactionService = createTransactionService();
-  return validateBody(UpdateTransactionSchema)((c: Context) =>
-    apiTransactionsUpdate(c, transactionService)
+  const transactionService = services.createTransactionService();
+  return validateBody(schemas.UpdateTransactionSchema)((c: Context) =>
+    routes.apiTransactionsUpdate(c, transactionService)
   );
 }
 
 // Merchant Routes - require MerchantService
 export function createApiMerchantsList() {
-  return createListRoute(createMerchantService, apiMerchantsList);
+  return createListRoute(
+    services.createMerchantService,
+    routes.apiMerchantsList
+  );
 }
 
 export function createApiMerchantsCreate() {
-  const merchantService = createMerchantService();
-  return validateBody(CreateMerchantSchema)((c: Context) =>
-    apiMerchantsCreate(c, merchantService)
+  const merchantService = services.createMerchantService();
+  return validateBody(schemas.CreateMerchantSchema)((c: Context) =>
+    routes.apiMerchantsCreate(c, merchantService)
   );
 }
 
 export function createApiMerchantsUpdate() {
-  const merchantService = createMerchantService();
-  return validateBody(UpdateMerchantSchema)((c: Context) =>
-    apiMerchantsUpdate(c, merchantService)
+  const merchantService = services.createMerchantService();
+  return validateBody(schemas.UpdateMerchantSchema)((c: Context) =>
+    routes.apiMerchantsUpdate(c, merchantService)
   );
 }
 
 // Tag Routes - require MerchantService
 export function createApiTagsList() {
-  return createListRoute(createMerchantService, apiTagsList);
+  return createListRoute(services.createMerchantService, routes.apiTagsList);
 }
 
 export function createApiTagsCreate() {
-  const merchantService = createMerchantService();
-  return validateBody(CreateTagSchema)((c: Context) =>
-    apiTagsCreate(c, merchantService)
+  const merchantService = services.createMerchantService();
+  return validateBody(schemas.CreateTagSchema)((c: Context) =>
+    routes.apiTagsCreate(c, merchantService)
   );
 }
 
 export function createApiTagsUpdate() {
-  const merchantService = createMerchantService();
-  return validateBody(UpdateTagSchema)((c: Context) =>
-    apiTagsUpdate(c, merchantService)
+  const merchantService = services.createMerchantService();
+  return validateBody(schemas.UpdateTagSchema)((c: Context) =>
+    routes.apiTagsUpdate(c, merchantService)
   );
 }
 
 // Pot Routes - require PotService
 export function createApiPotsList() {
-  const potService = createPotService();
+  const potService = services.createPotService();
   return (c: Context) => {
-    const query = QuerySchema.parse(c.req.query());
+    const query = schemas.QuerySchema.parse(c.req.query());
     c.set("query", query);
-    return apiPotsList(c, potService);
+    return routes.apiPotsList(c, potService);
   };
 }
 
 export function createApiPotsCreate() {
-  const potService = createPotService();
-  return validateBody(CreatePotSchema)((c: Context) =>
-    apiPotsCreate(c, potService)
+  const potService = services.createPotService();
+  return validateBody(schemas.CreatePotSchema)((c: Context) =>
+    routes.apiPotsCreate(c, potService)
   );
 }
 
 export function createApiPotsUpdate() {
-  const potService = createPotService();
-  return validateBody(UpdatePotSchema)((c: Context) =>
-    apiPotsUpdate(c, potService)
+  const potService = services.createPotService();
+  return validateBody(schemas.UpdatePotSchema)((c: Context) =>
+    routes.apiPotsUpdate(c, potService)
   );
 }
 
 export function createApiPotsDeposit() {
-  const potService = createPotService();
-  return (c: Context) => apiPotsDeposit(c, potService);
+  const potService = services.createPotService();
+  return (c: Context) => routes.apiPotsDeposit(c, potService);
 }
 
 // Reservation Routes - require ReservationService
 export function createApiReservationsCreate() {
-  const reservationService = createReservationService();
-  return validateBody(CreateReservationSchema)((c: Context) =>
-    apiReservationsCreate(c, reservationService)
+  const reservationService = services.createReservationService();
+  return validateBody(schemas.CreateReservationSchema)((c: Context) =>
+    routes.apiReservationsCreate(c, reservationService)
   );
 }
 
 export function createApiReservationsDelete() {
-  const reservationService = createReservationService();
-  return (c: Context) => apiReservationsDelete(c, reservationService);
+  const reservationService = services.createReservationService();
+  return (c: Context) => routes.apiReservationsDelete(c, reservationService);
 }
 
 // Transfer Routes - require TransferService
 export function createApiTransfersCreate() {
-  const transferService = createTransferService();
-  return validateBody(CreateTransferSchema)((c: Context) =>
-    apiTransfersCreate(c, transferService)
+  const transferService = services.createTransferService();
+  return validateBody(schemas.CreateTransferSchema)((c: Context) =>
+    routes.apiTransfersCreate(c, transferService)
   );
 }
 
 // Payment Routes - require PaymentService
 export function createApiPaymentsCreate() {
-  const paymentService = createPaymentService();
-  return validateBody(CreatePaymentSchema)((c: Context) =>
-    apiPaymentsCreate(c, paymentService)
+  const paymentService = services.createPaymentService();
+  return validateBody(schemas.CreatePaymentSchema)((c: Context) =>
+    routes.apiPaymentsCreate(c, paymentService)
   );
 }
 
 // Ledger Routes - require LedgerService and AuditService
 export function createApiLedgerGet() {
-  const ledgerService = createLedgerService();
-  return (c: Context) => apiLedgerGet(c, ledgerService);
+  const ledgerService = services.createLedgerService();
+  return (c: Context) => routes.apiLedgerGet(c, ledgerService);
 }
 
 export function createApiAuditGet() {
-  const auditService = createAuditService();
-  return (c: Context) => apiAuditGet(c, auditService);
+  const auditService = services.createAuditService();
+  return (c: Context) => routes.apiAuditGet(c, auditService);
 }
 
 // Events Routes - require EventRepository
 export function createApiEventsStream() {
   const eventRepository = createEventRepository();
-  return (c: Context) => apiEventsStream(c, eventRepository);
+  return (c: Context) => routes.apiEventsStream(c, eventRepository);
 }

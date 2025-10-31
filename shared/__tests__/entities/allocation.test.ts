@@ -5,19 +5,19 @@ Deno.test("Allocation entity", () => {
   // TODO: Test allocation entity validation and methods
 });
 
-Deno.test("Allocation - can be created with percentage rule", () => {
+Deno.test("Allocation - can be created with basisPoints rule", () => {
   const allocation = Allocation.create({
     transactionId: "550e8400-e29b-41d4-a716-446655440000",
     memberId: "550e8400-e29b-41d4-a716-446655440001",
-    rule: "percentage",
-    percentage: 5000, // 50% in basis points
+    rule: "basisPoints",
+    basisPoints: 5000, // 50% in basis points
   });
 
   assert(allocation.id.length > 0);
   assert(allocation.transactionId === "550e8400-e29b-41d4-a716-446655440000");
   assert(allocation.memberId === "550e8400-e29b-41d4-a716-446655440001");
-  assert(allocation.rule === "percentage");
-  assert(allocation.percentage === 5000);
+  assert(allocation.rule === "basisPoints");
+  assert(allocation.basisPoints === 5000);
   assert(allocation.amountCents === undefined);
   assert(allocation.calculatedAmountCents === 0); // Will be calculated later
   assert(allocation.createdAt instanceof Date);
@@ -34,17 +34,17 @@ Deno.test("Allocation - can be created with fixed amount rule", () => {
 
   assert(allocation.rule === "fixed_amount");
   assert(allocation.amountCents === 2500);
-  assert(allocation.percentage === undefined);
+  assert(allocation.basisPoints === undefined);
   assert(allocation.calculatedAmountCents === 2500); // For fixed amount, calculated = amount
 });
 
-Deno.test("Allocation - validates percentage range", () => {
+Deno.test("Allocation - validates basisPoints range", () => {
   try {
     Allocation.create({
       transactionId: "550e8400-e29b-41d4-a716-446655440000",
       memberId: "550e8400-e29b-41d4-a716-446655440001",
-      rule: "percentage",
-      percentage: 15000, // 150% - invalid
+      rule: "basisPoints",
+      basisPoints: 15000, // 150% - invalid
     });
     assert(false, "Should have thrown validation error");
   } catch (error) {
@@ -53,20 +53,20 @@ Deno.test("Allocation - validates percentage range", () => {
 });
 
 Deno.test(
-  "Allocation - validates percentage is required for percentage rule",
+  "Allocation - validates basisPoints is required for basisPoints rule",
   () => {
     try {
       Allocation.create({
         transactionId: "550e8400-e29b-41d4-a716-446655440000",
         memberId: "550e8400-e29b-41d4-a716-446655440001",
-        rule: "percentage",
-        // Missing percentage
+        rule: "basisPoints",
+        // Missing basisPoints
       });
       assert(false, "Should have thrown validation error");
     } catch (error) {
       assert(error instanceof Error);
     }
-  },
+  }
 );
 
 Deno.test(
@@ -83,7 +83,7 @@ Deno.test(
     } catch (error) {
       assert(error instanceof Error);
     }
-  },
+  }
 );
 
 Deno.test("Allocation - can be reconstructed from data", () => {
@@ -91,8 +91,8 @@ Deno.test("Allocation - can be reconstructed from data", () => {
     id: "550e8400-e29b-41d4-a716-446655440002",
     transactionId: "550e8400-e29b-41d4-a716-446655440000",
     memberId: "550e8400-e29b-41d4-a716-446655440001",
-    rule: "percentage" as const,
-    percentage: 7500, // 75%
+    rule: "basisPoints" as const,
+    basisPoints: 7500, // 75%
     amountCents: undefined,
     calculatedAmountCents: 3750, // Will be calculated based on transaction amount
     createdAt: new Date("2025-10-21T12:00:00Z"),
@@ -105,7 +105,7 @@ Deno.test("Allocation - can be reconstructed from data", () => {
   assert(allocation.transactionId === data.transactionId);
   assert(allocation.memberId === data.memberId);
   assert(allocation.rule === data.rule);
-  assert(allocation.percentage === data.percentage);
+  assert(allocation.basisPoints === data.basisPoints);
   assert(allocation.amountCents === data.amountCents);
   assert(allocation.calculatedAmountCents === data.calculatedAmountCents);
   assert(allocation.createdAt.getTime() === data.createdAt.getTime());

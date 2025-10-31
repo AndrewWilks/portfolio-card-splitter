@@ -1,71 +1,63 @@
-import { z } from "zod";
+import { boolean, object, string, uuid } from "zod";
+import { Entity, EntityData } from "@shared/entities";
 
 // For merchants table. Includes normalization logic for fuzzy matching.
-export const MerchantSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1).max(255),
-  location: z.string().max(255).optional(),
-  mergedIntoId: z.string().uuid().optional(),
-  isActive: z.boolean().default(true),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-});
+interface MerchantData extends EntityData {
+  name: string;
+  location?: string;
+  mergedIntoId?: string;
+  isActive: boolean;
+}
 
-export type MerchantData = z.infer<typeof MerchantSchema>;
+export class Merchant extends Entity {
+  private _name: string;
+  private _location?: string;
+  private _mergedIntoId?: string;
+  private _isActive: boolean;
 
-export class Merchant {
-  constructor(
-    public readonly id: string,
-    public readonly name: string,
-    public readonly location?: string,
-    public readonly mergedIntoId?: string,
-    public readonly isActive: boolean = true,
-    public readonly createdAt: Date = new Date(),
-    public readonly updatedAt: Date = new Date(),
-  ) {}
-
-  static create(
-    data: Omit<MerchantData, "id" | "createdAt" | "updatedAt">,
-  ): Merchant {
-    const validated = MerchantSchema.omit({
-      id: true,
-      createdAt: true,
-      updatedAt: true,
-    }).parse(data);
-
-    return new Merchant(
-      crypto.randomUUID(),
-      validated.name,
-      validated.location,
-      validated.mergedIntoId,
-      validated.isActive,
-      new Date(),
-      new Date(),
-    );
+  constructor({
+    id,
+    createdAt,
+    updatedAt,
+    isActive,
+    name,
+    location,
+    mergedIntoId,
+  }: MerchantData) {
+    super({ id, createdAt, updatedAt });
+    this._isActive = isActive;
+    this._name = name;
+    this._location = location;
+    this._mergedIntoId = mergedIntoId;
   }
 
-  static from(data: MerchantData): Merchant {
-    const validated = MerchantSchema.parse(data);
-    return new Merchant(
-      validated.id,
-      validated.name,
-      validated.location,
-      validated.mergedIntoId,
-      validated.isActive,
-      validated.createdAt,
-      validated.updatedAt,
-    );
-  }
-
-  toJSON(): MerchantData {
+  get toJSON() {
     return {
       id: this.id,
-      name: this.name,
-      location: this.location,
-      mergedIntoId: this.mergedIntoId,
-      isActive: this.isActive,
+      name: this._name,
+      location: this._location,
+      mergedIntoId: this._mergedIntoId,
+      isActive: this._isActive,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
+  }
+
+  static parse(data: unknown): Merchant {
+    const parsed = this.schema.parse(data) as MerchantData;
+    return new Merchant(parsed);
+  }
+
+  static get schema() {
+    return object({
+      name: string().min(1).max(255),
+      location: string().max(255).optional(),
+      mergedIntoId: uuid().optional(),
+      isActive: boolean().default(true),
+    });
+  }
+
+  static override get bodySchema() {
+    return super.bodySchema.extend(this.schema.shape);
   }
 }

@@ -5,16 +5,19 @@
     "@backend/services": "./backend/services/index.ts",
     "@backend/repositories": "./backend/repositories/index.ts",
     "@backend/routes": "./backend/routes/index.ts",
+    "@backend/middleware": "./backend/middleware/index.ts",
+    "@backend/di": "./backend/di/index.ts",
 
     // Frontend modules
     "@frontend/components": "./frontend/components/index.ts",
     "@frontend/services": "./frontend/services/index.ts",
     "@frontend/repositories": "./frontend/repositories/index.ts",
+    "@hono/zod-validator": "npm:@hono/zod-validator@^0.7.4",
 
     // Shared modules
     "@shared/services": "./shared/services/index.ts",
     "@shared/entities": "./shared/entities/index.ts",
-    "@shared/repositories": "./shared/repositories/index.ts",
+    "@shared/types": "./shared/types.ts",
 
     // Third-party Packages
     "@std/crypto": "jsr:@std/crypto@^1.0.5",
