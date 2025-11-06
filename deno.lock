@@ -19,6 +19,7 @@
     "jsr:@stdext/crypto@0.1": "0.1.0",
     "npm:@cspell/dict-en-au@^1.1.7": "1.1.7",
     "npm:@hono/zod-validator@~0.7.4": "0.7.4_hono@4.10.1_zod@4.1.12",
+    "npm:@types/node@*": "24.2.0",
     "npm:@types/pg@^8.15.5": "8.15.5",
     "npm:cspell@*": "9.2.1",
     "npm:cspell@^9.2.1": "9.2.1",
