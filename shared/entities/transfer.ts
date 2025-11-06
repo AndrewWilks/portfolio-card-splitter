@@ -4,18 +4,16 @@ import { Entity, EntityData } from "./base/entity.ts";
 import { Cents, zCents } from "@shared/types";
 
 interface TransferData extends EntityData {
-  fromPotId: string;
-  toPotId: string;
+  fromPotId: string | null;
+  toPotId: string | null;
   amountCents: Cents;
   occurredOn: Date;
   note?: string;
 }
 
-// TODO: Transfers and cash, allow fromPotId or toPotId to be null to model cash, never both null, add an invariant in constructor, and a Zod refinement to enforce it.
-
 export class Transfer extends Entity {
-  private _fromPotId: string;
-  private _toPotId: string;
+  private _fromPotId: string | null;
+  private _toPotId: string | null;
   private _amountCents: Cents;
   private _occurredOn: Date;
   private _note?: string;
@@ -31,11 +29,52 @@ export class Transfer extends Entity {
     note,
   }: TransferData) {
     super({ id, createdAt, updatedAt });
+
+    // Invariant: at least one of fromPotId or toPotId must be non-null
+    if (fromPotId === null && toPotId === null) {
+      throw new Error(
+        "Transfer must have at least one non-null pot ID (fromPotId or toPotId)"
+      );
+    }
+
     this._fromPotId = fromPotId;
     this._toPotId = toPotId;
     this._amountCents = amountCents;
     this._occurredOn = occurredOn;
     this._note = note;
+  }
+
+  /**
+   * Check if this transfer represents a cash withdrawal (fromPotId is set, toPotId is null)
+   */
+  isCashOut(): boolean {
+    return this._fromPotId !== null && this._toPotId === null;
+  }
+
+  /**
+   * Check if this transfer represents a cash deposit (fromPotId is null, toPotId is set)
+   */
+  isCashIn(): boolean {
+    return this._fromPotId === null && this._toPotId !== null;
+  }
+
+  /**
+   * Check if this transfer is between two pots (both IDs are set)
+   */
+  isPotTransfer(): boolean {
+    return this._fromPotId !== null && this._toPotId !== null;
+  }
+
+  get fromPotId(): string | null {
+    return this._fromPotId;
+  }
+
+  get toPotId(): string | null {
+    return this._toPotId;
+  }
+
+  get amountCents(): Cents {
+    return this._amountCents;
   }
 
   get toJSON() {
@@ -58,11 +97,14 @@ export class Transfer extends Entity {
 
   static get schema() {
     return object({
-      fromPotId: uuid(),
-      toPotId: uuid(),
+      fromPotId: uuid().nullable(),
+      toPotId: uuid().nullable(),
       amountCents: zCents,
       occurredOn: date(),
       note: string().optional(),
+    }).refine((data) => data.fromPotId !== null || data.toPotId !== null, {
+      message:
+        "At least one of fromPotId or toPotId must be non-null (to model cash or pot-to-pot transfers)",
     });
   }
 

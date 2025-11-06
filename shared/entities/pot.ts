@@ -1,7 +1,7 @@
 // For pots table. Includes balance tracking, ACLs, and available balance calculations.
 import { number, object, record, string, uuid, enum as zEnum } from "zod";
 import { Entity, EntityData } from "./base/entity.ts";
-import { Cents, zCents } from "@shared/types";
+import { Cents } from "@shared/types";
 import { UUID } from "node:crypto";
 
 enum PotScope {
@@ -30,12 +30,9 @@ export interface PotData extends EntityData {
   institution?: string; // e.g., "Chase", "Cash"
   maskingAccount?: string; // e.g., last 4 digits, "****1234"
   physicalLocation?: string; // e.g., "Wallet", "Home Safe"
-  availableCents?: Cents; // e.g., calculated from transactions
-  reservedCents?: Cents; // e.g., pending transactions
   visibilityAcls?: Map<UUID, PotVisibility>; // access control list
 }
 
-// TODO: Derived fields should not be persisted, fields like availableCents or reservedCents on Pot should be returned by services as derived values, not stored on the entity data, they will drift.
 export class Pot extends Entity {
   private _name: string;
   private _balanceCents: number;
@@ -45,9 +42,11 @@ export class Pot extends Entity {
   private _institution?: string;
   private _maskingAccount?: string;
   private _physicalLocation?: string;
-  private _availableCents?: Cents;
-  private _reservedCents?: Cents;
   private _visibilityAcls?: Map<UUID, PotVisibility>;
+
+  // Transient derived values (not persisted)
+  private _cachedReservedCents?: Cents;
+  private _cachedAvailableCents?: Cents;
 
   constructor({
     id,
@@ -61,8 +60,6 @@ export class Pot extends Entity {
     institution,
     maskingAccount,
     physicalLocation,
-    availableCents,
-    reservedCents,
     visibilityAcls,
   }: PotData) {
     super({ id, createdAt, updatedAt });
@@ -74,13 +71,68 @@ export class Pot extends Entity {
     this._institution = institution;
     this._maskingAccount = maskingAccount;
     this._physicalLocation = physicalLocation;
-    this._availableCents = availableCents;
-    this._reservedCents = reservedCents;
     this._visibilityAcls = visibilityAcls;
   }
 
+  /**
+   * Set the derived values for this pot instance. Services should call this
+   * after fetching reservation data to enable getters and toJSON enrichment.
+   * @param reservationAmounts - Array of amounts currently reserved
+   */
+  withDerivedValues(reservationAmounts: Cents[]): this {
+    this._cachedReservedCents = this.calculateReservedCents(reservationAmounts);
+    this._cachedAvailableCents = this.calculateAvailableCents(
+      this._cachedReservedCents
+    );
+    return this;
+  }
+
+  /**
+   * Calculate the reserved balance from a list of reservation amounts.
+   * @param reservationAmounts - Array of amounts currently reserved
+   * @returns The total reserved amount in cents
+   */
+  private calculateReservedCents(reservationAmounts: Cents[]): Cents {
+    return reservationAmounts.reduce((sum, amount) => sum + amount, 0) as Cents;
+  }
+
+  /**
+   * Calculate the available balance by subtracting reserved amounts from the total balance.
+   * @param reservedCents - The total amount currently reserved (e.g., from pending transactions)
+   * @returns The available balance in cents
+   */
+  private calculateAvailableCents(reservedCents: Cents): Cents {
+    return (this._balanceCents - reservedCents) as Cents;
+  }
+
+  /**
+   * Get the reserved cents (if derived values have been set via withDerivedValues)
+   */
+  get reservedCents(): Cents | undefined {
+    return this._cachedReservedCents;
+  }
+
+  /**
+   * Get the available cents (if derived values have been set via withDerivedValues)
+   */
+  get availableCents(): Cents | undefined {
+    return this._cachedAvailableCents;
+  }
+
+  get balanceCents(): number {
+    return this._balanceCents;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  get ownerId(): string {
+    return this._ownerId;
+  }
+
   get toJSON() {
-    return {
+    const base = {
       id: this.id,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
@@ -92,10 +144,19 @@ export class Pot extends Entity {
       institution: this._institution,
       maskingAccount: this._maskingAccount,
       physicalLocation: this._physicalLocation,
-      availableCents: this._availableCents,
-      reservedCents: this._reservedCents,
       visibilityAcls: this._visibilityAcls,
     };
+
+    // Include derived values if they have been set
+    if (this._cachedReservedCents !== undefined) {
+      return {
+        ...base,
+        reservedCents: this._cachedReservedCents,
+        availableCents: this._cachedAvailableCents,
+      };
+    }
+
+    return base;
   }
 
   static parse(data: unknown): Pot {
@@ -113,8 +174,6 @@ export class Pot extends Entity {
       institution: string().max(100).optional(),
       maskingAccount: string().max(20).optional(),
       physicalLocation: string().max(100).optional(),
-      availableCents: zCents.optional(),
-      reservedCents: zCents.optional(),
       visibilityAcls: record(string(), zEnum(PotVisibility)).optional(),
     });
   }
