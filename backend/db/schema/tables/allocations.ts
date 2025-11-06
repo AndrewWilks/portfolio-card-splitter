@@ -8,7 +8,8 @@ import { transactions } from "./transactions.ts";
 /**
  * Database table definition for `allocations`.
  *
- * Represents allocation rules or records tying amounts to pots or categories.
+ * Represents allocation rules or records tying amounts to members.
+ * Calculated amounts are derived in the entity layer, not persisted.
  */
 export const allocations = pgTable("allocations", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -21,9 +22,6 @@ export const allocations = pgTable("allocations", {
   rule: allocationRule("rule").notNull(),
   percentage: bigint("percentage", { mode: "number" }), // stored as basis points (e.g., 2500 = 25%)
   amountCents: bigint("amount_cents", { mode: "number" }), // for fixed amounts
-  calculatedAmountCents: bigint("calculated_amount_cents", {
-    mode: "number",
-  }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

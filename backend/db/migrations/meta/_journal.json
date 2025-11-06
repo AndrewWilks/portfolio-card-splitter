@@ -15,6 +15,13 @@
       "when": 1762470167195,
       "tag": "0001_familiar_madrox",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1762470746001,
+      "tag": "0002_far_angel",
+      "breakpoints": true
     }
   ]
 }

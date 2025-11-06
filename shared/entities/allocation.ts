@@ -7,7 +7,6 @@ export interface AllocationData extends EntityData {
   transactionId: string;
   memberId: string;
   rule: AllocationRule;
-  calculatedAmountCents?: Cents;
   basisPoints?: basisPoints;
   amountCents?: Cents;
 }
@@ -23,7 +22,6 @@ export class Allocation extends Entity {
   private _transactionId: string;
   private _memberId: string;
   private _rule: AllocationRule;
-  private _calculatedAmountCents: Cents;
   /**
    * The basisPoints of the transaction allocated to the member, in basis points.
    * For example, 5000 basis points = 50%
@@ -38,7 +36,6 @@ export class Allocation extends Entity {
     transactionId,
     memberId,
     rule,
-    calculatedAmountCents,
     basisPoints,
     amountCents,
   }: AllocationData) {
@@ -49,7 +46,6 @@ export class Allocation extends Entity {
     // Store values with safe defaults for optional fields
     this._amountCents = (amountCents ?? 0) as Cents;
     this._basisPoints = (basisPoints ?? 0) as basisPoints;
-    this._calculatedAmountCents = (calculatedAmountCents ?? 0) as Cents;
   }
 
   static create(data: AllocationData): Allocation {
@@ -60,26 +56,20 @@ export class Allocation extends Entity {
       );
     }
 
-    // Calculate the initial calculatedAmountCents based on rule
-    let calculatedAmountCents: Cents;
-
+    // Validate based on rule
     if (data.rule === this.Rules.FIXED_AMOUNT) {
       if (data.amountCents === undefined) {
         throw new Error("Fixed amount allocations require amountCents");
       }
-      calculatedAmountCents = data.amountCents;
     } else if (data.rule === this.Rules.basisPoints) {
       if (data.basisPoints === undefined) {
         throw new Error("Basis points allocations require basisPoints");
       }
-      // For basisPoints allocations, we'll set calculatedAmountCents to 0 initially
-      // It will be calculated later when the transaction amount is known
-      calculatedAmountCents = 0 as Cents;
     } else {
       throw new Error("Invalid allocation rule");
     }
 
-    const validated = this.schema.parse({ ...data, calculatedAmountCents });
+    const validated = this.schema.parse(data);
 
     return new Allocation(validated);
   }
@@ -89,7 +79,7 @@ export class Allocation extends Entity {
    * For basisPoints allocations, this calculates the actual amount
    * For fixed amount allocations, this returns the fixed amount
    */
-  private calculateAmount(transactionAmountCents: Cents): Cents {
+  public calculateAmount(transactionAmountCents: Cents): Cents {
     switch (this._rule) {
       case AllocationRule.FIXED_AMOUNT:
         return this._amountCents || (0 as Cents);
@@ -105,6 +95,26 @@ export class Allocation extends Entity {
     }
   }
 
+  get transactionId(): string {
+    return this._transactionId;
+  }
+
+  get memberId(): string {
+    return this._memberId;
+  }
+
+  get rule(): AllocationRule {
+    return this._rule;
+  }
+
+  get basisPoints(): basisPoints {
+    return this._basisPoints;
+  }
+
+  get amountCents(): Cents {
+    return this._amountCents;
+  }
+
   get toJSON() {
     return {
       id: this.id,
@@ -113,7 +123,6 @@ export class Allocation extends Entity {
       rule: this._rule,
       basisPoints: this._basisPoints,
       amountCents: this._amountCents,
-      calculatedAmountCents: this._calculatedAmountCents,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -130,7 +139,6 @@ export class Allocation extends Entity {
       transactionId: uuid(),
       memberId: uuid(),
       rule: zEnum(AllocationRule),
-      calculatedAmountCents: zCents.min(0).optional(),
       basisPoints: zBasisPoints.optional(),
       amountCents: zCents.min(0).optional(),
     }).refine(
