@@ -9,8 +9,8 @@ Fix existing database schema and entities to match current specifications before
 
 ## Tasks
 
-- [ ] **0.1** Fix Transfer Schema (2-3 hrs) - Make pot IDs nullable for cash transactions
-- [ ] **0.2** Fix Payment Schema (2-3 hrs) - Add paidOn, make potId required
+- [x] **0.1** Fix Transfer Schema (2-3 hrs) - Make pot IDs nullable for cash transactions
+- [x] **0.2** Fix Payment Schema (2-3 hrs) - Add paidOn, make potId required
 - [ ] **0.3** Fix Allocation Schema (1-2 hrs) - Remove persisted calculated field
 - [ ] **0.4** Fix Reservation Schema (2-3 hrs) - Add allocation and member links
 - [ ] **0.5** Update Entities (3-4 hrs) - Match interfaces to database schemas
