@@ -34,7 +34,8 @@ export function createTransactionService() {
     repositories.createMerchantRepository(),
     repositories.createTagRepository(),
     repositories.createCardAccountRepository(),
-    repositories.createCardRepository()
+    repositories.createCardRepository(),
+    repositories.createMemberRepository()
   );
 }
 

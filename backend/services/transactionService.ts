@@ -10,6 +10,7 @@ import {
   TagRepository,
   CardAccountRepository,
   CardRepository,
+  MemberRepository,
 } from "@backend/repositories";
 import { type z } from "zod";
 import { basisPoints } from "@shared/types";
@@ -25,7 +26,8 @@ export class TransactionService {
     private merchantRepository: MerchantRepository,
     private tagRepository: TagRepository,
     private cardAccountRepository: CardAccountRepository,
-    private cardRepository: CardRepository
+    private cardRepository: CardRepository,
+    private memberRepository: MemberRepository
   ) {}
 
   async listTransactions(
@@ -84,6 +86,14 @@ export class TransactionService {
         if (!tag) {
           throw new Error(`Tag with ID ${tagId} not found`);
         }
+      }
+    }
+
+    // Validate that all members in allocations exist
+    for (const allocation of validatedRequest.allocations) {
+      const member = await this.memberRepository.findById(allocation.memberId);
+      if (!member) {
+        throw new Error(`Member with ID ${allocation.memberId} not found`);
       }
     }
 

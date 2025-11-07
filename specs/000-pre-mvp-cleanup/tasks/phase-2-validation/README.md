@@ -12,12 +12,12 @@ Enforce business rules at entity and service layers for all entities.
 
 - [x] **2.1** Payment Validation (3-4 hrs) - Cannot exceed transaction total, flag mismatches ✅
 - [x] **2.2** Reservation Validation (3-4 hrs) - Link to allocations, respect pot balance ✅
-- [ ] **2.3** Transaction Validation (3-4 hrs) - Allocations sum correctly, valid CardAccount
+- [x] **2.3** Transaction Validation (3-4 hrs) - Allocations sum correctly, valid CardAccount ✅
 - [ ] **2.4** Allocation Validation (2-3 hrs) - Sum rules, cannot mix types
 - [ ] **2.5** Pot Validation (2-3 hrs) - Visibility rules, ACL enforcement
 
 **Total**: 5 tasks, ~13-18 hours  
-**Progress**: 2/5 complete (40%)
+**Progress**: 3/5 complete (60%)
 
 ## Task 2.1 - Payment Validation ✅ COMPLETE
 
@@ -78,7 +78,36 @@ Added reconciliation flagging to Payment entity to detect when actual payments d
 - Run all payment tests to verify functionality
 - Move to Task 2.2 (Reservation Validation)
 
-## Task 2.2 - Reservation Validation ✅ COMPLETE
+## Completed Work
+
+### Task 2.3: Transaction Validation ✅
+
+**Implementation Summary:**
+Discovered that TransactionService already had comprehensive validation for most requirements:
+- ✅ Merchant existence validation
+- ✅ CardAccount existence validation  
+- ✅ Card exists and belongs to CardAccount
+- ✅ Tag existence validation
+- ✅ Allocations sum to 100% (percentage type)
+- ✅ Fixed allocations don't exceed transaction total
+- ✅ Cannot mix percentage and fixed allocation types
+- ✅ At least one allocation required
+
+**Added:**
+- Member existence validation for all allocations
+- MemberRepository dependency via DI
+- Comprehensive test suite (6 scenarios)
+
+**Changes:**
+- `backend/services/transactionService.ts` - Added member validation loop
+- `backend/di/services.ts` - Wired MemberRepository
+- `backend/__tests__/services/transactionValidation.test.ts` - NEW test file
+
+**Time:** ~1.5 hours
+
+---
+
+### Task 2.2: Reservation Validation ✅
 
 ### Implementation Summary
 

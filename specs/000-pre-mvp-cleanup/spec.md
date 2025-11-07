@@ -170,11 +170,13 @@ interface PaymentData extends EntityData {
 - [x] One-of rule (basisPoints XOR amountCents) ✅ Present in `create()` and schema
 - [x] Calculated amount handling ✅ Present
 
-### Transaction Validation ⚠️ **PARTIAL**
+### Transaction Validation ✅ **IMPLEMENTED**
 
-- [ ] Allocations must sum to transaction total (service layer, not entity)
-- [ ] Transaction must belong to CardAccount ❌ Field missing
-- [ ] Cannot save with mismatched allocation totals (service layer)
+- [x] Allocations must sum to transaction total (service layer, not entity)
+- [x] Transaction must belong to CardAccount ✅ Validated in service
+- [x] Cannot save with mismatched allocation totals (service layer)
+- [x] All members in allocations must exist (service layer)
+- [x] Cannot mix percentage and fixed allocation types (service layer)
 
 ### Payment Validation ⚠️ **MISSING**
 
