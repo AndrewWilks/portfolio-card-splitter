@@ -67,12 +67,12 @@ export class TransactionRepository extends Repository<"Transaction"> {
 
     return results.map((row) => {
       const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
-      
+
       // Filter out null optional fields
       if (camelCaseData.cardId === null) {
         delete camelCaseData.cardId;
       }
-      
+
       // deno-lint-ignore no-explicit-any
       return new Transaction(camelCaseData as any);
     });

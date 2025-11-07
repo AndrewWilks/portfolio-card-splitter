@@ -10,14 +10,18 @@ export class CardAccountSettingsRepository extends Repository<"CardAccountSettin
   }
 
   // Override to handle numeric field conversion
-  private convertDbToEntity(dbRow: Record<string, unknown>): CardAccountSettings {
+  private convertDbToEntity(
+    dbRow: Record<string, unknown>
+  ): CardAccountSettings {
     const camelCaseData = objectKeysToCamel(dbRow);
-    
+
     // Convert numeric string fields to numbers
     if (typeof camelCaseData.minimumPaymentPercentage === "string") {
-      camelCaseData.minimumPaymentPercentage = parseFloat(camelCaseData.minimumPaymentPercentage);
+      camelCaseData.minimumPaymentPercentage = parseFloat(
+        camelCaseData.minimumPaymentPercentage
+      );
     }
-    
+
     // deno-lint-ignore no-explicit-any
     return new CardAccountSettings(camelCaseData as any);
   }
@@ -54,9 +58,13 @@ export class CardAccountSettingsRepository extends Repository<"CardAccountSettin
   }
 
   // Override save to convert returned data
-  override async save(entity: CardAccountSettings): Promise<CardAccountSettings[]> {
+  override async save(
+    entity: CardAccountSettings
+  ): Promise<CardAccountSettings[]> {
     const results = await super.save(entity);
     // Convert the returned database rows
-    return results.map(row => this.convertDbToEntity((row as unknown) as Record<string, unknown>));
+    return results.map((row) =>
+      this.convertDbToEntity(row as unknown as Record<string, unknown>)
+    );
   }
 }
