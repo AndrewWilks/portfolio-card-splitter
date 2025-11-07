@@ -138,14 +138,16 @@ export class CardAccountService {
     if (validated.last4 !== undefined) existingData.last4 = validated.last4;
     if (validated.billingCycle !== undefined)
       existingData.billingCycle = validated.billingCycle;
-    if (existingData.creditLimitCents !== undefined)
+    if (validated.creditLimitCents !== undefined)
       existingData.creditLimitCents = validated.creditLimitCents;
-    if (existingData.isActive !== undefined && validated.isActive === false) {
-      existing.toggleActive();
+    if (validated.isActive !== undefined && validated.isActive === false) {
+      existingData.isActive = false;
     }
 
-    const [updated] = await this.cardAccountRepository.save(existing);
-    return updated;
+    // Create updated entity with modified data
+    const updatedAccount = new CardAccount(existingData);
+    const [saved] = await this.cardAccountRepository.save(updatedAccount);
+    return saved;
   }
 
   async deleteCardAccount(id: string, ownerId: string): Promise<void> {

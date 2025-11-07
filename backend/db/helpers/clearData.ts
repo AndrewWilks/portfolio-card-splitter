@@ -10,6 +10,9 @@ export async function clearDatabaseData() {
   await db.delete(Schemas.Tables.reservations);
   await db.delete(Schemas.Tables.transfers);
   await db.delete(Schemas.Tables.transactions);
+  await db.delete(Schemas.Tables.cards);
+  await db.delete(Schemas.Tables.cardAccountSettings);
+  await db.delete(Schemas.Tables.cardAccounts);
   await db.delete(Schemas.Tables.pots);
   await db.delete(Schemas.Tables.members);
   await db.delete(Schemas.Tables.sessions);
