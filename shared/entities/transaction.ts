@@ -1,6 +1,6 @@
 // For transactions table. Core entity with allocations, tags, and amount validation.
 
-import { date, object, string, uuid, enum as zEnum } from "zod";
+import { date, iso, object, string, uuid, enum as zEnum } from "zod";
 import { Entity, EntityData } from "@shared/entities";
 import { Cents, zCents } from "@shared/types";
 
@@ -10,6 +10,8 @@ export enum TransactionType {
 }
 
 export interface TransactionData extends EntityData {
+  cardAccountId: string;
+  cardId?: string;
   merchantId: string;
   description: string;
   amountCents: Cents;
@@ -21,6 +23,8 @@ export interface TransactionData extends EntityData {
 export class Transaction extends Entity {
   static TransactionType = TransactionType;
 
+  private _cardAccountId: string;
+  private _cardId?: string;
   private _merchantId: string;
   private _description: string;
   private _amountCents: Cents;
@@ -32,6 +36,8 @@ export class Transaction extends Entity {
     id,
     createdAt,
     updatedAt,
+    cardAccountId,
+    cardId,
     amountCents,
     createdById,
     description,
@@ -40,26 +46,69 @@ export class Transaction extends Entity {
     type,
   }: TransactionData) {
     super({ id, createdAt, updatedAt });
-    this._amountCents = amountCents;
-    this._createdById = createdById;
-    this._description = description;
-    this._merchantId = merchantId;
-    this._transactionDate = transactionDate;
-    this._type = type;
+    const validated = Transaction.schema.parse({
+      cardAccountId,
+      cardId,
+      merchantId,
+      description,
+      amountCents,
+      type,
+      transactionDate,
+      createdById,
+    });
+    this._cardAccountId = validated.cardAccountId;
+    this._cardId = validated.cardId;
+    this._amountCents = validated.amountCents;
+    this._createdById = validated.createdById;
+    this._description = validated.description;
+    this._merchantId = validated.merchantId;
+    this._transactionDate = validated.transactionDate;
+    this._type = validated.type;
+  }
+
+  get cardAccountId(): string {
+    return this._cardAccountId;
+  }
+
+  get cardId(): string | undefined {
+    return this._cardId;
+  }
+
+  get merchantId(): string {
+    return this._merchantId;
+  }
+
+  get description(): string {
+    return this._description;
+  }
+
+  get amountCents(): Cents {
+    return this._amountCents;
+  }
+
+  get type(): TransactionType {
+    return this._type;
+  }
+
+  get transactionDate(): Date {
+    return this._transactionDate;
+  }
+
+  get createdById(): string {
+    return this._createdById;
   }
 
   override get toJSON() {
     return {
-      id: this.id,
+      ...super.toJSON,
+      cardAccountId: this._cardAccountId,
+      cardId: this._cardId,
       merchantId: this._merchantId,
       description: this._description,
       amountCents: this._amountCents,
       type: this._type,
       transactionDate: this._transactionDate,
       createdById: this._createdById,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      isActive: this.isActive,
     };
   }
 
@@ -71,9 +120,11 @@ export class Transaction extends Entity {
   // Validation schema
   static get schema() {
     return object({
+      cardAccountId: uuid(),
+      cardId: uuid().optional(),
       merchantId: uuid(),
       description: string().min(1).max(255),
-      amountCents: zCents,
+      amountCents: zCents.positive(),
       type: zEnum(TransactionType),
       transactionDate: date().min(new Date(0)),
       createdById: uuid(),
@@ -83,11 +134,13 @@ export class Transaction extends Entity {
   // Schema for creating transactions (used in service layer)
   static get createSchema() {
     return object({
+      cardAccountId: uuid(),
+      cardId: uuid().optional(),
       merchantId: uuid(),
       description: string().min(1).max(500),
       amountCents: zCents.positive(),
-      type: zEnum(["expense", "income"] as const).default("expense"),
-      transactionDate: string().datetime().optional(),
+      type: zEnum(TransactionType).default(TransactionType.EXPENSE),
+      transactionDate: iso.datetime().optional(),
       tagIds: uuid().array().optional(),
       allocations: object({}).array().min(1), // Will be refined in service to use Allocation.createSchema
     });
@@ -96,11 +149,13 @@ export class Transaction extends Entity {
   // Schema for updating transactions
   static get updateSchema() {
     return object({
+      cardAccountId: uuid().optional(),
+      cardId: uuid().optional(),
       merchantId: uuid().optional(),
       description: string().min(1).max(500).optional(),
       amountCents: zCents.positive().optional(),
-      type: zEnum(["expense", "income"] as const).optional(),
-      transactionDate: string().datetime().optional(),
+      type: zEnum(TransactionType).optional(),
+      transactionDate: iso.datetime().optional(),
       tagIds: uuid().array().optional(),
       allocations: object({}).array().min(1).optional(),
     });
