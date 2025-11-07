@@ -11,6 +11,7 @@ export interface PaymentData extends EntityData {
   reservationId?: string;
   amountCents: Cents;
   note?: string;
+  createdById: string;
 }
 
 export class Payment extends Entity {
@@ -20,6 +21,7 @@ export class Payment extends Entity {
   private _reservationId?: string;
   private _amountCents: Cents;
   private _note?: string;
+  private _createdById: string;
 
   constructor({
     id,
@@ -31,6 +33,7 @@ export class Payment extends Entity {
     reservationId,
     amountCents,
     note,
+    createdById,
   }: PaymentData) {
     super({ id, createdAt, updatedAt });
     this._paidOn = paidOn;
@@ -39,6 +42,7 @@ export class Payment extends Entity {
     this._reservationId = reservationId;
     this._amountCents = amountCents;
     this._note = note;
+    this._createdById = createdById;
   }
 
   get paidOn(): Date {
@@ -65,6 +69,10 @@ export class Payment extends Entity {
     return this._note;
   }
 
+  get createdById(): string {
+    return this._createdById;
+  }
+
   override get toJSON() {
     return {
       id: this.id,
@@ -76,6 +84,7 @@ export class Payment extends Entity {
       reservationId: this._reservationId,
       amountCents: this._amountCents,
       note: this._note,
+      createdById: this._createdById,
       isActive: this.isActive,
     };
   }
@@ -93,6 +102,7 @@ export class Payment extends Entity {
       reservationId: uuid().optional(),
       amountCents: zCents.min(0),
       note: string().optional(),
+      createdById: uuid(),
     });
   }
 
@@ -105,6 +115,7 @@ export class Payment extends Entity {
       paidOn: date(),
       reservationId: uuid().optional(),
       note: string().optional(),
+      createdById: uuid(),
     });
   }
 

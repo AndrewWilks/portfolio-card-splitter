@@ -48,6 +48,7 @@ export class ReservationService {
       transactionId: validatedData.transactionId,
       memberId: validatedData.memberId,
       amountCents: validatedData.amountCents,
+      createdById: validatedData.createdById,
     });
 
     // Save to database

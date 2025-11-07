@@ -9,14 +9,14 @@ import {
 
 import { PasswordService } from "@shared/services";
 import { Entity } from "./base/entity.ts";
+import { EntityData } from "@shared/entities";
 
-export interface UserData extends Entity {
+export interface UserData extends EntityData {
   email: string;
   passwordHash: string;
   firstName: string;
   lastName: string;
   role: UserRole;
-  isActive: boolean;
 }
 
 export enum UserRole {

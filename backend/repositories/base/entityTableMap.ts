@@ -38,7 +38,6 @@ export const softDeleteEntities = new Set<keyof typeof entities>([
   "Tag",
   "Event",
   "Payment",
-  "Reservation",
   "Transfer",
   "Allocation",
 ]);
@@ -50,4 +49,5 @@ export const softDeleteEntities = new Set<keyof typeof entities>([
 export const hardDeleteEntities = new Set<keyof typeof entities>([
   "InviteToken",
   "PasswordResetToken",
+  "Reservation", // Per spec: Reservations are hard deleted
 ]);

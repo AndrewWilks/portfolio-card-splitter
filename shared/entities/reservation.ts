@@ -10,6 +10,7 @@ interface ReservationData extends EntityData {
   allocationId?: string; // linked allocation ID (nullable)
   memberId: string; // linked member ID (required)
   amountCents: Cents; // reserved amount
+  createdById: string; // user who created the reservation
 }
 
 export class Reservation extends Entity {
@@ -18,6 +19,7 @@ export class Reservation extends Entity {
   private _allocationId?: string;
   private _memberId: string;
   private _amountCents: Cents;
+  private _createdById: string;
 
   constructor({
     id,
@@ -28,6 +30,7 @@ export class Reservation extends Entity {
     allocationId,
     memberId,
     amountCents,
+    createdById,
   }: ReservationData) {
     super({ id, createdAt, updatedAt });
     this._potId = potId;
@@ -35,6 +38,7 @@ export class Reservation extends Entity {
     this._allocationId = allocationId;
     this._memberId = memberId;
     this._amountCents = amountCents;
+    this._createdById = createdById;
   }
 
   get potId(): string {
@@ -57,6 +61,10 @@ export class Reservation extends Entity {
     return this._amountCents;
   }
 
+  get createdById(): string {
+    return this._createdById;
+  }
+
   override get toJSON() {
     return {
       id: this.id,
@@ -67,6 +75,7 @@ export class Reservation extends Entity {
       allocationId: this._allocationId,
       memberId: this._memberId,
       amountCents: this._amountCents,
+      createdById: this._createdById,
       isActive: this.isActive,
     };
   }
@@ -88,6 +97,7 @@ export class Reservation extends Entity {
       allocationId: uuid().optional(),
       memberId: uuid(),
       amountCents: zCents.min(0),
+      createdById: uuid(),
     });
   }
 
@@ -99,6 +109,7 @@ export class Reservation extends Entity {
       memberId: uuid(),
       amountCents: zCents.positive(),
       allocationId: uuid().optional(),
+      createdById: uuid(),
     });
   }
 

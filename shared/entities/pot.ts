@@ -4,19 +4,19 @@ import { Entity, EntityData } from "./base/entity.ts";
 import { Cents } from "@shared/types";
 import { UUID } from "node:crypto";
 
-enum PotScope {
+export enum PotScope {
   SOLO = "solo",
   SHARED = "shared",
 }
 
-enum PotType {
+export enum PotType {
   SAVINGS = "savings",
   LOAN = "loan",
   CASH = "cash",
   OTHER = "other",
 }
 
-enum PotVisibility {
+export enum PotVisibility {
   READ = "read",
   MANAGE = "manage",
 }

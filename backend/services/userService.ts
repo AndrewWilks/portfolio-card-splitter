@@ -15,17 +15,19 @@ export class UserService {
       throw parsed.error;
     }
 
-    const user = User.create({
-      id: crypto.randomUUID(),
-      ...parsed.data,
+    const user = new User({
+      email: parsed.data.email,
+      passwordHash: parsed.data.passwordHash,
+      firstName: parsed.data.firstName,
+      lastName: parsed.data.lastName,
+      role: parsed.data.role || User.UserRole.USER,
     });
-
     await this.userRepository.save(user);
     return user;
   }
 
   // List all users
-  async listUsers(): Promise<User[]> {
+  async listUsers() {
     return await this.userRepository.findAll();
   }
 

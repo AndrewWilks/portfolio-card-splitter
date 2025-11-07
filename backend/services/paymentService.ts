@@ -70,6 +70,7 @@ export class PaymentService {
       paidOn: validatedData.paidOn,
       reservationId: validatedData.reservationId,
       note: validatedData.note,
+      createdById: validatedData.createdById,
     });
 
     // Save and return

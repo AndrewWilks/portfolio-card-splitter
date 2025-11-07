@@ -2,6 +2,7 @@ import { boolean, date, object, uuid, infer as zInfer } from "zod";
 
 export interface EntityData {
   id?: string;
+  isActive?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
