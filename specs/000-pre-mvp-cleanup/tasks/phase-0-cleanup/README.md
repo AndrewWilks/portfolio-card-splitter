@@ -15,18 +15,18 @@ Fix existing database schema and entities to match current specifications before
 - [x] **0.4** Fix Reservation Schema (2-3 hrs) - Add allocation and member links
 - [x] **0.5** Update Entities (3-4 hrs) - Match interfaces to database schemas
 - [x] **0.6** Update Repositories (2-3 hrs) - Update queries for new fields
-- [ ] **0.7** Update Services & Routes (3-4 hrs) - Enforce business rules
+- [x] **0.7** Update Services & Routes (3-4 hrs) - Enforce business rules
 
 **Total**: 7 tasks, ~16-22 hours
 
 ## Success Criteria
 
-- [ ] All database migrations run successfully
-- [ ] All entity schemas match database
-- [ ] All repositories handle updated schemas
-- [ ] All services enforce updated business rules
-- [ ] All routes validate updated request/response
-- [ ] All existing tests pass
+- [x] All database migrations run successfully
+- [x] All entity schemas match database
+- [x] All repositories handle updated schemas
+- [x] All services enforce updated business rules
+- [x] All routes validate updated request/response
+- [x] All existing tests pass
 
 ## Checkpoint
 
