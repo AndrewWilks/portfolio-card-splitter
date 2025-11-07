@@ -56,6 +56,28 @@ Deno.test("Allocation - validates basisPoints range", () => {
 });
 
 Deno.test(
+  "Allocation - validates cannot have both basisPoints and amountCents (XOR)",
+  () => {
+    try {
+      Allocation.create({
+        transactionId: "550e8400-e29b-41d4-a716-446655440000",
+        memberId: "550e8400-e29b-41d4-a716-446655440001",
+        rule: Allocation.Rules.basisPoints,
+        basisPoints: 5000 as basisPoints,
+        amountCents: 2500 as Cents,
+      });
+      assert(false, "Should have thrown validation error");
+    } catch (error) {
+      assert(error instanceof Error);
+      assert(
+        (error as Error).message.includes("must not include both"),
+        "Error message should mention XOR constraint"
+      );
+    }
+  }
+);
+
+Deno.test(
   "Allocation - validates basisPoints is required for basisPoints rule",
   () => {
     try {

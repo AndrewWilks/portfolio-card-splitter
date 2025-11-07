@@ -13,11 +13,11 @@ Enforce business rules at entity and service layers for all entities.
 - [x] **2.1** Payment Validation (3-4 hrs) - Cannot exceed transaction total, flag mismatches ✅
 - [x] **2.2** Reservation Validation (3-4 hrs) - Link to allocations, respect pot balance ✅
 - [x] **2.3** Transaction Validation (3-4 hrs) - Allocations sum correctly, valid CardAccount ✅
-- [ ] **2.4** Allocation Validation (2-3 hrs) - Sum rules, cannot mix types
+- [x] **2.4** Allocation Validation (2-3 hrs) - Sum rules, cannot mix types ✅
 - [ ] **2.5** Pot Validation (2-3 hrs) - Visibility rules, ACL enforcement
 
 **Total**: 5 tasks, ~13-18 hours  
-**Progress**: 3/5 complete (60%)
+**Progress**: 4/5 complete (80%)
 
 ## Task 2.1 - Payment Validation ✅ COMPLETE
 
@@ -79,6 +79,31 @@ Added reconciliation flagging to Payment entity to detect when actual payments d
 - Move to Task 2.2 (Reservation Validation)
 
 ## Completed Work
+
+### Task 2.4: Allocation Validation ✅
+
+**Implementation Summary:**
+Allocation validation already implemented in entity layer. No AllocationService exists as allocations are created through TransactionService.
+
+**Existing Validation:**
+
+- ✅ XOR constraint: Cannot have both basisPoints and amountCents (in Allocation.create())
+- ✅ Rule enforcement: FIXED_AMOUNT requires amountCents, basisPoints requires basisPoints
+- ✅ Cannot mix types: Validated in TransactionService.validateAllocations()
+- ✅ Sum rules: Percentage allocations must sum to 100%, fixed must not exceed total (in TransactionService)
+
+**Added:**
+
+- Test for XOR constraint validation
+- Test verifies error message clarity
+
+**Changes:**
+
+- `shared/__tests__/entities/allocation.test.ts` - Added XOR validation test
+
+**Time:** ~30 minutes (most validation already existed)
+
+---
 
 ### Task 2.3: Transaction Validation ✅
 
