@@ -13,6 +13,9 @@ import {
   Reservation,
   Tag,
   Transfer,
+  CardAccount,
+  CardAccountSettings,
+  Card,
 } from "@shared/entities";
 
 export const entities = {
@@ -30,4 +33,7 @@ export const entities = {
   Transfer,
   Event,
   Allocation,
+  CardAccount,
+  CardAccountSettings,
+  Card,
 };

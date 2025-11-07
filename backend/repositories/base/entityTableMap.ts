@@ -23,6 +23,9 @@ export const entityTableMap: Record<
   Transfer: "transfers",
   Event: "events",
   Allocation: "allocations",
+  CardAccount: "cardAccounts",
+  CardAccountSettings: "cardAccountSettings",
+  Card: "cards",
 };
 
 /**
@@ -40,6 +43,9 @@ export const softDeleteEntities = new Set<keyof typeof entities>([
   "Payment",
   "Transfer",
   "Allocation",
+  "CardAccount",
+  "CardAccountSettings",
+  "Card",
 ]);
 
 /**
