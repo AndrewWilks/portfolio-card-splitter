@@ -11,13 +11,13 @@ Enforce business rules at entity and service layers for all entities.
 ## Tasks
 
 - [x] **2.1** Payment Validation (3-4 hrs) - Cannot exceed transaction total, flag mismatches ✅
-- [ ] **2.2** Reservation Validation (3-4 hrs) - Link to allocations, respect pot balance
+- [x] **2.2** Reservation Validation (3-4 hrs) - Link to allocations, respect pot balance ✅
 - [ ] **2.3** Transaction Validation (3-4 hrs) - Allocations sum correctly, valid CardAccount
 - [ ] **2.4** Allocation Validation (2-3 hrs) - Sum rules, cannot mix types
 - [ ] **2.5** Pot Validation (2-3 hrs) - Visibility rules, ACL enforcement
 
 **Total**: 5 tasks, ~13-18 hours  
-**Progress**: 1/5 complete (20%)
+**Progress**: 2/5 complete (40%)
 
 ## Task 2.1 - Payment Validation ✅ COMPLETE
 
@@ -78,10 +78,72 @@ Added reconciliation flagging to Payment entity to detect when actual payments d
 - Run all payment tests to verify functionality
 - Move to Task 2.2 (Reservation Validation)
 
+## Task 2.2 - Reservation Validation ✅ COMPLETE
+
+### Implementation Summary
+
+Added comprehensive validation to ReservationService to enforce business rules around reservations:
+
+**Service Logic:**
+
+- Validates allocation exists if provided
+- Validates allocation belongs to the correct transaction
+- Validates allocation belongs to the correct member
+- Validates reservation amount doesn't exceed allocation amount
+- Validates single reservation doesn't exceed transaction total
+- Validates total reservations won't exceed transaction amount
+- Validates pot has sufficient balance for reservation
+
+**Business Rules Enforced:**
+
+1. ✅ Pot exists validation (already implemented)
+2. ✅ Transaction exists validation (already implemented)
+3. ✅ Member exists validation (already implemented)
+4. ✅ Allocation exists validation (NEW)
+5. ✅ Allocation belongs to transaction (NEW)
+6. ✅ Allocation belongs to member (NEW)
+7. ✅ Reservation ≤ allocation amount (NEW)
+8. ✅ Total reservations ≤ transaction amount (NEW)
+9. ✅ Pot has sufficient balance (NEW)
+
+**Test Coverage:**
+
+- Created `reservationValidation.test.ts` with 7 comprehensive test scenarios:
+  1. ✅ Validates allocation exists
+  2. ✅ Validates allocation belongs to transaction
+  3. ✅ Validates allocation belongs to member
+  4. ✅ Validates reservation doesn't exceed allocation amount
+  5. ✅ Validates total reservations don't exceed transaction amount
+  6. ✅ Validates pot has sufficient balance
+  7. ✅ Success case with all validations passing
+
+### Files Modified
+
+**Services:**
+
+- `backend/services/reservationService.ts` - Added 9 validation checks
+- `backend/di/services.ts` - Added AllocationRepository to ReservationService DI
+
+**Repositories:**
+
+- `backend/di/repositories.ts` - Added AllocationRepository import and factory function
+
+**Tests:**
+
+- `backend/__tests__/services/reservationValidation.test.ts` - NEW (7 comprehensive tests)
+
+**Documentation:**
+
+- `specs/000-pre-mvp-cleanup/tasks/phase-2-validation/README.md` - Updated with Task 2.2 complete
+
+### Next Steps
+
+- Move to Task 2.3 (Transaction Validation)
+
 ## Success Criteria
 
 - [x] Payment validation enforces all business rules
-- [ ] Reservation validation enforces allocation linking
+- [x] Reservation validation enforces allocation linking
 - [ ] Transaction validation enforces cardAccount requirements
 - [ ] Allocation validation enforces sum rules
 - [ ] Pot validation enforces visibility rules

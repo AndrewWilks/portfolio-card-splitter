@@ -43,7 +43,8 @@ export function createReservationService() {
     repositories.createReservationRepository(),
     repositories.createPotRepository(),
     repositories.createTransactionRepository(),
-    repositories.createMemberRepository()
+    repositories.createMemberRepository(),
+    repositories.createAllocationRepository()
   );
 }
 

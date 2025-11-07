@@ -182,10 +182,10 @@ interface PaymentData extends EntityData {
 - [ ] Must link to valid pot and transaction
 - [ ] Flag if differs from reservations
 
-### Reservation Validation ⚠️ **PARTIAL**
+### Reservation Validation ✅ **IMPLEMENTED**
 
-- [ ] Cannot reserve more than pot balance (service layer)
-- [ ] Cannot reserve more than allocation amount (needs allocation link)
+- [x] Cannot reserve more than pot balance (service layer) ✅
+- [x] Cannot reserve more than allocation amount (needs allocation link) ✅
 
 ### Pot Validation ✅ **GOOD**
 

@@ -15,6 +15,7 @@ import { SessionRepository } from "@backend/repositories";
 import { CardAccountRepository } from "@backend/repositories";
 import { CardAccountSettingsRepository } from "@backend/repositories";
 import { CardRepository } from "@backend/repositories";
+import { AllocationRepository } from "@backend/repositories";
 
 // Repository Factories
 export function createUserRepository() {
@@ -79,4 +80,8 @@ export function createCardAccountSettingsRepository() {
 
 export function createCardRepository() {
   return new CardRepository();
+}
+
+export function createAllocationRepository() {
+  return new AllocationRepository();
 }
