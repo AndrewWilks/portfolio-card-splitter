@@ -5,7 +5,7 @@ import { z } from "zod";
 
 // Request schema for HTTP API (dates as strings)
 const CreateTransferRequestSchema = Transfer.createSchema.extend({
-  occurredOn: z.date(),
+  occurredOn: z.iso.datetime(),
 });
 
 export async function apiTransfersCreate(

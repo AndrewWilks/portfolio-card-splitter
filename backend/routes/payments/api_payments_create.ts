@@ -5,7 +5,7 @@ import { z } from "zod";
 
 // Request schema for HTTP API (dates as strings)
 const CreatePaymentRequestSchema = Payment.createSchema.extend({
-  paidOn: z.string().datetime(),
+  paidOn: z.iso.datetime(),
 });
 
 export async function apiPaymentsCreate(
