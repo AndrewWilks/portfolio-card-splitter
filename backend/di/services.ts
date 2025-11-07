@@ -39,7 +39,9 @@ export function createTransactionService() {
 export function createReservationService() {
   return new services.ReservationService(
     repositories.createReservationRepository(),
-    repositories.createPotRepository()
+    repositories.createPotRepository(),
+    repositories.createTransactionRepository(),
+    repositories.createMemberRepository()
   );
 }
 
@@ -53,6 +55,8 @@ export function createTransferService() {
 export function createPaymentService() {
   return new services.PaymentService(
     repositories.createPaymentRepository(),
+    repositories.createTransactionRepository(),
+    repositories.createPotRepository(),
     repositories.createReservationRepository()
   );
 }
