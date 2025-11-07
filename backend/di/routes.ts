@@ -258,3 +258,72 @@ export function createApiEventsStream() {
   const eventRepository = createEventRepository();
   return (c: Context) => routes.apiEventsStream(c, eventRepository);
 }
+
+// CardAccount Routes - require CardAccountService
+export function createApiCardAccountsList() {
+  const cardAccountService = services.createCardAccountService();
+  return (c: Context) => routes.apiCardAccountsList(c, cardAccountService);
+}
+
+export function createApiCardAccountsCreate() {
+  const cardAccountService = services.createCardAccountService();
+  return (c: Context) => routes.apiCardAccountsCreate(c, cardAccountService);
+}
+
+export function createApiCardAccountsGet() {
+  const cardAccountService = services.createCardAccountService();
+  return (c: Context) => routes.apiCardAccountsGet(c, cardAccountService);
+}
+
+export function createApiCardAccountsUpdate() {
+  const cardAccountService = services.createCardAccountService();
+  return (c: Context) => routes.apiCardAccountsUpdate(c, cardAccountService);
+}
+
+export function createApiCardAccountsDelete() {
+  const cardAccountService = services.createCardAccountService();
+  return (c: Context) => routes.apiCardAccountsDelete(c, cardAccountService);
+}
+
+// CardAccountSettings Routes - require CardAccountSettingsService
+export function createApiCardAccountSettingsGet() {
+  const settingsService = services.createCardAccountSettingsService();
+  return (c: Context) => routes.apiCardAccountSettingsGet(c, settingsService);
+}
+
+export function createApiCardAccountSettingsUpdate() {
+  const settingsService = services.createCardAccountSettingsService();
+  return (c: Context) =>
+    routes.apiCardAccountSettingsUpdate(c, settingsService);
+}
+
+export function createApiCardAccountSettingsReset() {
+  const settingsService = services.createCardAccountSettingsService();
+  return (c: Context) => routes.apiCardAccountSettingsReset(c, settingsService);
+}
+
+// Card Routes - require CardService
+export function createApiCardsList() {
+  const cardService = services.createCardService();
+  return (c: Context) => routes.apiCardsList(c, cardService);
+}
+
+export function createApiCardsCreate() {
+  const cardService = services.createCardService();
+  return (c: Context) => routes.apiCardsCreate(c, cardService);
+}
+
+export function createApiCardsGet() {
+  const cardService = services.createCardService();
+  return (c: Context) => routes.apiCardsGet(c, cardService);
+}
+
+export function createApiCardsUpdate() {
+  const cardService = services.createCardService();
+  return (c: Context) => routes.apiCardsUpdate(c, cardService);
+}
+
+export function createApiCardsDelete() {
+  const cardService = services.createCardService();
+  return (c: Context) => routes.apiCardsDelete(c, cardService);
+}

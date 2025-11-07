@@ -129,6 +129,34 @@ backend.get("/api/audit", di.createApiAuditGet());
 // Real-Time Events Endpoint
 backend.get("/api/events/stream", di.createApiEventsStream());
 
+// CardAccount Management Endpoints
+backend.get("/api/card-accounts", di.createApiCardAccountsList());
+backend.post("/api/card-accounts", di.createApiCardAccountsCreate());
+backend.get("/api/card-accounts/:id", di.createApiCardAccountsGet());
+backend.patch("/api/card-accounts/:id", di.createApiCardAccountsUpdate());
+backend.delete("/api/card-accounts/:id", di.createApiCardAccountsDelete());
+
+// CardAccount Settings Endpoints
+backend.get(
+  "/api/card-accounts/:id/settings",
+  di.createApiCardAccountSettingsGet()
+);
+backend.patch(
+  "/api/card-accounts/:id/settings",
+  di.createApiCardAccountSettingsUpdate()
+);
+backend.post(
+  "/api/card-accounts/:id/settings/reset",
+  di.createApiCardAccountSettingsReset()
+);
+
+// Card Management Endpoints
+backend.get("/api/cards", di.createApiCardsList());
+backend.post("/api/cards", di.createApiCardsCreate());
+backend.get("/api/cards/:id", di.createApiCardsGet());
+backend.patch("/api/cards/:id", di.createApiCardsUpdate());
+backend.delete("/api/cards/:id", di.createApiCardsDelete());
+
 // Health Check Endpoint
 backend.get("/api/health", (c) =>
   c.json({
