@@ -9,6 +9,8 @@ const CreateTransactionRequestSchema = z.object({
   type: z.enum(["expense", "income"]).default("expense"),
   transactionDate: z.string().datetime().optional(),
   tagIds: z.array(z.string().uuid()).optional(),
+  cardAccountId: z.string().uuid(),
+  cardId: z.string().uuid().optional(),
   allocations: z
     .array(
       z.object({
@@ -16,21 +18,21 @@ const CreateTransactionRequestSchema = z.object({
         rule: z.enum(["percentage", "fixed_amount"]),
         percentage: z.number().int().min(0).max(10000).optional(),
         amountCents: z.number().int().min(0).optional(),
-      }),
+      })
     )
     .min(1),
 });
 
 export async function apiTransactionsCreate(
   c: Context,
-  transactionService: TransactionService,
+  transactionService: TransactionService
 ) {
   try {
     const body = await c.req.json();
     const validatedRequest = CreateTransactionRequestSchema.parse(body);
 
     const transaction = await transactionService.createTransaction(
-      validatedRequest,
+      validatedRequest
     );
 
     return c.json({
@@ -42,6 +44,8 @@ export async function apiTransactionsCreate(
         type: transaction.type,
         transactionDate: transaction.transactionDate.toISOString(),
         createdById: transaction.createdById,
+        cardAccountId: transaction.cardAccountId,
+        cardId: transaction.cardId,
         createdAt: transaction.createdAt.toISOString(),
         updatedAt: transaction.updatedAt.toISOString(),
       },

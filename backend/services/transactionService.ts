@@ -8,6 +8,8 @@ import {
   TransactionRepository,
   MerchantRepository,
   TagRepository,
+  CardAccountRepository,
+  CardRepository,
 } from "@backend/repositories";
 import { type z } from "zod";
 import { basisPoints } from "@shared/types";
@@ -21,7 +23,9 @@ export class TransactionService {
   constructor(
     private transactionRepository: TransactionRepository,
     private merchantRepository: MerchantRepository,
-    private tagRepository: TagRepository
+    private tagRepository: TagRepository,
+    private cardAccountRepository: CardAccountRepository,
+    private cardRepository: CardRepository
   ) {}
 
   async listTransactions(
@@ -46,6 +50,31 @@ export class TransactionService {
       throw new Error(
         `Merchant with ID ${validatedRequest.merchantId} not found`
       );
+    }
+
+    // Validate that CardAccount exists
+    const cardAccount = await this.cardAccountRepository.findById(
+      validatedRequest.cardAccountId
+    );
+    if (!cardAccount) {
+      throw new Error(
+        `CardAccount with ID ${validatedRequest.cardAccountId} not found`
+      );
+    }
+
+    // If cardId provided, validate Card exists and belongs to CardAccount
+    if (validatedRequest.cardId) {
+      const card = await this.cardRepository.findById(validatedRequest.cardId);
+      if (!card) {
+        throw new Error(`Card with ID ${validatedRequest.cardId} not found`);
+      }
+
+      // Validate Card belongs to CardAccount
+      if (card.cardAccountId !== validatedRequest.cardAccountId) {
+        throw new Error(
+          `Card ${validatedRequest.cardId} does not belong to CardAccount ${validatedRequest.cardAccountId}`
+        );
+      }
     }
 
     // Validate that all tags exist (if provided)
@@ -79,6 +108,8 @@ export class TransactionService {
           : TransactionType.INCOME,
       transactionDate,
       createdById: "system", // TODO: Get from auth context
+      cardAccountId: validatedRequest.cardAccountId,
+      cardId: validatedRequest.cardId,
     });
 
     // Save transaction

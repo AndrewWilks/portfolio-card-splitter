@@ -32,7 +32,9 @@ export function createTransactionService() {
   return new services.TransactionService(
     repositories.createTransactionRepository(),
     repositories.createMerchantRepository(),
-    repositories.createTagRepository()
+    repositories.createTagRepository(),
+    repositories.createCardAccountRepository(),
+    repositories.createCardRepository()
   );
 }
 
