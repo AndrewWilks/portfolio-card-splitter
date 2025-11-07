@@ -26,7 +26,10 @@ Deno.test("CardAccountSettingsRepository - delete method exists", () => {
   assert(typeof repository.delete === "function");
 });
 
-Deno.test("CardAccountSettingsRepository - findByCardAccountId method exists", () => {
-  const repository = new CardAccountSettingsRepository();
-  assert(typeof repository.findByCardAccountId === "function");
-});
+Deno.test(
+  "CardAccountSettingsRepository - findByCardAccountId method exists",
+  () => {
+    const repository = new CardAccountSettingsRepository();
+    assert(typeof repository.findByCardAccountId === "function");
+  }
+);
