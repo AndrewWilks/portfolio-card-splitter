@@ -78,7 +78,10 @@ export function createPasswordService() {
 }
 
 export function createPotService() {
-  return new services.PotService(repositories.createPotRepository());
+  return new services.PotService(
+    repositories.createPotRepository(),
+    repositories.createReservationRepository()
+  );
 }
 
 export function createSessionService() {

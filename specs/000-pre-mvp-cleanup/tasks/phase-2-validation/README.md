@@ -14,10 +14,10 @@ Enforce business rules at entity and service layers for all entities.
 - [x] **2.2** Reservation Validation (3-4 hrs) - Link to allocations, respect pot balance ✅
 - [x] **2.3** Transaction Validation (3-4 hrs) - Allocations sum correctly, valid CardAccount ✅
 - [x] **2.4** Allocation Validation (2-3 hrs) - Sum rules, cannot mix types ✅
-- [ ] **2.5** Pot Validation (2-3 hrs) - Visibility rules, ACL enforcement
+- [x] **2.5** Pot Validation (2-3 hrs) - Visibility rules, ACL enforcement ✅
 
 **Total**: 5 tasks, ~13-18 hours  
-**Progress**: 4/5 complete (80%)
+**Progress**: 5/5 complete (100%) ✅
 
 ## Task 2.1 - Payment Validation ✅ COMPLETE
 
@@ -79,6 +79,43 @@ Added reconciliation flagging to Payment entity to detect when actual payments d
 - Move to Task 2.2 (Reservation Validation)
 
 ## Completed Work
+
+### Task 2.5: Pot Validation ✅
+
+**Implementation Summary:**
+Implemented comprehensive ACL (Access Control List) enforcement in PotService for both SOLO and SHARED pots:
+
+**ACL Rules:**
+
+- ✅ Owner always has full access (READ and MANAGE) to their pots
+- ✅ SOLO pots: Only owner can see or manage (complete privacy)
+- ✅ SHARED pots: Access controlled via visibilityAcls map
+- ✅ READ access: Can list and view pot details
+- ✅ MANAGE access: Can update and deposit (inherits READ)
+- ✅ Users without ACL entries cannot access SHARED pots
+
+**Operations Protected:**
+
+- listPots(): Filters based on visibility
+- getPot(): Requires READ access
+- updatePot(): Requires MANAGE access
+- deposit(): Requires MANAGE access
+
+**Derived Values:**
+
+- Always enriches pots with reservedCents/availableCents
+- Values calculated from reservations, not persisted
+- Included in toJSON serialization
+
+**Changes:**
+
+- `backend/services/potService.ts` - Complete implementation with ACL enforcement
+- `backend/di/services.ts` - Wired ReservationRepository to PotService
+- `backend/__tests__/services/potAclValidation.test.ts` - NEW test file (7 scenarios)
+
+**Time:** ~2.5 hours
+
+---
 
 ### Task 2.4: Allocation Validation ✅
 

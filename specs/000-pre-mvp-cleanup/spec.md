@@ -189,10 +189,13 @@ interface PaymentData extends EntityData {
 - [x] Cannot reserve more than pot balance (service layer) ✅
 - [x] Cannot reserve more than allocation amount (needs allocation link) ✅
 
-### Pot Validation ✅ **GOOD**
+### Pot Validation ✅ **IMPLEMENTED**
 
 - [x] Derived values computed, not persisted ✅ Present
-- [ ] Visibility ACL enforcement (service layer)
+- [x] Visibility ACL enforcement (service layer) ✅ IMPLEMENTED
+- [x] SOLO pot privacy (owner-only access)
+- [x] SHARED pot ACL with READ and MANAGE levels
+- [x] All operations protected by visibility checks
 
 ---
 
