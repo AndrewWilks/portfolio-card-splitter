@@ -13,6 +13,12 @@ export class TransactionRepository extends Repository<"Transaction"> {
     const conditions: SQL[] = [];
 
     // Build query conditions based on provided parameters
+    if (query.cardAccountId) {
+      conditions.push(
+        eq(Tables.transactions.cardAccountId, query.cardAccountId as string)
+      );
+    }
+
     if (query.merchantId) {
       conditions.push(
         eq(Tables.transactions.merchantId, query.merchantId as string)

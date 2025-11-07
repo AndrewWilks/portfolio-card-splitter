@@ -1,4 +1,8 @@
-import { CardAccount, CardAccountSettings } from "@shared/entities";
+import {
+  CardAccount,
+  CardAccountSettings,
+  CardAccountSettingsData,
+} from "@shared/entities";
 import {
   CardAccountRepository,
   CardAccountSettingsRepository,
@@ -48,16 +52,7 @@ export class CardAccountService {
   async createCardAccount(
     request: unknown,
     ownerId: string,
-    settingsOverrides?: Partial<{
-      statementCloseDayOfMonth: number;
-      statementFrequencyDays: number;
-      paymentDueDaysAfterClose: number;
-      interestFreeDays: number;
-      hasInterestFreePeriod: boolean;
-      minimumPaymentPercentage: number;
-      minimumPaymentFloorCents: number;
-      reminderDaysBeforeDue: number;
-    }>
+    settingsOverrides?: Partial<CardAccountSettingsData>
   ): Promise<{ cardAccount: CardAccount; settings: CardAccountSettings }> {
     const validated = CreateCardAccountRequestSchema.parse(request);
 
@@ -75,10 +70,20 @@ export class CardAccountService {
     const [savedAccount] = await this.cardAccountRepository.save(cardAccount);
 
     // Create default settings
-    const settings = new CardAccountSettings({
+    const defaultSettings = {
       cardAccountId: savedAccount.id,
-      ...settingsOverrides, // Allow overriding defaults
-    });
+      statementCloseDayOfMonth: 15,
+      statementFrequencyDays: 30,
+      paymentDueDaysAfterClose: 21,
+      interestFreeDays: 55,
+      hasInterestFreePeriod: true,
+      minimumPaymentPercentage: 2,
+      minimumPaymentFloorCents: 2500,
+      reminderDaysBeforeDue: 3,
+      isActive: true,
+      ...settingsOverrides,
+    };
+    const settings = new CardAccountSettings(defaultSettings);
 
     const [savedSettings] = await this.cardAccountSettingsRepository.save(
       settings
@@ -120,19 +125,22 @@ export class CardAccountService {
     const validated = UpdateCardAccountRequestSchema.parse(request);
 
     const existing = await this.getCardAccount(id, ownerId);
+
     if (!existing) {
       throw new Error("CardAccount not found");
     }
 
+    const existingData = existing.toJSON;
+
     // Apply updates
-    if (validated.name !== undefined) existing.name = validated.name;
-    if (validated.issuer !== undefined) existing.issuer = validated.issuer;
-    if (validated.last4 !== undefined) existing.last4 = validated.last4;
+    if (validated.name !== undefined) existingData.name = validated.name;
+    if (validated.issuer !== undefined) existingData.issuer = validated.issuer;
+    if (validated.last4 !== undefined) existingData.last4 = validated.last4;
     if (validated.billingCycle !== undefined)
-      existing.billingCycle = validated.billingCycle;
-    if (validated.creditLimitCents !== undefined)
-      existing.creditLimitCents = validated.creditLimitCents;
-    if (validated.isActive !== undefined && validated.isActive === false) {
+      existingData.billingCycle = validated.billingCycle;
+    if (existingData.creditLimitCents !== undefined)
+      existingData.creditLimitCents = validated.creditLimitCents;
+    if (existingData.isActive !== undefined && validated.isActive === false) {
       existing.toggleActive();
     }
 
@@ -147,9 +155,9 @@ export class CardAccountService {
     }
 
     // Check if CardAccount has transactions
-    const transactions = await this.transactionRepository.findByCardAccountId(
-      id
-    );
+    const transactions = await this.transactionRepository.findByQuery({
+      cardAccountId: id,
+    });
     if (transactions && transactions.length > 0) {
       throw new Error(
         "Cannot delete CardAccount with transactions. Archive instead."
