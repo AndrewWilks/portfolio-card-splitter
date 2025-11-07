@@ -66,7 +66,7 @@ export class PaymentService {
     const reservations = await this.reservationRepo.findByTransactionId(
       validatedData.transactionId
     );
-    
+
     let needsReconciliation = false;
     if (reservations.length > 0) {
       // Calculate total reserved amount
@@ -74,10 +74,10 @@ export class PaymentService {
         (sum, r) => sum + r.amountCents,
         0
       );
-      
+
       // Calculate what total paid will be after this payment
       const totalAfterPayment = totalPaid + validatedData.amountCents;
-      
+
       // Flag for reconciliation if totals don't match
       if (totalAfterPayment !== totalReserved) {
         needsReconciliation = true;

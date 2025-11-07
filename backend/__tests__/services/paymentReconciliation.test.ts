@@ -10,7 +10,14 @@ import {
 } from "../../repositories/index.ts";
 import { withTestDB } from "../testHelpers.ts";
 import { db } from "../../db/db.client.ts";
-import { pots, users, merchants, transactions, members, cardAccounts } from "../../db/db.schema.ts";
+import {
+  pots,
+  users,
+  merchants,
+  transactions,
+  members,
+  cardAccounts,
+} from "../../db/db.schema.ts";
 import type { Cents } from "@shared/types";
 
 Deno.test({
@@ -423,7 +430,11 @@ Deno.test({
         createdById: user.id,
       });
 
-      assertEquals(payment1.needsReconciliation, true, "First partial payment should be flagged");
+      assertEquals(
+        payment1.needsReconciliation,
+        true,
+        "First partial payment should be flagged"
+      );
 
       // Make second payment - completes the total, should not be flagged
       const payment2 = await paymentService.createPayment({
@@ -434,7 +445,11 @@ Deno.test({
         createdById: user.id,
       });
 
-      assertEquals(payment2.needsReconciliation, false, "Completing payment should not be flagged");
+      assertEquals(
+        payment2.needsReconciliation,
+        false,
+        "Completing payment should not be flagged"
+      );
     });
   },
 });
