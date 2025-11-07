@@ -168,6 +168,35 @@ export class Allocation extends Entity {
     );
   }
 
+  // Schema for creating allocations (used in service layer)
+  // Accepts "percentage" and "fixed_amount" as user-friendly rule names
+  static get createSchema() {
+    return object({
+      memberId: uuid(),
+      rule: zEnum(["percentage", "fixed_amount"] as const),
+      percentage: zBasisPoints.optional(), // basis points (0-10000)
+      amountCents: zCents.min(0).optional(),
+    }).refine(
+      (data) => {
+        if (data.rule === "percentage") {
+          return (
+            data.percentage !== undefined && data.amountCents === undefined
+          );
+        }
+        if (data.rule === "fixed_amount") {
+          return (
+            data.amountCents !== undefined && data.percentage === undefined
+          );
+        }
+        return false;
+      },
+      {
+        message:
+          "Invalid allocation: percentage rule requires percentage, fixed_amount rule requires amountCents",
+      }
+    );
+  }
+
   static override get bodySchema() {
     return super.bodySchema.extend(this.schema.shape);
   }

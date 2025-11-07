@@ -80,6 +80,32 @@ export class Transaction extends Entity {
     });
   }
 
+  // Schema for creating transactions (used in service layer)
+  static get createSchema() {
+    return object({
+      merchantId: uuid(),
+      description: string().min(1).max(500),
+      amountCents: zCents.positive(),
+      type: zEnum(["expense", "income"] as const).default("expense"),
+      transactionDate: string().datetime().optional(),
+      tagIds: uuid().array().optional(),
+      allocations: object({}).array().min(1), // Will be refined in service to use Allocation.createSchema
+    });
+  }
+
+  // Schema for updating transactions
+  static get updateSchema() {
+    return object({
+      merchantId: uuid().optional(),
+      description: string().min(1).max(500).optional(),
+      amountCents: zCents.positive().optional(),
+      type: zEnum(["expense", "income"] as const).optional(),
+      transactionDate: string().datetime().optional(),
+      tagIds: uuid().array().optional(),
+      allocations: object({}).array().min(1).optional(),
+    });
+  }
+
   static override get bodySchema() {
     return super.bodySchema.extend(this.schema.shape);
   }

@@ -109,6 +109,19 @@ export class Transfer extends Entity {
     });
   }
 
+  // Schema for creating transfers (used in service layer)
+  static get createSchema() {
+    return object({
+      fromPotId: uuid().nullable(),
+      toPotId: uuid().nullable(),
+      amountCents: zCents.positive(),
+      occurredOn: date(),
+      note: string().optional(),
+    }).refine((data) => data.fromPotId !== null || data.toPotId !== null, {
+      message: "At least one of fromPotId or toPotId must be specified",
+    });
+  }
+
   static override get bodySchema() {
     return super.bodySchema.extend(this.schema.shape);
   }

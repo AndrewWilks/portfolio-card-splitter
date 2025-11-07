@@ -91,6 +91,17 @@ export class Reservation extends Entity {
     });
   }
 
+  // Schema for creating reservations (used in service layer)
+  static get createSchema() {
+    return object({
+      potId: uuid(),
+      transactionId: uuid(),
+      memberId: uuid(),
+      amountCents: zCents.positive(),
+      allocationId: uuid().optional(),
+    });
+  }
+
   static override get bodySchema() {
     return super.bodySchema.extend(this.schema.shape);
   }

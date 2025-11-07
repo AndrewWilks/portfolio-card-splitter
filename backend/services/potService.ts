@@ -1,23 +1,35 @@
-import { PotService as SharedPotService } from "@shared/services";
 import { Pot } from "@shared/entities";
+import { PotRepository as _PotRepository } from "@backend/repositories";
 
-export class PotService extends SharedPotService {
-  override listPots(_query: Record<string, unknown>): Promise<Pot[]> {
+/**
+ * PotService - Manages pot operations and fund transfers
+ *
+ * TODO: Implement service following the new pattern:
+ * - Add constructor with PotRepository injection
+ * - Implement listPots() with query filtering
+ * - Implement createPot() using Pot.createSchema for validation
+ * - Implement updatePot() using Pot.updateSchema for validation
+ * - Implement deposit() for fund management
+ * - Consider adding withdraw() method
+ */
+export class PotService {
+  // TODO: Add constructor(private potRepo: PotRepository) {}
+  listPots(_query: Record<string, unknown>): Promise<Pot[]> {
     // TODO: Implement listPots method to query and return pots based on query
     return Promise.reject(new Error("Not implemented"));
   }
 
-  override createPot(_request: unknown): Promise<Pot> {
+  createPot(_request: unknown): Promise<Pot> {
     // TODO: Implement createPot method to create and save new pot
     return Promise.reject(new Error("Not implemented"));
   }
 
-  override updatePot(_id: string, _request: unknown): Promise<Pot> {
+  updatePot(_id: string, _request: unknown): Promise<Pot> {
     // TODO: Implement updatePot method to update existing pot
     return Promise.reject(new Error("Not implemented"));
   }
 
-  override deposit(_id: string, _request: unknown): Promise<void> {
+  deposit(_id: string, _request: unknown): Promise<void> {
     // TODO: Implement deposit method to add funds to pot
     return Promise.reject(new Error("Not implemented"));
   }

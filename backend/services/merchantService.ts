@@ -1,5 +1,5 @@
-import { MerchantService as SharedMerchantService } from "@shared/services";
 import { Merchant, Tag } from "@shared/entities";
+import { MerchantRepository, TagRepository } from "@backend/repositories";
 import { z } from "zod";
 
 // Request schemas
@@ -36,47 +36,43 @@ export type UpdateMerchantRequest = z.infer<typeof UpdateMerchantRequestSchema>;
 export type CreateTagRequest = z.infer<typeof CreateTagRequestSchema>;
 export type UpdateTagRequest = z.infer<typeof UpdateTagRequestSchema>;
 
-export class MerchantService extends SharedMerchantService {
-  // The constructor is inherited from SharedMerchantService
-  // which takes (merchantRepository, tagRepository)
+export class MerchantService {
+  constructor(
+    private merchantRepository: MerchantRepository,
+    private tagRepository: TagRepository
+  ) {}
 
-  override listMerchants(_query: Record<string, unknown>): Promise<Merchant[]> {
+  async listMerchants(_query: Record<string, unknown>): Promise<Merchant[]> {
     // For now, return all merchants. In the future, this could filter by query params
     // TODO: Implement filtering logic based on query parameters
-    const merchants: Merchant[] = [];
-
-    // Since we don't have a findAll method in MerchantRepository yet, we'll need to add it
-    // For now, return empty array
-    return Promise.resolve(merchants);
+    const merchants = await this.merchantRepository.findAll();
+    return merchants || [];
   }
 
-  override async createMerchant(request: unknown): Promise<Merchant> {
+  async createMerchant(request: unknown): Promise<Merchant> {
     const validatedRequest = CreateMerchantRequestSchema.parse(request);
 
     // Check if merchant with this name already exists
     const existing = await this.merchantRepository.findByName(
-      validatedRequest.name,
+      validatedRequest.name
     );
     if (existing) {
       throw new Error(
-        `Merchant with name "${validatedRequest.name}" already exists`,
+        `Merchant with name "${validatedRequest.name}" already exists`
       );
     }
 
-    const merchant = Merchant.create({
+    const merchant = new Merchant({
       name: validatedRequest.name,
       location: validatedRequest.location,
       isActive: true,
     });
 
-    await this.merchantRepository.save(merchant);
-    return merchant;
+    const saved = await this.merchantRepository.save(merchant);
+    return saved[0] as Merchant;
   }
 
-  override async updateMerchant(
-    id: string,
-    request: unknown,
-  ): Promise<Merchant> {
+  async updateMerchant(id: string, request: unknown): Promise<Merchant> {
     const validatedRequest = UpdateMerchantRequestSchema.parse(request);
 
     // Find existing merchant
@@ -86,54 +82,57 @@ export class MerchantService extends SharedMerchantService {
     }
 
     // Check name uniqueness if name is being updated
-    if (validatedRequest.name && validatedRequest.name !== existing.name) {
+    const existingData = existing.toJSON;
+    if (validatedRequest.name && validatedRequest.name !== existingData.name) {
       const nameExists = await this.merchantRepository.findByName(
-        validatedRequest.name,
+        validatedRequest.name
       );
       if (nameExists) {
         throw new Error(
-          `Merchant with name "${validatedRequest.name}" already exists`,
+          `Merchant with name "${validatedRequest.name}" already exists`
         );
       }
     }
 
     // Create updated merchant
-    const updatedMerchant = Merchant.from({
-      ...existing.toJSON(),
+    const updatedMerchant = new Merchant({
+      ...existingData,
       ...validatedRequest,
       updatedAt: new Date(),
     });
 
-    await this.merchantRepository.save(updatedMerchant);
-    return updatedMerchant;
+    const saved = await this.merchantRepository.save(updatedMerchant);
+    return saved[0] as Merchant;
   }
 
-  override async listTags(): Promise<Tag[]> {
-    return await this.tagRepository.findAll();
+  async listTags(): Promise<Tag[]> {
+    const tags = await this.tagRepository.findAll();
+    return tags || [];
   }
 
-  override async createTag(request: unknown): Promise<Tag> {
+  async createTag(request: unknown): Promise<Tag> {
     const validatedRequest = CreateTagRequestSchema.parse(request);
 
     // Check if tag with this name already exists
     const existing = await this.tagRepository.findByName(validatedRequest.name);
     if (existing) {
       throw new Error(
-        `Tag with name "${validatedRequest.name}" already exists`,
+        `Tag with name "${validatedRequest.name}" already exists`
       );
     }
 
-    const tag = Tag.create({
+    const tag = new Tag({
       name: validatedRequest.name,
-      color: validatedRequest.color,
+      color: (validatedRequest.color ||
+        "#000000") as import("@shared/types").HexColor,
       isActive: true,
     });
 
-    await this.tagRepository.save(tag);
-    return tag;
+    const saved = await this.tagRepository.save(tag);
+    return saved[0] as Tag;
   }
 
-  override async updateTag(id: string, request: unknown): Promise<Tag> {
+  async updateTag(id: string, request: unknown): Promise<Tag> {
     const validatedRequest = UpdateTagRequestSchema.parse(request);
 
     // Find existing tag
@@ -143,25 +142,29 @@ export class MerchantService extends SharedMerchantService {
     }
 
     // Check name uniqueness if name is being updated
-    if (validatedRequest.name && validatedRequest.name !== existing.name) {
+    const existingData = existing.toJSON;
+    if (validatedRequest.name && validatedRequest.name !== existingData.name) {
       const nameExists = await this.tagRepository.findByName(
-        validatedRequest.name,
+        validatedRequest.name
       );
       if (nameExists) {
         throw new Error(
-          `Tag with name "${validatedRequest.name}" already exists`,
+          `Tag with name "${validatedRequest.name}" already exists`
         );
       }
     }
 
     // Create updated tag
-    const updatedTag = Tag.from({
-      ...existing.toJSON(),
-      ...validatedRequest,
+    const updatedTag = new Tag({
+      ...existingData,
+      name: validatedRequest.name ?? existingData.name,
+      color: (validatedRequest.color ??
+        existingData.color) as import("@shared/types").HexColor,
+      isActive: validatedRequest.isActive ?? existingData.isActive,
       updatedAt: new Date(),
     });
 
-    await this.tagRepository.save(updatedTag);
-    return updatedTag;
+    const saved = await this.tagRepository.save(updatedTag);
+    return saved[0] as Tag;
   }
 }

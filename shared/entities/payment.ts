@@ -96,6 +96,18 @@ export class Payment extends Entity {
     });
   }
 
+  // Schema for creating payments (used in service layer)
+  static get createSchema() {
+    return object({
+      potId: uuid(),
+      transactionId: uuid(),
+      amountCents: zCents.positive(),
+      paidOn: date(),
+      reservationId: uuid().optional(),
+      note: string().optional(),
+    });
+  }
+
   static override get bodySchema() {
     return super.bodySchema.extend(this.schema.shape);
   }
