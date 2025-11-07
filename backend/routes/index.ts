@@ -8,9 +8,9 @@ export { apiAuthLogout } from "./auth/api_auth_logout.ts";
 export { apiAuthRequestReset } from "./auth/api_auth_requestReset.ts";
 export { apiAuthResetPassword } from "./auth/api_auth_resetPassword.ts";
 
-export { apiMemberList } from "./people/api_people_list.ts";
-export { apiMemberCreate } from "./people/api_people_create.ts";
-export { apiMemberUpdate } from "./people/api_people_update.ts";
+export { apiMemberList } from "./members/api_member_list.ts";
+export { apiMemberCreate } from "./members/api_member_create.ts";
+export { apiMemberUpdate } from "./members/api_member_update.ts";
 
 export { apiUserList } from "./users/api_users_list.ts";
 export { apiUserGet } from "./users/api_users_get.ts";

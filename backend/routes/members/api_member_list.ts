@@ -8,7 +8,7 @@ export async function apiMemberList(c: Context, memberService: MemberService) {
 
     return c.json({
       success: true,
-      data: members.map((member) => member.toJSON()),
+      data: members.map((member) => member.toJSON),
     });
   } catch (error) {
     console.error("Error listing members:", error);

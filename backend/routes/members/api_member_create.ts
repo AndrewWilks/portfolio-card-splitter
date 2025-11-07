@@ -13,7 +13,7 @@ export async function apiMemberCreate(
     return c.json(
       {
         success: true,
-        data: member.toJSON(),
+        data: member.toJSON,
         message: "Member created successfully",
       },
       201
