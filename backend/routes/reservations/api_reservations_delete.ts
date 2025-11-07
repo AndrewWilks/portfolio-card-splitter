@@ -1,13 +1,29 @@
 import { Context } from "hono";
 import { ReservationService } from "@backend/services";
 
-export function apiReservationsDelete(
-  _c: Context,
-  _reservationService: ReservationService,
+export async function apiReservationsDelete(
+  c: Context,
+  reservationService: ReservationService
 ) {
-  // TODO: Implement DELETE /api/reservations/:id endpoint to delete a reservation
-  // - Extract id from params
-  // - Delete reservation using ReservationService
-  // - Return success message
-  return _c.json({ message: "Not implemented" }, 501);
+  try {
+    const id = c.req.param("id");
+
+    if (!id) {
+      return c.json({ error: "Reservation ID is required" }, 400);
+    }
+
+    await reservationService.deleteReservation(id);
+
+    return c.json(
+      {
+        message: "Reservation deleted successfully",
+      },
+      200
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      return c.json({ error: error.message }, 400);
+    }
+    return c.json({ error: "Internal server error" }, 500);
+  }
 }

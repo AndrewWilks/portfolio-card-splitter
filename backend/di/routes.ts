@@ -5,7 +5,6 @@ import { z } from "zod";
 import { validateBody } from "../middleware/validation.ts";
 import { createEventRepository } from "./repositories.ts";
 
-import * as schemas from "@shared/schemas/api";
 import * as routes from "@backend/routes";
 import * as services from "./services.ts";
 import { User } from "@shared/entities";
@@ -220,9 +219,8 @@ export function createApiPotsDeposit() {
 // Reservation Routes - require ReservationService
 export function createApiReservationsCreate() {
   const reservationService = services.createReservationService();
-  return validateBody(schemas.CreateReservationSchema)((c: Context) =>
-    routes.apiReservationsCreate(c, reservationService)
-  );
+  // Validation is handled inside the route using Reservation.createSchema
+  return (c: Context) => routes.apiReservationsCreate(c, reservationService);
 }
 
 export function createApiReservationsDelete() {
@@ -233,17 +231,15 @@ export function createApiReservationsDelete() {
 // Transfer Routes - require TransferService
 export function createApiTransfersCreate() {
   const transferService = services.createTransferService();
-  return validateBody(schemas.CreateTransferSchema)((c: Context) =>
-    routes.apiTransfersCreate(c, transferService)
-  );
+  // Validation is handled inside the route using Transfer.createSchema
+  return (c: Context) => routes.apiTransfersCreate(c, transferService);
 }
 
 // Payment Routes - require PaymentService
 export function createApiPaymentsCreate() {
   const paymentService = services.createPaymentService();
-  return validateBody(schemas.CreatePaymentSchema)((c: Context) =>
-    routes.apiPaymentsCreate(c, paymentService)
-  );
+  // Validation is handled inside the route using Payment.createSchema
+  return (c: Context) => routes.apiPaymentsCreate(c, paymentService);
 }
 
 // Ledger Routes - require LedgerService and AuditService
