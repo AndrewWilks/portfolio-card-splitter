@@ -1,7 +1,7 @@
 // For payments table. Records payments from pots to transactions.
 
 import { Entity, EntityData } from "@shared/entities";
-import { date, object, string, uuid } from "zod";
+import { boolean, date, object, string, uuid } from "zod";
 import { Cents, zCents } from "@shared/types";
 
 export interface PaymentData extends EntityData {
@@ -11,6 +11,7 @@ export interface PaymentData extends EntityData {
   reservationId?: string;
   amountCents: Cents;
   note?: string;
+  needsReconciliation: boolean;
   createdById: string;
 }
 
@@ -21,6 +22,7 @@ export class Payment extends Entity {
   private _reservationId?: string;
   private _amountCents: Cents;
   private _note?: string;
+  private _needsReconciliation: boolean;
   private _createdById: string;
 
   constructor({
@@ -33,6 +35,7 @@ export class Payment extends Entity {
     reservationId,
     amountCents,
     note,
+    needsReconciliation,
     createdById,
   }: PaymentData) {
     super({ id, createdAt, updatedAt });
@@ -42,6 +45,7 @@ export class Payment extends Entity {
     this._reservationId = reservationId;
     this._amountCents = amountCents;
     this._note = note;
+    this._needsReconciliation = needsReconciliation;
     this._createdById = createdById;
   }
 
@@ -69,6 +73,10 @@ export class Payment extends Entity {
     return this._note;
   }
 
+  get needsReconciliation(): boolean {
+    return this._needsReconciliation;
+  }
+
   get createdById(): string {
     return this._createdById;
   }
@@ -84,6 +92,7 @@ export class Payment extends Entity {
       reservationId: this._reservationId,
       amountCents: this._amountCents,
       note: this._note,
+      needsReconciliation: this._needsReconciliation,
       createdById: this._createdById,
       isActive: this.isActive,
     };
@@ -102,11 +111,13 @@ export class Payment extends Entity {
       reservationId: uuid().optional(),
       amountCents: zCents.min(0),
       note: string().optional(),
+      needsReconciliation: boolean(),
       createdById: uuid(),
     });
   }
 
   // Schema for creating payments (used in service layer)
+  // Note: needsReconciliation is calculated by the service, not provided by caller
   static get createSchema() {
     return object({
       potId: uuid(),

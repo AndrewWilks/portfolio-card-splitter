@@ -24,6 +24,7 @@
     "npm:cspell@*": "9.2.1",
     "npm:cspell@^9.2.1": "9.2.1",
     "npm:drizzle-kit@*": "0.31.5_esbuild@0.25.11",
+    "npm:drizzle-kit@0.31.5": "0.31.5_esbuild@0.25.11",
     "npm:drizzle-kit@~0.31.5": "0.31.5_esbuild@0.25.11",
     "npm:drizzle-orm@~0.44.6": "0.44.6_@types+pg@8.15.5_pg@8.16.3",
     "npm:hono@^4.10.1": "4.10.1",

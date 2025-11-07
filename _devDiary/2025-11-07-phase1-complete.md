@@ -11,13 +11,16 @@ Completed all 11 tasks for Phase 1, implementing CardAccount, CardAccountSetting
 Started the day by completing the integration test implementation that was in progress. Created comprehensive integration tests to verify end-to-end functionality with real database operations.
 
 **Files Created:**
+
 - `backend/__tests__/integration/testHelpers.ts` - Test utilities with `createTestUser()`, `createTestMerchant()`, `createTestMember()`, and `withCleanDatabase()` wrapper
 - `backend/__tests__/integration/cardAccount.test.ts` - 6 integration tests
-- `backend/__tests__/integration/cardAccountSettings.test.ts` - 4 integration tests  
+- `backend/__tests__/integration/cardAccountSettings.test.ts` - 4 integration tests
 - `backend/__tests__/integration/card.test.ts` - 6 integration tests
 
 **Key Integration Tests:**
+
 1. **CardAccount Tests (6 tests)**:
+
    - Create CardAccount with Settings (transactional creation)
    - List by Owner (ownership filtering)
    - Get with Ownership (authorization validation)
@@ -26,6 +29,7 @@ Started the day by completing the integration test implementation that was in pr
    - Delete Prevention with Transactions (referential integrity)
 
 2. **CardAccountSettings Tests (4 tests)**:
+
    - Get Settings (auto-created with account)
    - Update Settings (partial field updates)
    - Reset to Defaults (restore default values)
@@ -40,12 +44,14 @@ Started the day by completing the integration test implementation that was in pr
    - Soft Delete Card
 
 **Bugs Fixed During Testing:**
+
 - Fixed `CardAccountService.updateCardAccount()` to properly apply entity updates
 - Fixed `CardAccountSettingsRepository` to convert PostgreSQL numeric strings to numbers (minimumPaymentPercentage)
 - Fixed `TransactionRepository` to handle null `cardId` fields (optional field handling)
 - Updated `clearData.ts` helper to include new tables in correct deletion order
 
 **Test Results:**
+
 - ✅ All 16 integration tests passing
 - ✅ Full database-backed verification
 - ✅ Real service layer integration
@@ -62,32 +68,40 @@ Final task was a comprehensive verification checklist to ensure all Phase 1 comp
 **Verification Performed:**
 
 1. **Entity Exports** - ✅ All present in `shared/entities/index.ts`
+
    - CardAccount, CardAccountSettings, Card, Transaction (updated)
 
 2. **Repository Exports** - ✅ All present in `backend/repositories/index.ts`
+
    - CardAccountRepository, CardAccountSettingsRepository, CardRepository
 
 3. **Service Exports** - ✅ All present in `backend/services/index.ts`
+
    - CardAccountService, CardAccountSettingsService, CardService
 
 4. **DI Repository Factories** - ✅ All present in `backend/di/repositories.ts`
+
    - `createCardAccountRepository()`, `createCardAccountSettingsRepository()`, `createCardRepository()`
 
 5. **DI Service Factories** - ✅ All present in `backend/di/services.ts`
+
    - `createCardAccountService()`, `createCardAccountSettingsService()`, `createCardService()`
    - TransactionService factory already updated with new dependencies
 
 6. **DI Route Factories** - ✅ All present in `backend/di/routes.ts`
+
    - All CardAccount route factories (5 routes)
    - All CardAccountSettings route factories (3 routes)
    - All Card route factories (5 routes)
 
 7. **Server Routing** - ✅ All routes mounted in `backend/server.ts`
+
    - `/api/card-accounts` endpoints
    - `/api/card-accounts/:id/settings` endpoints
    - `/api/cards` endpoints
 
 8. **Database Schema** - ✅ All tables exported in `backend/db/schema/tables/index.ts`
+
    - cardAccounts, cardAccountSettings, cards tables
 
 9. **Entity Table Mapping** - ✅ All mappings present in `backend/repositories/base/entityTableMap.ts`
@@ -96,6 +110,7 @@ Final task was a comprehensive verification checklist to ensure all Phase 1 comp
    - Card → cards
 
 **Test Verification:**
+
 - Ran repository tests: 21/21 passing
 - Ran service tests: 17/17 passing
 - Ran route tests: 13/13 passing
@@ -105,6 +120,7 @@ Final task was a comprehensive verification checklist to ensure all Phase 1 comp
 **Key Finding:** All exports and DI wiring were already in place from previous tasks! This verification confirmed everything was properly integrated throughout the implementation.
 
 **Commits:**
+
 - `ed74d96` - "feat: complete Task 1.11 DI wiring verification"
 - `2a2a980` - "docs: mark Phase 1 as complete in implementation plan"
 - `2161a16` - "chore: format documentation files"
@@ -132,22 +148,26 @@ Final task was a comprehensive verification checklist to ensure all Phase 1 comp
 **173 tests passing** across all layers:
 
 - **Entity Tests**: 106 passing
+
   - CardAccount: 32 tests (instantiation, factory, validation, business rules)
   - CardAccountSettings: 36 tests (instantiation, factory, validation, calculations, presets)
   - Card: 25 tests (instantiation, factory, validation, business rules)
   - Transaction: 13 tests (updated with cardAccountId/cardId fields)
 
 - **Repository Tests**: 21 passing
+
   - CardAccountRepository: 7 tests (CRUD + custom queries)
   - CardAccountSettingsRepository: 6 tests (CRUD + findByCardAccountId)
   - CardRepository: 8 tests (CRUD + filtering queries)
 
 - **Service Tests**: 17 passing
+
   - CardAccountService: 6 tests (business logic layer)
   - CardAccountSettingsService: 4 tests (settings management)
   - CardService: 7 tests (card management)
 
 - **Route Tests**: 13 passing
+
   - CardAccount routes: 5 tests (HTTP handlers)
   - CardAccountSettings routes: 3 tests (settings endpoints)
   - Card routes: 5 tests (card endpoints)
@@ -160,25 +180,30 @@ Final task was a comprehensive verification checklist to ensure all Phase 1 comp
 #### What Was Built:
 
 **New Entities:**
+
 - `CardAccount` - Credit card account with owner, issuer, billing cycle, credit limit
 - `CardAccountSettings` - Billing cycle settings, payment terms, interest-free periods, bank presets
 - `Card` - Individual cards with optional member attribution and nickname
 
 **Updated Entities:**
+
 - `Transaction` - Added required `cardAccountId` and optional `cardId` fields
 
 **Database Schema:**
+
 - 3 new tables with proper constraints and relationships
 - Foreign keys enforcing referential integrity
 - Migration applied and tested
 
 **Backend Infrastructure:**
+
 - 3 repositories with full CRUD and custom query methods
 - 3 services with business logic and validation
 - 13 route handlers with proper authentication and authorization
 - Complete DI wiring throughout the stack
 
 **Integration Features:**
+
 - CardAccount auto-creates settings on creation
 - Settings support bank-specific presets (ANZ, etc.)
 - Delete prevention when transactions exist
@@ -188,17 +213,21 @@ Final task was a comprehensive verification checklist to ensure all Phase 1 comp
 ### Key Learnings
 
 #### 1. **PostgreSQL Numeric Type Quirk**
+
 Discovered that PostgreSQL's `numeric` type returns strings in Node.js, not numbers. Had to add conversion logic in `CardAccountSettingsRepository`:
 
 ```typescript
 if (typeof camelCaseData.minimumPaymentPercentage === "string") {
-  camelCaseData.minimumPaymentPercentage = parseFloat(camelCaseData.minimumPaymentPercentage);
+  camelCaseData.minimumPaymentPercentage = parseFloat(
+    camelCaseData.minimumPaymentPercentage
+  );
 }
 ```
 
 This is important for any future decimal/numeric fields!
 
 #### 2. **Null vs Undefined in Optional Fields**
+
 Database `null` values don't automatically map to TypeScript `undefined` for optional fields. Had to filter them in `TransactionRepository`:
 
 ```typescript
@@ -208,6 +237,7 @@ if (camelCaseData.cardId === null) {
 ```
 
 #### 3. **Integration Test Resource Leaks**
+
 Deno's resource sanitization detected database connection leaks. Fixed by disabling sanitization for integration tests that properly clean up but maintain connection pools:
 
 ```typescript
@@ -219,7 +249,9 @@ Deno.test({
 ```
 
 #### 4. **Service Update Pattern**
+
 Initially had a bug where entity updates weren't being applied. The correct pattern is:
+
 1. Get existing entity
 2. Get its JSON representation
 3. Apply updates to the data
@@ -230,13 +262,16 @@ Wrong: Mutate entity, save original
 Right: Create new entity from mutated data, save new
 
 #### 5. **Test Organization**
+
 Integration tests should focus on:
+
 - Full service layer (no mocking)
 - Database state verification
 - Cross-entity validation
 - Real-world scenarios
 
 Unit tests should focus on:
+
 - Method existence
 - Instantiation
 - Schema validation
@@ -254,6 +289,7 @@ This separation gives confidence at each layer.
 ### What's Next
 
 Phase 1 is **100% complete**! The foundation is solid with:
+
 - ✅ All critical entities implemented
 - ✅ Full test coverage at every layer
 - ✅ Proper DI wiring
@@ -261,6 +297,7 @@ Phase 1 is **100% complete**! The foundation is solid with:
 - ✅ Integration tests proving it works end-to-end
 
 Ready for:
+
 - **Phase 2**: Business Rule Validation (Payment validation, Reservation linking, enhanced Transaction rules)
 - **Phase 3**: Architecture Polish & Documentation
 - Or any other priority

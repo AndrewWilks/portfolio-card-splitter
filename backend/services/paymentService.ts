@@ -62,6 +62,28 @@ export class PaymentService {
       );
     }
 
+    // Check if payment differs from reservations
+    const reservations = await this.reservationRepo.findByTransactionId(
+      validatedData.transactionId
+    );
+    
+    let needsReconciliation = false;
+    if (reservations.length > 0) {
+      // Calculate total reserved amount
+      const totalReserved = reservations.reduce(
+        (sum, r) => sum + r.amountCents,
+        0
+      );
+      
+      // Calculate what total paid will be after this payment
+      const totalAfterPayment = totalPaid + validatedData.amountCents;
+      
+      // Flag for reconciliation if totals don't match
+      if (totalAfterPayment !== totalReserved) {
+        needsReconciliation = true;
+      }
+    }
+
     // Create payment entity
     const payment = new Payment({
       potId: validatedData.potId,
@@ -70,6 +92,7 @@ export class PaymentService {
       paidOn: validatedData.paidOn,
       reservationId: validatedData.reservationId,
       note: validatedData.note,
+      needsReconciliation,
       createdById: validatedData.createdById,
     });
 

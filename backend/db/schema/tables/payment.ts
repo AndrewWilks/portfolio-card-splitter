@@ -1,9 +1,9 @@
 import {
   bigint,
+  boolean,
   date,
   pgTable,
   text,
-  timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
@@ -34,6 +34,9 @@ export const payments = pgTable("payments", {
     .notNull()
     .default(sql`CURRENT_DATE`),
   note: text("note"),
+  needsReconciliation: boolean("needs_reconciliation")
+    .notNull()
+    .default(false),
   createdById: uuid("created_by_id")
     .references(() => users.id)
     .notNull(),

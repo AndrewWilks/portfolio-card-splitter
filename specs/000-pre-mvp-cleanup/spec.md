@@ -140,9 +140,9 @@ interface PaymentData extends EntityData {
 
 **Business rules to add**:
 
-- Payment amount cannot exceed transaction total
-- Payment reduces outstanding balance of linked CardAccount
-- If payment differs from reservations, flag for reconciliation
+- [x] Payment amount cannot exceed transaction total ✅
+- [x] Payment reduces outstanding balance of linked CardAccount ✅
+- [x] If payment differs from reservations, flag for reconciliation ✅
 
 ### 6. Pot Entity ⚠️ **NEEDS MINOR UPDATE**
 
