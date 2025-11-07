@@ -1,15 +1,8 @@
 import { sql } from "drizzle-orm";
-import {
-  bigint,
-  check,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { bigint, check, pgTable, text, uuid } from "drizzle-orm/pg-core";
 
 import { pots } from "./pots.ts";
-import { users } from "./users.ts";
+import { entity } from "./base/entity.ts";
 
 /**
  * Database table definition for `transfers`.
@@ -20,17 +13,11 @@ import { users } from "./users.ts";
 export const transfers = pgTable(
   "transfers",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    ...entity,
     fromPotId: uuid("from_pot_id").references(() => pots.id),
     toPotId: uuid("to_pot_id").references(() => pots.id),
     amountCents: bigint("amount_cents", { mode: "number" }).notNull(),
     description: text("description"),
-    createdById: uuid("created_by_id")
-      .references(() => users.id)
-      .notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
-      .notNull(),
   },
   (table) => ({
     atLeastOnePot: check(

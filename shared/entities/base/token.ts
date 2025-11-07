@@ -17,7 +17,7 @@ export class Token extends Entity {
   }
 
   static create(data: { expirationHours?: number }): Token {
-    const expiresAt = calculateExpirationDate(data.expirationHours ?? 1);
+    const expiresAt = calculateExpirationDate(data.expirationHours ?? 7 * 24); // default to 7 days
 
     return new Token({
       expiresAt,

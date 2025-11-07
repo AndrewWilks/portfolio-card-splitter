@@ -1,24 +1,19 @@
-import { Transfer } from "@shared/entities";
+import { Allocation } from "@shared/entities";
 import { Repository } from "./base/repository.ts";
-import { eq, or, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Tables } from "@db/tables";
 import { objectKeysToCamel } from "@shared/utilities";
 
-export class TransferRepository extends Repository<"Transfer"> {
+export class AllocationRepository extends Repository<"Allocation"> {
   constructor() {
-    super("Transfer");
+    super("Allocation");
   }
 
-  async findByPotId(potId: string): Promise<Transfer[]> {
+  async findByTransactionId(transactionId: string): Promise<Allocation[]> {
     const found = await this.dbClient
       .select()
-      .from(Tables.transfers)
-      .where(
-        or(
-          eq(Tables.transfers.fromPotId, potId),
-          eq(Tables.transfers.toPotId, potId)
-        )
-      );
+      .from(Tables.allocations)
+      .where(eq(Tables.allocations.transactionId, transactionId));
 
     if (found.length === 0) {
       return [];
@@ -27,17 +22,15 @@ export class TransferRepository extends Repository<"Transfer"> {
     return found.map((row) => {
       const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
       // deno-lint-ignore no-explicit-any
-      return new Transfer(camelCaseData as any);
+      return new Allocation(camelCaseData as any);
     });
   }
 
-  async findCashTransfers(): Promise<Transfer[]> {
+  async findByMemberId(memberId: string): Promise<Allocation[]> {
     const found = await this.dbClient
       .select()
-      .from(Tables.transfers)
-      .where(
-        or(isNull(Tables.transfers.fromPotId), isNull(Tables.transfers.toPotId))
-      );
+      .from(Tables.allocations)
+      .where(eq(Tables.allocations.memberId, memberId));
 
     if (found.length === 0) {
       return [];
@@ -46,7 +39,7 @@ export class TransferRepository extends Repository<"Transfer"> {
     return found.map((row) => {
       const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
       // deno-lint-ignore no-explicit-any
-      return new Transfer(camelCaseData as any);
+      return new Allocation(camelCaseData as any);
     });
   }
 }

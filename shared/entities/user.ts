@@ -32,7 +32,6 @@ export class User extends Entity {
   public readonly firstName: string;
   public readonly lastName: string;
   public readonly role: UserRole;
-  public readonly isActive: boolean;
 
   constructor({
     id,
@@ -45,21 +44,20 @@ export class User extends Entity {
     createdAt,
     updatedAt,
   }: UserData) {
-    super({ id, createdAt, updatedAt });
+    super({ id, createdAt, updatedAt, isActive });
 
     this.email = email.toLowerCase().trim();
     this.passwordHash = passwordHash;
     this.firstName = firstName.trim();
     this.lastName = lastName.trim();
     this.role = role || User.UserRole.USER;
-    this.isActive = isActive;
   }
 
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       email: this.email,
@@ -138,7 +136,6 @@ export class User extends Entity {
       firstName: string().min(1).max(100),
       lastName: string().min(1).max(100),
       role: zEnum(User.UserRole),
-      isActive: boolean().default(true),
     });
   }
 

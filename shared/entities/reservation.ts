@@ -57,7 +57,7 @@ export class Reservation extends Entity {
     return this._amountCents;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       createdAt: this.createdAt,
@@ -67,6 +67,7 @@ export class Reservation extends Entity {
       allocationId: this._allocationId,
       memberId: this._memberId,
       amountCents: this._amountCents,
+      isActive: this.isActive,
     };
   }
 

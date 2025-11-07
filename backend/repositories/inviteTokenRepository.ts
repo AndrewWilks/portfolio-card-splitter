@@ -1,29 +1,37 @@
-import { InviteTokenRepository as SharedInviteTokenRepository } from "@shared/repositories";
 import { InviteToken } from "@shared/entities";
+import { Repository } from "./base/repository.ts";
+import { eq, lt } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class InviteTokenRepository extends SharedInviteTokenRepository {
-  override save(_token: InviteToken): Promise<void> {
-    // TODO: Implement save method to insert invite token into database
-    return Promise.reject("Not implemented");
+export class InviteTokenRepository extends Repository<"InviteToken"> {
+  constructor() {
+    super("InviteToken");
   }
 
-  override findById(_id: string): Promise<InviteToken | null> {
-    // TODO: Implement findById method to query invite token by ID from database
-    return Promise.reject("Not implemented");
+  async findByEmail(email: string): Promise<InviteToken[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.inviteTokens)
+      .where(eq(Tables.inviteTokens.email, email));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new InviteToken(camelCaseData as any);
+    });
   }
 
-  override findByEmail(_email: string): Promise<InviteToken[]> {
-    // TODO: Implement findByEmail method to query invite tokens by email from database
-    return Promise.reject("Not implemented");
-  }
+  async deleteExpired(): Promise<number> {
+    const deleted = await this.dbClient
+      .delete(Tables.inviteTokens)
+      .where(lt(Tables.inviteTokens.expiresAt, new Date()))
+      .returning();
 
-  override delete(_id: string): Promise<void> {
-    // TODO: Implement delete method to remove invite token from database
-    return Promise.reject("Not implemented");
-  }
-
-  override deleteExpired(): Promise<void> {
-    // TODO: Implement deleteExpired method to remove expired invite tokens from database
-    return Promise.reject("Not implemented");
+    return deleted.length;
   }
 }

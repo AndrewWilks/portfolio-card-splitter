@@ -2,6 +2,7 @@ import { object, uuid, enum as zEnum } from "zod";
 import { Entity, EntityData } from "./base/entity.ts";
 import { calculateAmountUsingBasisPoints } from "../utilities/calculateAmountUsingBasisPoints.ts";
 import { Cents, basisPoints, zCents, zBasisPoints } from "@shared/types";
+import { AllocationRule } from "./allocationRule.ts";
 
 export interface AllocationData extends EntityData {
   transactionId: string;
@@ -11,10 +12,8 @@ export interface AllocationData extends EntityData {
   amountCents?: Cents;
 }
 
-enum AllocationRule {
-  basisPoints = "basisPoints",
-  FIXED_AMOUNT = "fixed_amount",
-}
+// Re-export for backwards compatibility
+export { AllocationRule };
 
 export class Allocation extends Entity {
   static Rules = AllocationRule;
@@ -115,7 +114,7 @@ export class Allocation extends Entity {
     return this._amountCents;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       transactionId: this._transactionId,
@@ -125,6 +124,7 @@ export class Allocation extends Entity {
       amountCents: this._amountCents,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      isActive: this.isActive,
     };
   }
 

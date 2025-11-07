@@ -1,15 +1,9 @@
-import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid } from "drizzle-orm/pg-core";
+import { entity } from "./base/entity.ts";
 
 export const merchants = pgTable("merchants", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  ...entity,
   name: text("name").notNull(),
   location: text("location"),
   mergedIntoId: uuid("merged_into_id"),
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
 });

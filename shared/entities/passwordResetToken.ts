@@ -34,7 +34,7 @@ export class PasswordResetToken extends Token {
     });
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       userId: this._userId,
@@ -42,6 +42,7 @@ export class PasswordResetToken extends Token {
       usedAt: this._usedAt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      isActive: this.isActive,
     };
   }
 

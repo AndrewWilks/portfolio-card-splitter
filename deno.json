@@ -2,6 +2,8 @@
   "imports": {
     // Backend modules
     "@db": "./backend/db/index.ts",
+    "@db/schemas": "./backend/db/schema/index.ts",
+    "@db/tables": "./backend/db/schema/tables/index.ts",
     "@backend/services": "./backend/services/index.ts",
     "@backend/repositories": "./backend/repositories/index.ts",
     "@backend/routes": "./backend/routes/index.ts",
@@ -17,6 +19,8 @@
     // Shared modules
     "@shared/services": "./shared/services/index.ts",
     "@shared/entities": "./shared/entities/index.ts",
+    "@shared/entities-map": "./shared/entities/entities.map.ts",
+    "@shared/utilities": "./shared/utilities/index.ts",
     "@shared/types": "./shared/types.ts",
 
     // Third-party Packages

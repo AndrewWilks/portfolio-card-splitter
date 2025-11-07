@@ -67,7 +67,7 @@ export class Session extends Entity {
     return this.markUsed();
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       userId: this._userId,
@@ -75,6 +75,7 @@ export class Session extends Entity {
       expiresAt: this._expiresAt,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      isActive: this.isActive,
     };
   }
 

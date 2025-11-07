@@ -7,6 +7,7 @@ export { PotRepository } from "./potRepository.ts";
 export { ReservationRepository } from "./reservationRepository.ts";
 export { TransferRepository } from "./transferRepository.ts";
 export { PaymentRepository } from "./paymentRepository.ts";
+export { AllocationRepository } from "./allocationRepository.ts";
 export { EventRepository } from "./eventRepository.ts";
 export { InviteTokenRepository } from "./inviteTokenRepository.ts";
 export { PasswordResetTokenRepository } from "./passwordResetTokenRepository.ts";

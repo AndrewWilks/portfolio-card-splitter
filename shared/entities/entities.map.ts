@@ -1,0 +1,33 @@
+import {
+  User,
+  Allocation,
+  Event,
+  Session,
+  InviteToken,
+  PasswordResetToken,
+  Member,
+  Merchant,
+  Transaction,
+  Payment,
+  Pot,
+  Reservation,
+  Tag,
+  Transfer,
+} from "@shared/entities";
+
+export const entities = {
+  User,
+  Session,
+  InviteToken,
+  PasswordResetToken,
+  Member,
+  Merchant,
+  Transaction,
+  Payment,
+  Pot,
+  Reservation,
+  Tag,
+  Transfer,
+  Event,
+  Allocation,
+};

@@ -131,7 +131,7 @@ export class Pot extends Entity {
     return this._ownerId;
   }
 
-  get toJSON() {
+  override get toJSON() {
     const base = {
       id: this.id,
       createdAt: this.createdAt,
@@ -145,6 +145,7 @@ export class Pot extends Entity {
       maskingAccount: this._maskingAccount,
       physicalLocation: this._physicalLocation,
       visibilityAcls: this._visibilityAcls,
+      isActive: this.isActive,
     };
 
     // Include derived values if they have been set

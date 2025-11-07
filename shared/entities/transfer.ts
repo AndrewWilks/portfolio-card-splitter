@@ -77,7 +77,7 @@ export class Transfer extends Entity {
     return this._amountCents;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       createdAt: this.createdAt,
@@ -87,6 +87,7 @@ export class Transfer extends Entity {
       amountCents: this._amountCents,
       occurredOn: this._occurredOn,
       note: this._note,
+      isActive: this.isActive,
     };
   }
 

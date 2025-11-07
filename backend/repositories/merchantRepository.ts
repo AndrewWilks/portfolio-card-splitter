@@ -1,73 +1,29 @@
-import { MerchantRepository as SharedMerchantRepository } from "@shared/repositories";
 import { Merchant } from "@shared/entities";
-import { db, Schemas } from "@db";
+import { Repository } from "./base/repository.ts";
 import { eq } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class MerchantRepository extends SharedMerchantRepository {
-  constructor(private dbClient = db) {
-    super();
+export class MerchantRepository extends Repository<"Merchant"> {
+  constructor() {
+    super("Merchant");
   }
 
-  override async save(merchant: Merchant): Promise<void> {
-    const data = merchant.toJSON();
-    await this.dbClient
-      .insert(Schemas.Tables.merchants)
-      .values({
-        id: data.id,
-        name: data.name,
-        location: data.location || null,
-        mergedIntoId: data.mergedIntoId || null,
-        isActive: data.isActive,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      })
-      .onConflictDoUpdate({
-        target: Schemas.Tables.merchants.id,
-        set: {
-          name: data.name,
-          location: data.location || null,
-          mergedIntoId: data.mergedIntoId || null,
-          isActive: data.isActive,
-          updatedAt: data.updatedAt,
-        },
-      });
-  }
-
-  override async findById(id: string): Promise<Merchant | null> {
+  async findByName(name: string): Promise<Merchant | null> {
     const result = await this.dbClient
       .select()
-      .from(Schemas.Tables.merchants)
-      .where(eq(Schemas.Tables.merchants.id, id))
+      .from(Tables.merchants)
+      .where(eq(Tables.merchants.name, name))
       .limit(1);
 
     if (result.length === 0) {
       return null;
     }
 
-    const row = result[0];
-    return Merchant.from({
-      ...row,
-      location: row.location || undefined,
-      mergedIntoId: row.mergedIntoId || undefined,
-    });
-  }
-
-  override async findByName(name: string): Promise<Merchant | null> {
-    const result = await this.dbClient
-      .select()
-      .from(Schemas.Tables.merchants)
-      .where(eq(Schemas.Tables.merchants.name, name))
-      .limit(1);
-
-    if (result.length === 0) {
-      return null;
-    }
-
-    const row = result[0];
-    return Merchant.from({
-      ...row,
-      location: row.location || undefined,
-      mergedIntoId: row.mergedIntoId || undefined,
-    });
+    const camelCaseData = objectKeysToCamel(
+      result[0] as Record<string, unknown>
+    );
+    // deno-lint-ignore no-explicit-any
+    return new Merchant(camelCaseData as any);
   }
 }

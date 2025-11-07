@@ -1,4 +1,4 @@
-import { boolean, object, string, uuid } from "zod";
+import { object, string, uuid } from "zod";
 import { Entity, EntityData } from "@shared/entities";
 
 // For merchants table. Includes normalization logic for fuzzy matching.
@@ -13,7 +13,6 @@ export class Merchant extends Entity {
   private _name: string;
   private _location?: string;
   private _mergedIntoId?: string;
-  private _isActive: boolean;
 
   constructor({
     id,
@@ -24,20 +23,19 @@ export class Merchant extends Entity {
     location,
     mergedIntoId,
   }: MerchantData) {
-    super({ id, createdAt, updatedAt });
-    this._isActive = isActive;
+    super({ id, createdAt, updatedAt, isActive });
     this._name = name;
     this._location = location;
     this._mergedIntoId = mergedIntoId;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       name: this._name,
       location: this._location,
       mergedIntoId: this._mergedIntoId,
-      isActive: this._isActive,
+      isActive: this.isActive,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -53,7 +51,6 @@ export class Merchant extends Entity {
       name: string().min(1).max(255),
       location: string().max(255).optional(),
       mergedIntoId: uuid().optional(),
-      isActive: boolean().default(true),
     });
   }
 

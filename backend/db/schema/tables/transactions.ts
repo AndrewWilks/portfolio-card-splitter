@@ -4,6 +4,7 @@ import { transactionType } from "../enums/transactionType.ts";
 
 import { merchants } from "./merchants.ts";
 import { users } from "./users.ts";
+import { entity } from "./base/entity.ts";
 
 /**
  * Database table definition for `transactions`.
@@ -11,7 +12,7 @@ import { users } from "./users.ts";
  * Stores financial transactions created by users or system processes.
  */
 export const transactions = pgTable("transactions", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  ...entity,
   merchantId: uuid("merchant_id")
     .references(() => merchants.id)
     .notNull(),
@@ -23,11 +24,5 @@ export const transactions = pgTable("transactions", {
   }).notNull(),
   createdById: uuid("created_by_id")
     .references(() => users.id)
-    .notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .defaultNow()
     .notNull(),
 });

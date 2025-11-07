@@ -1,10 +1,11 @@
-import { bigint, index, pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, index, pgTable, uuid } from "drizzle-orm/pg-core";
 
 import { allocations } from "./allocations.ts";
 import { members } from "./members.ts";
 import { pots } from "./pots.ts";
 import { transactions } from "./transactions.ts";
 import { users } from "./users.ts";
+import { entity } from "./base/entity.ts";
 
 /**
  * Database table definition for `reservations`.
@@ -15,7 +16,7 @@ import { users } from "./users.ts";
 export const reservations = pgTable(
   "reservations",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    ...entity,
     potId: uuid("pot_id")
       .references(() => pots.id)
       .notNull(),
@@ -31,9 +32,6 @@ export const reservations = pgTable(
     amountCents: bigint("amount_cents", { mode: "number" }).notNull(),
     createdById: uuid("created_by_id")
       .references(() => users.id)
-      .notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .defaultNow()
       .notNull(),
   },
   (table) => ({

@@ -28,7 +28,7 @@ export class Member extends Entity {
     this._archived = archived;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       userId: this._userId,
@@ -36,6 +36,7 @@ export class Member extends Entity {
       archived: this._archived,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      isActive: this.isActive,
     };
   }
 

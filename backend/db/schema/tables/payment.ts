@@ -12,6 +12,7 @@ import { pots } from "./pots.ts";
 import { reservations } from "./reservations.ts";
 import { transactions } from "./transactions.ts";
 import { users } from "./users.ts";
+import { entity } from "./base/entity.ts";
 
 /**
  * Database table definition for `payments`.
@@ -20,7 +21,7 @@ import { users } from "./users.ts";
  * Each payment must come from a pot (potId is required).
  */
 export const payments = pgTable("payments", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  ...entity,
   transactionId: uuid("transaction_id")
     .references(() => transactions.id)
     .notNull(),
@@ -35,8 +36,5 @@ export const payments = pgTable("payments", {
   note: text("note"),
   createdById: uuid("created_by_id")
     .references(() => users.id)
-    .notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
     .notNull(),
 });

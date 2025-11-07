@@ -65,7 +65,7 @@ export class Event<T> extends Entity {
     this._payload = payload;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       type: this._type,
@@ -75,6 +75,7 @@ export class Event<T> extends Entity {
       payload: this._payload,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      isActive: this.isActive,
     };
   }
 

@@ -4,7 +4,7 @@ import { date, object, string, uuid, enum as zEnum } from "zod";
 import { Entity, EntityData } from "@shared/entities";
 import { Cents, zCents } from "@shared/types";
 
-enum TransactionType {
+export enum TransactionType {
   EXPENSE = "expense",
   INCOME = "income",
 }
@@ -48,7 +48,7 @@ export class Transaction extends Entity {
     this._type = type;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       merchantId: this._merchantId,
@@ -59,6 +59,7 @@ export class Transaction extends Entity {
       createdById: this._createdById,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
+      isActive: this.isActive,
     };
   }
 

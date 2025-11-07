@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { object, string } from "zod";
 import { EntityData, Entity } from "@shared/entities";
 import { HexColor, zHexColor } from "@shared/types";
 
@@ -12,25 +12,22 @@ export interface TagData extends EntityData {
 export class Tag extends Entity {
   static readonly DEFAULT_COLOR = "#3b82f6" as HexColor;
   static readonly DEFAULT_NAME = "Untitled Tag";
-  static readonly DEFAULT_IS_ACTIVE = true;
 
   private _name: string = Tag.DEFAULT_NAME;
   private _color: HexColor = Tag.DEFAULT_COLOR;
-  private _isActive: boolean = Tag.DEFAULT_IS_ACTIVE;
 
   constructor({ id, createdAt, updatedAt, name, color, isActive }: TagData) {
-    super({ id, createdAt, updatedAt });
+    super({ id, createdAt, updatedAt, isActive });
     this._name = name;
     this._color = color;
-    this._isActive = isActive;
   }
 
-  get toJSON() {
+  override get toJSON() {
     return {
       id: this.id,
       name: this._name,
       color: this._color,
-      isActive: this._isActive,
+      isActive: this.isActive,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
     };
@@ -42,10 +39,9 @@ export class Tag extends Entity {
   }
 
   static get schema() {
-    return z.object({
-      name: z.string().min(1).max(100),
+    return object({
+      name: string().min(1).max(100),
       color: zHexColor.default(Tag.DEFAULT_COLOR),
-      isActive: z.boolean().default(Tag.DEFAULT_IS_ACTIVE),
     });
   }
 

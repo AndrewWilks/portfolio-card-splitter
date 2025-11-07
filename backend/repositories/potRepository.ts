@@ -1,29 +1,31 @@
-import { PotRepository as SharedPotRepository } from "@shared/repositories";
 import { Pot } from "@shared/entities";
+import { Repository } from "./base/repository.ts";
+import { eq } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class PotRepository extends SharedPotRepository {
-  override save(_pot: Pot): Promise<void> {
-    // TODO: Implement save method to insert pot into database
-    return Promise.reject("Not implemented");
+export class PotRepository extends Repository<"Pot"> {
+  constructor() {
+    super("Pot");
   }
 
-  override findById(_id: string): Promise<Pot | null> {
-    // TODO: Implement findById method to query pot by ID from database
-    return Promise.reject("Not implemented");
+  async findByOwner(ownerId: string): Promise<Pot[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.pots)
+      .where(eq(Tables.pots.ownerId, ownerId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Pot(camelCaseData as any);
+    });
   }
 
-  override findByOwner(_ownerId: string): Promise<Pot[]> {
-    // TODO: Implement findByOwner method to query pots by owner ID from database
-    return Promise.reject("Not implemented");
-  }
-
-  override updateBalance(_id: string, _amount: number): Promise<void> {
-    // TODO: Implement updateBalance method to update pot balance in database
-    return Promise.reject("Not implemented");
-  }
-
-  override findAvailableBalances(): Promise<Record<string, number>> {
-    // TODO: Implement findAvailableBalances method to query available balances for all pots from database
-    return Promise.reject("Not implemented");
-  }
+  // Note: Balance is calculated from transfers/payments, not stored directly
+  // These methods should be implemented in the service layer
 }
