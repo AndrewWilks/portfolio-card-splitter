@@ -80,3 +80,24 @@ export function createPotService() {
 export function createSessionService() {
   // return new services.SessionService(createSessionRepository());
 }
+
+export function createCardAccountService() {
+  return new services.CardAccountService(
+    repositories.createCardAccountRepository(),
+    repositories.createCardAccountSettingsRepository(),
+    repositories.createTransactionRepository()
+  );
+}
+
+export function createCardAccountSettingsService() {
+  return new services.CardAccountSettingsService(
+    repositories.createCardAccountSettingsRepository()
+  );
+}
+
+export function createCardService() {
+  return new services.CardService(
+    repositories.createCardRepository(),
+    repositories.createCardAccountRepository()
+  );
+}
