@@ -84,8 +84,9 @@ Added reconciliation flagging to Payment entity to detect when actual payments d
 
 **Implementation Summary:**
 Discovered that TransactionService already had comprehensive validation for most requirements:
+
 - ✅ Merchant existence validation
-- ✅ CardAccount existence validation  
+- ✅ CardAccount existence validation
 - ✅ Card exists and belongs to CardAccount
 - ✅ Tag existence validation
 - ✅ Allocations sum to 100% (percentage type)
@@ -94,11 +95,13 @@ Discovered that TransactionService already had comprehensive validation for most
 - ✅ At least one allocation required
 
 **Added:**
+
 - Member existence validation for all allocations
 - MemberRepository dependency via DI
 - Comprehensive test suite (6 scenarios)
 
 **Changes:**
+
 - `backend/services/transactionService.ts` - Added member validation loop
 - `backend/di/services.ts` - Wired MemberRepository
 - `backend/__tests__/services/transactionValidation.test.ts` - NEW test file

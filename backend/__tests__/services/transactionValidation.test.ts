@@ -10,12 +10,7 @@ import {
 } from "../../repositories/index.ts";
 import { withTestDB } from "../testHelpers.ts";
 import { db } from "../../db/db.client.ts";
-import {
-  users,
-  merchants,
-  cardAccounts,
-  members,
-} from "../../db/db.schema.ts";
+import { users, merchants, cardAccounts, members } from "../../db/db.schema.ts";
 import type { Cents } from "@shared/types";
 
 Deno.test({
