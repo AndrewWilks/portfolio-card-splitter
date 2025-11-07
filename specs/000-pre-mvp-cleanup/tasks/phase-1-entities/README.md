@@ -1,6 +1,6 @@
 # Phase 1: Entity Tasks
 
-**Status**: ⬜ Not Started  
+**Status**: 🔄 In Progress (5/11 Complete)  
 **Estimated Time**: 5-7 days  
 **Depends On**: Phase 0 Complete ✅
 
@@ -10,30 +10,32 @@ Create CardAccount, CardAccountSettings, and Card entities, update Transaction e
 
 ## Tasks
 
-- [ ] **1.1** Create CardAccount Entity (2-3 hrs) - Core entity with name, issuer, last4, billing cycle, credit limit
-- [ ] **1.2** Create CardAccountSettings Entity (3-4 hrs) - Configuration layer with Australian credit card defaults
-- [ ] **1.3** Create Card Entity (2-3 hrs) - Optional entity for card attribution to members
-- [ ] **1.4** Update Transaction Entity (1-2 hrs) - Add cardAccountId (required) and cardId (optional)
-- [ ] **1.5** Create Database Tables (3-4 hrs) - Migration for card_accounts, card_account_settings, and cards
-- [ ] **1.6** Create Schema Files (3-4 hrs) - Drizzle schema and relations
-- [ ] **1.7** Create Repositories (4-5 hrs) - CRUD for CardAccount, CardAccountSettings, and Card
-- [ ] **1.8** Create Services (4-5 hrs) - Business logic, validation, and settings management
-- [ ] **1.9** Create Routes (5-6 hrs) - API endpoints for CardAccount, CardAccountSettings, and Card
-- [ ] **1.10** Update Transaction Routes (2-3 hrs) - Add cardAccountId to transaction APIs
-- [ ] **1.11** Add Tests (5-7 hrs) - Entity, repo, service, route tests
-- [ ] **1.12** Update Exports (1 hr) - Add to shared/entities/index.ts
+- [x] **1.1** Create CardAccount Entity (2-3 hrs) ✅ - Core entity with name, issuer, last4, billing cycle, credit limit
+- [x] **1.2** Create CardAccountSettings Entity (3-4 hrs) ✅ - Configuration layer with Australian credit card defaults
+- [x] **1.3** Create Card Entity (2-3 hrs) ✅ - Optional entity for card attribution to members
+- [x] **1.4** Update Transaction Entity (1-2 hrs) ✅ - Add cardAccountId (required) and cardId (optional)
+- [x] **1.5** Create Database Tables (3-4 hrs) ✅ - Migration for card_accounts, card_account_settings, and cards
+- [ ] **1.6** Create Repositories (4-5 hrs) - CRUD for CardAccount, CardAccountSettings, and Card
+- [ ] **1.7** Create Services (4-5 hrs) - Business logic, validation, and settings management
+- [ ] **1.8** Create Routes (5-6 hrs) - API endpoints for CardAccount, CardAccountSettings, and Card
+- [ ] **1.9** Update Transaction Backend (2-3 hrs) - Add cardAccountId validation to transaction services/routes
+- [ ] **1.10** Integration Tests (3-4 hrs) - Entity, repo, service, route tests
+- [ ] **1.11** DI Wiring & Exports (1-2 hrs) - Add to DI container and update exports
 
-**Total**: 12 tasks, ~35-47 hours
+**Total**: 11 tasks, ~35-45 hours  
+**Completed**: 5 tasks, ~12 hours  
+**Remaining**: 6 tasks, ~23-33 hours
 
 ## Success Criteria
 
-- [ ] CardAccount entity created and tested
-- [ ] CardAccountSettings entity created and tested
-- [ ] Card entity created and tested
-- [ ] Transaction entity includes cardAccountId (required) and cardId (optional)
-- [ ] Database tables created and migrated with proper relationships
-- [ ] One-to-one relationship between CardAccount and CardAccountSettings enforced
-- [ ] Default Australian settings (CommBank pattern) available
+- [x] CardAccount entity created and tested (32 tests)
+- [x] CardAccountSettings entity created and tested (36 tests)
+- [x] Card entity created and tested (25 tests)
+- [x] Transaction entity includes cardAccountId (required) and cardId (optional) (13 tests)
+- [x] Database tables created and migrated with proper relationships
+- [x] One-to-one relationship between CardAccount and CardAccountSettings enforced
+- [x] Default Australian settings (CommBank pattern) available
+- [x] All entity tests pass (106/106)
 - [ ] Repositories created and tested
 - [ ] Services created and tested (including settings management)
 - [ ] Routes created and tested
