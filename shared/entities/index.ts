@@ -6,6 +6,7 @@ export * from "./inviteToken.ts";
 export * from "./passwordResetToken.ts";
 export * from "./member.ts";
 export * from "./merchant.ts";
+export * from "./cardAccount.ts";
 export * from "./transaction.ts";
 export * from "./payment.ts";
 export * from "./pot.ts";
