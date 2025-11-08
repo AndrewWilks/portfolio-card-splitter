@@ -8,6 +8,7 @@ Deno.test("Reservation - creates reservation with required fields", () => {
     transactionId: "550e8400-e29b-41d4-a716-446655440001",
     memberId: "550e8400-e29b-41d4-a716-446655440002",
     amountCents: 5000 as Cents,
+    createdById: "550e8400-e29b-41d4-a716-446655440010",
   });
 
   assert(typeof reservation.id === "string");
@@ -16,6 +17,7 @@ Deno.test("Reservation - creates reservation with required fields", () => {
   assert(reservation.memberId === "550e8400-e29b-41d4-a716-446655440002");
   assert(reservation.amountCents === 5000);
   assert(reservation.allocationId === undefined);
+  assert(reservation.createdById === "550e8400-e29b-41d4-a716-446655440010");
   assert(reservation.createdAt instanceof Date);
 });
 
@@ -26,11 +28,13 @@ Deno.test("Reservation - creates reservation with allocation link", () => {
     allocationId: "550e8400-e29b-41d4-a716-446655440003",
     memberId: "550e8400-e29b-41d4-a716-446655440002",
     amountCents: 7500 as Cents,
+    createdById: "550e8400-e29b-41d4-a716-446655440010",
   });
 
   assert(reservation.allocationId === "550e8400-e29b-41d4-a716-446655440003");
   assert(reservation.memberId === "550e8400-e29b-41d4-a716-446655440002");
   assert(reservation.amountCents === 7500);
+  assert(reservation.createdById === "550e8400-e29b-41d4-a716-446655440010");
 });
 
 Deno.test("Reservation - validates amount is not negative", () => {
@@ -40,6 +44,7 @@ Deno.test("Reservation - validates amount is not negative", () => {
       transactionId: "550e8400-e29b-41d4-a716-446655440001",
       memberId: "550e8400-e29b-41d4-a716-446655440002",
       amountCents: -100 as Cents,
+      createdById: "550e8400-e29b-41d4-a716-446655440010",
     });
     assert(false, "Should have thrown validation error");
   } catch (error) {
@@ -54,6 +59,7 @@ Deno.test("Reservation - validates required UUID fields", () => {
       transactionId: "550e8400-e29b-41d4-a716-446655440001",
       memberId: "550e8400-e29b-41d4-a716-446655440002",
       amountCents: 1000 as Cents,
+      createdById: "550e8400-e29b-41d4-a716-446655440010",
     });
     assert(false, "Should have thrown validation error");
   } catch (error) {
@@ -69,6 +75,7 @@ Deno.test("Reservation - can be reconstructed from data", () => {
     allocationId: "550e8400-e29b-41d4-a716-446655440003",
     memberId: "550e8400-e29b-41d4-a716-446655440002",
     amountCents: 2500 as Cents,
+    createdById: "550e8400-e29b-41d4-a716-446655440010",
     createdAt: new Date("2025-11-07T12:00:00Z"),
     updatedAt: new Date("2025-11-07T12:00:00Z"),
   };
@@ -81,6 +88,7 @@ Deno.test("Reservation - can be reconstructed from data", () => {
   assert(reservation.allocationId === data.allocationId);
   assert(reservation.memberId === data.memberId);
   assert(reservation.amountCents === data.amountCents);
+  assert(reservation.createdById === data.createdById);
   assert(reservation.createdAt.getTime() === data.createdAt.getTime());
   assert(reservation.updatedAt.getTime() === data.updatedAt.getTime());
 });
@@ -92,6 +100,7 @@ Deno.test("Reservation - toJSON returns correct data", () => {
     allocationId: "550e8400-e29b-41d4-a716-446655440003",
     memberId: "550e8400-e29b-41d4-a716-446655440002",
     amountCents: 3000 as Cents,
+    createdById: "550e8400-e29b-41d4-a716-446655440010",
   });
 
   const json = reservation.toJSON;

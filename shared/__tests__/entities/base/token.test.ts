@@ -33,10 +33,10 @@ Deno.test("Token isExpired", () => {
   assertEquals(token.isValid(), false);
 });
 
-Deno.test("Token isUsed and markUsed", () => {
+Deno.test("Token isUsed and use", () => {
   const token = Token.create({});
   assertEquals(token.isUsed(), false);
-  token.markUsed();
+  token.use();
   assertEquals(token.isUsed(), true);
   assertEquals(token.isValid(), false);
 });
