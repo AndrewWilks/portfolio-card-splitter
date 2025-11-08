@@ -1,6 +1,48 @@
 import { number, object, string, uuid, z } from "zod";
 import { Entity, type EntityData } from "./base/entity.ts";
 
+/**
+ * CardAccount Data Interface
+ * 
+ * Represents a credit card account (e.g., Chase Sapphire, Amex Gold).
+ * Every Transaction must belong to exactly one CardAccount.
+ * 
+ * @interface CardAccountData
+ * @extends EntityData
+ * 
+ * @property {string} name - User-friendly name for the account (e.g., "Chase Sapphire")
+ * @property {string} issuer - Card issuer/bank name (e.g., "Chase", "American Express")
+ * @property {string} last4 - Last 4 digits of the account number for identification
+ * @property {number} billingCycle - Day of month when statement closes (1-31)
+ * @property {number} [creditLimitCents] - Optional credit limit in cents (e.g., 500000 = $5,000)
+ * @property {string} ownerId - UUID of the User who owns this account
+ * @property {boolean} isActive - Soft delete flag; false = archived
+ * 
+ * @example
+ * ```typescript
+ * const accountData: CardAccountData = {
+ *   id: "uuid",
+ *   name: "Chase Sapphire Reserve",
+ *   issuer: "Chase",
+ *   last4: "1234",
+ *   billingCycle: 15, // Statement closes on 15th of each month
+ *   creditLimitCents: 1000000, // $10,000 limit
+ *   ownerId: "user-uuid",
+ *   isActive: true,
+ *   createdAt: new Date(),
+ *   updatedAt: new Date()
+ * };
+ * ```
+ * 
+ * @remarks
+ * - Outstanding balance is calculated via LedgerService: Sum(Transactions) - Sum(Payments)
+ * - Cannot be deleted if Transactions exist; set isActive=false to archive
+ * - If only one CardAccount exists, UI should auto-select it for new Transactions
+ * 
+ * @see {@link Transaction} - Every Transaction must reference a CardAccount
+ * @see {@link Card} - Optional Cards can belong to a CardAccount for attribution
+ * @see {@link Payment} - Payments reduce the outstanding balance of a CardAccount
+ */
 export interface CardAccountData extends EntityData {
   name: string;
   issuer: string;
@@ -11,6 +53,47 @@ export interface CardAccountData extends EntityData {
   isActive: boolean;
 }
 
+/**
+ * CardAccount Entity
+ * 
+ * Represents a credit card account with validation and business rules.
+ * Central entity in the transaction tracking system - all expenses flow through CardAccounts.
+ * 
+ * @class CardAccount
+ * @extends Entity
+ * 
+ * @remarks
+ * Key relationships:
+ * - One CardAccount has many Transactions (1:N)
+ * - One CardAccount has many Cards (1:N) - optional for attribution
+ * - One User owns many CardAccounts (1:N)
+ * - Payments are linked to Transactions, which roll up to CardAccount balance
+ * 
+ * Business rules:
+ * - `name` and `issuer` are trimmed on construction
+ * - `billingCycle` must be 1-31 (validated in schema)
+ * - `last4` must be exactly 4 digits (validated in schema)
+ * - Outstanding balance calculated dynamically, not stored
+ * 
+ * @example
+ * ```typescript
+ * const account = new CardAccount({
+ *   id: "uuid",
+ *   name: "  Chase Sapphire  ", // Will be trimmed
+ *   issuer: "Chase",
+ *   last4: "1234",
+ *   billingCycle: 15,
+ *   creditLimitCents: 500000,
+ *   ownerId: "user-uuid",
+ *   isActive: true,
+ *   createdAt: new Date(),
+ *   updatedAt: new Date()
+ * });
+ * 
+ * console.log(account.name); // "Chase Sapphire" (trimmed)
+ * console.log(account.toJSON()); // Full serialized data
+ * ```
+ */
 export class CardAccount extends Entity {
   private _name: string;
   private _issuer: string;
