@@ -66,9 +66,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: pot.id,
         })
         .returning();
 
@@ -225,9 +227,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: pot.id,
         })
         .returning();
 
@@ -318,9 +322,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: pot.id,
         })
         .returning();
 
@@ -411,9 +417,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: pot.id,
         })
         .returning();
 
@@ -517,9 +525,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: pot.id,
         })
         .returning();
 
