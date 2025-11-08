@@ -65,12 +65,16 @@ export function createPaymentService() {
   );
 }
 
-export function createAuditService() {
-  return new services.AuditService(repositories.createEventRepository());
-}
+// export function createAuditService() {
+//   return new services.AuditService(repositories.createEventRepository());
+// }
 
 export function createLedgerService() {
-  return new services.LedgerService();
+  return new services.LedgerService(
+    repositories.createCardAccountRepository(),
+    repositories.createTransactionRepository(),
+    repositories.createPaymentRepository()
+  );
 }
 
 export function createPasswordService() {

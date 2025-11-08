@@ -1,6 +1,6 @@
 # Phase 3: Polish Tasks
 
-**Status**: ⬜ Not Started  
+**Status**: 🔄 In Progress  
 **Estimated Time**: 1-2 days  
 **Depends On**: Phase 2 Complete
 
@@ -10,19 +10,19 @@ Finalize implementation, update documentation, and verify all specs are met.
 
 ## Tasks
 
-- [ ] **3.1** Service Refinements (2-3 hrs) - Ledger calculations per CardAccount
+- [x] **3.1** Service Refinements (2-3 hrs) - Ledger calculations per CardAccount ✅ Complete (Time: ~2 hours)
 - [ ] **3.2** Entity Documentation (2-3 hrs) - Document relationships, update comments
 - [ ] **3.3** Architecture Docs (2-3 hrs) - Add CardAccount/Card to specs
-- [ ] **3.4** Gap Analysis Update (1-2 hrs) - Check off completed items
+- [x] **3.4** Gap Analysis Update (1-2 hrs) - Check off completed items ✅ Complete (Time: ~1 hour)
 
-**Total**: 4 tasks, ~7-11 hours
+**Total**: 4 tasks, 2 complete, ~4-6 hours remaining
 
 ## Success Criteria
 
-- [ ] LedgerService calculates outstanding balance per CardAccount
+- [x] LedgerService calculates outstanding balance per CardAccount ✅
 - [ ] All entity relationships documented
 - [ ] Architecture docs updated with new entities
-- [ ] Gap analysis spec shows all items complete
+- [x] Gap analysis spec shows all items complete ✅
 - [ ] All tests pass (full suite)
 - [ ] Manual testing complete
 - [ ] README and docs updated

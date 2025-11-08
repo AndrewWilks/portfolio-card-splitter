@@ -94,4 +94,13 @@ export class TransactionRepository extends Repository<"Transaction"> {
       await this.dbClient.insert(Tables.allocations).values(allocationData);
     }
   }
+
+  /**
+   * Find all transactions for a specific CardAccount
+   * @param cardAccountId - The CardAccount ID
+   * @returns Array of transactions
+   */
+  findByCardAccountId(cardAccountId: string): Promise<Transaction[]> {
+    return this.findByQuery({ cardAccountId });
+  }
 }

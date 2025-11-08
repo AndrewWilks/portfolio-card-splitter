@@ -50,6 +50,13 @@
       "when": 1762511499932,
       "tag": "0006_sturdy_purple_man",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1762569117857,
+      "tag": "0007_faithful_spyke",
+      "breakpoints": true
     }
   ]
 }
