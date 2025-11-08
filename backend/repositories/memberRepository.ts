@@ -56,4 +56,18 @@ export class MemberRepository extends Repository<"Member"> {
       return new Member(camelCaseData as any);
     });
   }
+
+  async findByUserId(_userId: string): Promise<Member[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.members)
+      .where(eq(Tables.members.userId, _userId))
+      .orderBy(Tables.members.createdAt);
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Member(camelCaseData as any);
+    });
+  }
 }

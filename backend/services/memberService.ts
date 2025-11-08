@@ -26,27 +26,27 @@ export class MemberService {
     this.memberRepository = memberRepository;
   }
 
-  override async listMembers(
-    query: Record<string, unknown>
-  ): Promise<Member[]> {
+  async listMembers(query: Record<string, unknown>): Promise<Member[]> {
     const validatedQuery = ListMembersQuerySchema.parse(query);
 
+    const allMembers = await this.memberRepository.findAll();
+    
     if (validatedQuery.includeArchived) {
       // Return all members
-      return await (this.memberRepository as MemberRepository).findAll();
+      return allMembers || [];
     } else {
       // Return only active (non-archived) members
-      return await this.memberRepository.findByStatus("active");
+      return (allMembers || []).filter((m: Member) => !m.archived);
     }
   }
 
-  override async createMember(request: unknown): Promise<Member> {
+  async createMember(request: unknown): Promise<Member> {
     const validatedRequest = CreateMemberRequestSchema.parse(request);
 
     // Check if a member with this display name already exists for this user
-    const existingMembers = await (
-      this.memberRepository as MemberRepository
-    ).findByUserId(validatedRequest.userId);
+    const existingMembers = await this.memberRepository.findByUserId(
+      validatedRequest.userId
+    );
     const duplicate = existingMembers.find(
       (m: Member) =>
         m.displayName.toLowerCase() ===
@@ -59,17 +59,21 @@ export class MemberService {
       );
     }
 
-    const member = Member.create({
+    const member = new Member({
+      id: crypto.randomUUID(),
       userId: validatedRequest.userId,
       displayName: validatedRequest.displayName,
       archived: false,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     await this.memberRepository.save(member);
     return member;
   }
 
-  override async updateMember(id: string, request: unknown): Promise<Member> {
+  async updateMember(id: string, request: unknown): Promise<Member> {
     const validatedRequest = UpdateMemberRequestSchema.parse(request);
 
     const existing = await this.memberRepository.findById(id);
@@ -85,9 +89,9 @@ export class MemberService {
 
     // If updating display name, check for duplicates within the same user
     if (validatedRequest.displayName) {
-      const userMembers = await (
-        this.memberRepository as MemberRepository
-      ).findByUserId(existing.userId);
+      const userMembers = await this.memberRepository.findByUserId(
+        existing.userId
+      );
       const duplicate = userMembers.find(
         (m: Member) =>
           m.id !== id &&
@@ -102,21 +106,18 @@ export class MemberService {
       }
     }
 
-    const updatedMember = Member.create({
+    const updatedMember = new Member({
+      id: existing.id,
       userId: existing.userId,
       displayName: validatedRequest.displayName ?? existing.displayName,
       archived: validatedRequest.archived ?? existing.archived,
-    });
-
-    // Preserve the original ID and creation date
-    const memberWithId = Member.from({
-      ...updatedMember.toJSON(),
-      id: existing.id,
+      isActive: existing.isActive,
       createdAt: existing.createdAt,
+      updatedAt: new Date(),
     });
 
-    await this.memberRepository.save(memberWithId);
-    return memberWithId;
+    await this.memberRepository.save(updatedMember);
+    return updatedMember;
   }
 
   // Additional business methods
@@ -124,9 +125,7 @@ export class MemberService {
     userId: string,
     includeArchived = false
   ): Promise<Member[]> {
-    const members = await (
-      this.memberRepository as MemberRepository
-    ).findByUserId(userId);
+    const members = await this.memberRepository.findByUserId(userId);
     return includeArchived
       ? members
       : members.filter((m: Member) => !m.archived);
