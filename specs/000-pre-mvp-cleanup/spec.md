@@ -249,10 +249,12 @@ interface ReservationData extends EntityData {
 
 ## Implementation Status ✅ ALL COMPLETE
 
+**Updated**: 2025-11-08
+
 ### Phase 0: Pre-work ✅ COMPLETE
 
-- Planning and gap analysis
-- Task breakdown
+- ✅ Planning and gap analysis
+- ✅ Task breakdown
 
 ### Phase 1: Critical Missing Entities ✅ COMPLETE
 
@@ -260,7 +262,7 @@ interface ReservationData extends EntityData {
 2. ✅ **Card** entity created (`shared/entities/card.ts`)
 3. ✅ **Transaction** updated with `cardAccountId` and `cardId`
 4. ✅ All repositories, services, and routes wired through DI
-5. ✅ Integration tests passing (173 tests)
+5. ✅ Integration tests passing (176 tests)
 
 ### Phase 2: Validation & Business Rules ✅ COMPLETE
 
@@ -271,11 +273,11 @@ interface ReservationData extends EntityData {
 5. ✅ Pot ACL enforcement (SOLO/SHARED visibility)
 6. ✅ 24 comprehensive validation test scenarios
 
-### Phase 3: Polish 🔄 IN PROGRESS
+### Phase 3: Polish ✅ COMPLETE
 
-1. ⬜ LedgerService refinements (outstanding balance per CardAccount)
-2. ⬜ Entity relationship documentation
-3. ⬜ Architecture docs updated
+1. ✅ LedgerService refinements (outstanding balance per CardAccount)
+2. ✅ Entity relationship documentation
+3. ✅ Architecture docs updated
 4. ✅ Gap analysis updated (this document)
 
 ---
@@ -292,27 +294,17 @@ interface ReservationData extends EntityData {
 - [x] Service-layer validation implemented
 - [x] ACL enforcement for Pot visibility
 - [x] Derived values pattern working
-- [x] CardAccount entity created
-- [x] Card entity created
-- [x] Transaction.cardAccountId added
-- [x] Transaction.cardId added
-- [x] Payment fields made required
-- [x] Reservation linked to Allocation and Member
-- [x] All entities exported from index.ts
-- [x] Service-layer validation implemented
-- [x] ACL enforcement for Pot visibility
-- [x] Derived values pattern working
-- [ ] Architecture doc updated with new entities (Phase 3 Task 3.3)
-- [ ] Entity relationship documentation (Phase 3 Task 3.2)
-- [ ] LedgerService outstanding balance calculations (Phase 3 Task 3.1)
+- [x] Architecture doc updated with new entities
+- [x] Entity relationship documentation
+- [x] LedgerService outstanding balance calculations
 
 **Testing Status**: ✅ ALL COMPLETE
 
-- [x] Tests for CardAccount/Card creation and validation (Phase 1)
-- [x] Transaction tests require cardAccountId (Phase 1)
-- [x] Payment validation tests (Phase 2)
-- [x] Reservation → Allocation linking tests (Phase 2)
-- [x] 173+ integration tests passing
+- [x] Tests for CardAccount/Card creation and validation
+- [x] Transaction tests require cardAccountId
+- [x] Payment validation tests
+- [x] Reservation → Allocation linking tests
+- [x] 176+ integration tests passing
 
 ---
 
