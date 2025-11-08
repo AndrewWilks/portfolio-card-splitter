@@ -124,7 +124,8 @@ backend.post("/api/payments", di.createApiPaymentsCreate());
 
 // Ledger & Audit Endpoints
 backend.get("/api/ledger", di.createApiLedgerGet());
-backend.get("/api/audit", di.createApiAuditGet());
+// TODO: Re-enable when AuditService is implemented
+// backend.get("/api/audit", di.createApiAuditGet());
 
 // Real-Time Events Endpoint
 backend.get("/api/events/stream", di.createApiEventsStream());

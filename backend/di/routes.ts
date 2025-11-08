@@ -75,16 +75,12 @@ export function createApiMemberList() {
 
 export function createApiMemberCreate() {
   const memberService = services.createMemberService();
-  return createValidatedRoute(schemas.CreateMemberSchema, (c: Context) =>
-    routes.apiMemberCreate(c, memberService)
-  );
+  return (c: Context) => routes.apiMemberCreate(c, memberService);
 }
 
 export function createApiMemberUpdate() {
   const memberService = services.createMemberService();
-  return validateBody(schemas.UpdateMemberSchema)((c: Context) =>
-    routes.apiMemberUpdate(c, memberService)
-  );
+  return (c: Context) => routes.apiMemberUpdate(c, memberService);
 }
 
 // User Routes - require UserService
@@ -94,10 +90,7 @@ export function createApiUserList() {
 
 export function createApiUserGet() {
   const userService = services.createUserService();
-  return (c: Context) => {
-    const params = User.urlParamsSchema.parse(c.req.param());
-    return routes.apiUserGet(c, userService, params);
-  };
+  return (c: Context) => routes.apiUserGet(c, userService);
 }
 
 export function createApiUserCreate() {
@@ -116,10 +109,7 @@ export function createApiUserUpdate() {
 
 export function createApiUserDelete() {
   const userService = services.createUserService();
-  return (c: Context) => {
-    const params = User.urlParamsSchema.parse(c.req.param());
-    return routes.apiUserDelete(c, userService, params);
-  };
+  return (c: Context) => routes.apiUserDelete(c, userService);
 }
 
 // Transaction Routes - require TransactionService
@@ -132,16 +122,12 @@ export function createApiTransactionsList() {
 
 export function createApiTransactionsCreate() {
   const transactionService = services.createTransactionService();
-  return validateBody(schemas.CreateTransactionSchema)((c: Context) =>
-    routes.apiTransactionsCreate(c, transactionService)
-  );
+  return (c: Context) => routes.apiTransactionsCreate(c, transactionService);
 }
 
 export function createApiTransactionsUpdate() {
   const transactionService = services.createTransactionService();
-  return validateBody(schemas.UpdateTransactionSchema)((c: Context) =>
-    routes.apiTransactionsUpdate(c, transactionService)
-  );
+  return (c: Context) => routes.apiTransactionsUpdate(c, transactionService);
 }
 
 // Merchant Routes - require MerchantService
@@ -154,16 +140,12 @@ export function createApiMerchantsList() {
 
 export function createApiMerchantsCreate() {
   const merchantService = services.createMerchantService();
-  return validateBody(schemas.CreateMerchantSchema)((c: Context) =>
-    routes.apiMerchantsCreate(c, merchantService)
-  );
+  return (c: Context) => routes.apiMerchantsCreate(c, merchantService);
 }
 
 export function createApiMerchantsUpdate() {
   const merchantService = services.createMerchantService();
-  return validateBody(schemas.UpdateMerchantSchema)((c: Context) =>
-    routes.apiMerchantsUpdate(c, merchantService)
-  );
+  return (c: Context) => routes.apiMerchantsUpdate(c, merchantService);
 }
 
 // Tag Routes - require MerchantService
@@ -173,40 +155,28 @@ export function createApiTagsList() {
 
 export function createApiTagsCreate() {
   const merchantService = services.createMerchantService();
-  return validateBody(schemas.CreateTagSchema)((c: Context) =>
-    routes.apiTagsCreate(c, merchantService)
-  );
+  return (c: Context) => routes.apiTagsCreate(c, merchantService);
 }
 
 export function createApiTagsUpdate() {
   const merchantService = services.createMerchantService();
-  return validateBody(schemas.UpdateTagSchema)((c: Context) =>
-    routes.apiTagsUpdate(c, merchantService)
-  );
+  return (c: Context) => routes.apiTagsUpdate(c, merchantService);
 }
 
 // Pot Routes - require PotService
 export function createApiPotsList() {
   const potService = services.createPotService();
-  return (c: Context) => {
-    const query = schemas.QuerySchema.parse(c.req.query());
-    c.set("query", query);
-    return routes.apiPotsList(c, potService);
-  };
+  return (c: Context) => routes.apiPotsList(c, potService);
 }
 
 export function createApiPotsCreate() {
   const potService = services.createPotService();
-  return validateBody(schemas.CreatePotSchema)((c: Context) =>
-    routes.apiPotsCreate(c, potService)
-  );
+  return (c: Context) => routes.apiPotsCreate(c, potService);
 }
 
 export function createApiPotsUpdate() {
   const potService = services.createPotService();
-  return validateBody(schemas.UpdatePotSchema)((c: Context) =>
-    routes.apiPotsUpdate(c, potService)
-  );
+  return (c: Context) => routes.apiPotsUpdate(c, potService);
 }
 
 export function createApiPotsDeposit() {
@@ -246,10 +216,11 @@ export function createApiLedgerGet() {
   return (c: Context) => routes.apiLedgerGet(c, ledgerService);
 }
 
-export function createApiAuditGet() {
-  const auditService = services.createAuditService();
-  return (c: Context) => routes.apiAuditGet(c, auditService);
-}
+// TODO: Re-enable when AuditService is implemented
+// export function createApiAuditGet() {
+//   const auditService = services.createAuditService();
+//   return (c: Context) => routes.apiAuditGet(c, auditService);
+// }
 
 // Events Routes - require EventRepository
 export function createApiEventsStream() {
