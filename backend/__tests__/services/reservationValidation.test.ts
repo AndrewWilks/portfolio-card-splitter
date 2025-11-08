@@ -19,6 +19,7 @@ import {
   cardAccounts,
 } from "../../db/db.schema.ts";
 import type { Cents } from "@shared/types";
+import { AllocationRule } from "@shared/entities";
 
 Deno.test({
   name: "ReservationService - createReservation - validates allocation exists",
@@ -78,9 +79,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
+          ownerId: user.id,
         })
         .returning();
 
@@ -101,7 +104,6 @@ Deno.test({
       await assertRejects(
         async () => {
           await service.createReservation({
-            potId: pot.id,
             transactionId: transaction.id,
             memberId: member.id,
             amountCents: 3000 as Cents,
@@ -174,9 +176,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
+          ownerId: user.id,
         })
         .returning();
 
@@ -213,7 +217,7 @@ Deno.test({
           transactionId: transaction1.id,
           memberId: member.id,
           amountCents: 5000 as Cents,
-          createdById: user.id,
+          rule: AllocationRule.FIXED_AMOUNT,
         })
         .returning();
 
@@ -221,7 +225,6 @@ Deno.test({
       await assertRejects(
         async () => {
           await service.createReservation({
-            potId: pot.id,
             transactionId: transaction2.id,
             memberId: member.id,
             amountCents: 3000 as Cents,
@@ -302,9 +305,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
+          ownerId: user.id,
         })
         .returning();
 
@@ -328,7 +333,7 @@ Deno.test({
           transactionId: transaction.id,
           memberId: member1.id,
           amountCents: 5000 as Cents,
-          createdById: user.id,
+          rule: AllocationRule.FIXED_AMOUNT,
         })
         .returning();
 
@@ -336,7 +341,6 @@ Deno.test({
       await assertRejects(
         async () => {
           await service.createReservation({
-            potId: pot.id,
             transactionId: transaction.id,
             memberId: member2.id,
             amountCents: 3000 as Cents,
@@ -409,9 +413,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
+          ownerId: user.id,
         })
         .returning();
 
@@ -435,7 +441,7 @@ Deno.test({
           transactionId: transaction.id,
           memberId: member.id,
           amountCents: 3000 as Cents,
-          createdById: user.id,
+          rule: AllocationRule.FIXED_AMOUNT,
         })
         .returning();
 
@@ -443,7 +449,6 @@ Deno.test({
       await assertRejects(
         async () => {
           await service.createReservation({
-            potId: pot.id,
             transactionId: transaction.id,
             memberId: member.id,
             amountCents: 4000 as Cents,
@@ -516,9 +521,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
+          ownerId: user.id,
         })
         .returning();
 
@@ -537,7 +544,6 @@ Deno.test({
 
       // Create first reservation for 3000 cents
       await service.createReservation({
-        potId: pot.id,
         transactionId: transaction.id,
         memberId: member.id,
         amountCents: 3000 as Cents,
@@ -548,7 +554,6 @@ Deno.test({
       await assertRejects(
         async () => {
           await service.createReservation({
-            potId: pot.id,
             transactionId: transaction.id,
             memberId: member.id,
             amountCents: 3000 as Cents,
@@ -620,9 +625,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 2000 as Cents, // Only 2000 cents available
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
+          ownerId: user.id,
         })
         .returning();
 
@@ -643,7 +650,6 @@ Deno.test({
       await assertRejects(
         async () => {
           await service.createReservation({
-            potId: pot.id,
             transactionId: transaction.id,
             memberId: member.id,
             amountCents: 3000 as Cents,
@@ -715,9 +721,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 10000 as Cents,
+          ownerId: user.id,
+          billingCycle: 1,
+          issuer: "Test Bank",
+          name: "Test Card Account",
+          last4: "1234",
         })
         .returning();
 
@@ -740,14 +748,13 @@ Deno.test({
         .values({
           transactionId: transaction.id,
           memberId: member.id,
+          rule: AllocationRule.FIXED_AMOUNT,
           amountCents: 3000 as Cents,
-          createdById: user.id,
         })
         .returning();
 
       // Create reservation - should succeed
       const reservation = await service.createReservation({
-        potId: pot.id,
         transactionId: transaction.id,
         memberId: member.id,
         amountCents: 3000 as Cents,
