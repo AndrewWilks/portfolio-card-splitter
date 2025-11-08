@@ -18,3 +18,6 @@ export async function withTestDB<T>(testFn: () => Promise<T>): Promise<T> {
     await teardownTestDB();
   }
 }
+
+// Alias for convenience
+export const clearAllData = clearDatabaseData;

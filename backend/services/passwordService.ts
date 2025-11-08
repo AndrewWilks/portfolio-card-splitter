@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 
 /**
  * PasswordService - Handles password hashing, verification, and strength validation
- * 
+ *
  * Uses bcrypt for secure password hashing with 10 cost factor (salt rounds).
  * Enforces password strength requirements:
  * - Minimum 8 characters

@@ -19,6 +19,18 @@ export class Session extends Entity {
     this._expiresAt = expiresAt;
   }
 
+  get userId(): string {
+    return this._userId;
+  }
+
+  get expiresAt(): Date {
+    return this._expiresAt;
+  }
+
+  get usedAt(): Date | undefined {
+    return this._usedAt;
+  }
+
   static create(data: { userId: string; expirationHours?: number }): Session {
     const expiresAt = calculateExpirationDate(data.expirationHours ?? 1);
 

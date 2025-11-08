@@ -1,6 +1,7 @@
 import { Repository } from "./base/repository.ts";
-import { lt } from "drizzle-orm";
+import { eq, lt } from "drizzle-orm";
 import { Tables } from "@db/tables";
+import { Session } from "@shared/entities";
 
 export class SessionRepository extends Repository<"Session"> {
   constructor() {
@@ -14,5 +15,12 @@ export class SessionRepository extends Repository<"Session"> {
       .returning();
 
     return deleted.length;
+  }
+
+  async findByUserId(userId: string): Promise<Session[]> {
+    return (await this.dbClient
+      .select()
+      .from(Tables.sessions)
+      .where(eq(Tables.sessions.userId, userId))) as Session[];
   }
 }

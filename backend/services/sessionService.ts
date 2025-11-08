@@ -1,33 +1,89 @@
 import { Session } from "@shared/entities";
-import { SessionRepository as _SessionRepository } from "@backend/repositories";
+import type { SessionRepository } from "@backend/repositories";
 
 /**
  * SessionService - Manages user session lifecycle
- * 
- * TODO: Implement service following the new pattern:
- * - Change from static methods to instance methods
- * - Add constructor with SessionRepository injection
- * - Implement create() to generate new session with expiration
- * - Implement isValid() to check session expiration and status
- * - Implement timeUntilExpiry() for session timeout calculations
- * - Implement refresh() to extend session expiration
- * - Use Session.createSchema for validation
+ *
+ * Provides methods for creating, validating, and managing user sessions.
+ * Sessions have configurable expiration (default 24 hours) and can be validated
+ * for authentication purposes.
  */
 export class SessionService {
-  // TODO: Add constructor(private sessionRepo: SessionRepository) {}
-  // TODO: Convert static methods to instance methods
-  static create(_userId: string, _expirationHours = 24): Session {
-    // TODO: Implement create method to create new session
-    throw new Error("Not implemented");
+  constructor(private readonly sessionRepository: SessionRepository) {}
+
+  /**
+   * Create a new session for a user
+   * @param userId - The ID of the user to create a session for
+   * @param expirationHours - Hours until session expires (default 24)
+   * @returns Promise resolving to the created and saved session
+   */
+  async create(userId: string, expirationHours = 24): Promise<Session> {
+    const session = Session.create({
+      userId,
+      expirationHours,
+    });
+
+    const saved = await this.sessionRepository.save(session);
+    return saved[0]; // save returns array, take first element
   }
 
-  static isValid(_session: Session): boolean {
-    // TODO: Implement isValid method to check if session is valid
-    throw new Error("Not implemented");
+  /**
+   * Check if a session is valid (not expired and not used)
+   * @param session - The session to validate
+   * @returns true if session is valid, false otherwise
+   */
+  isValid(session: Session): boolean {
+    return session.isValid();
   }
 
-  static timeUntilExpiry(_session: Session): number {
-    // TODO: Implement timeUntilExpiry method to calculate time until expiry
-    throw new Error("Not implemented");
+  /**
+   * Calculate time until session expires in milliseconds
+   * @param session - The session to check
+   * @returns Milliseconds until expiry, or 0 if already expired
+   */
+  timeUntilExpiry(session: Session): number {
+    const timeRemaining = session.expiresAt.getTime() - Date.now();
+    return Math.max(0, timeRemaining);
+  }
+
+  /**
+   * Delete a session (for logout)
+   * @param sessionId - The ID of the session to delete
+   */
+  async delete(sessionId: string): Promise<void> {
+    await this.sessionRepository.delete(sessionId);
+  }
+
+  /**
+   * Delete all sessions for a user (for password reset)
+   * @param userId - The ID of the user whose sessions to delete
+   */
+  async deleteAllForUser(userId: string): Promise<void> {
+    const sessions = await this.sessionRepository.findByUserId(userId);
+    await Promise.all(
+      sessions.map((session) => this.sessionRepository.delete(session.id))
+    );
+  }
+
+  /**
+   * Find and validate a session by ID
+   * Returns the session if valid, null otherwise
+   * @param sessionId - The ID of the session to find
+   * @returns Promise resolving to session if valid, null otherwise
+   */
+  async findValidSession(sessionId: string): Promise<Session | null> {
+    const session = await this.sessionRepository.findById(sessionId);
+
+    if (!session) {
+      return null;
+    }
+
+    if (!this.isValid(session)) {
+      // Clean up expired session
+      await this.delete(sessionId);
+      return null;
+    }
+
+    return session;
   }
 }

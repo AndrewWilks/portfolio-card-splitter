@@ -1,12 +1,49 @@
-import { assert as _assert } from "@std/assert";
-import { SessionService as _SessionService } from "../../services/index.ts";
+import { assertEquals, assertExists } from '@std/assert';
+import { SessionService } from '../../services/sessionService.ts';
+import { SessionRepository } from '../../repositories/sessionRepository.ts';
+import { UserRepository } from '../../repositories/userRepository.ts';
+import { clearAllData } from '../testHelpers.ts';
+import { User, UserRole } from '../../../shared/entities/user.ts';
 
-Deno.test("SessionService - create", () => {
-  // TODO: Test session creation
+Deno.test('SessionService - create session', async () => {
+  await clearAllData();
+  const userRepo = new UserRepository();
+  const sessionRepo = new SessionRepository();
+  const sessionService = new SessionService(sessionRepo);
+  
+  const user = new User({
+    firstName: 'Test',
+    lastName: 'User',
+    email: 'test@example.com',
+    passwordHash: 'hash',
+    role: UserRole.USER,
+  });
+  const savedUser = await userRepo.save(user);
+  
+  const session = await sessionService.create(savedUser[0].id);
+  
+  assertExists(session.id);
+  assertEquals(session.userId, savedUser[0].id);
 });
 
-Deno.test("SessionService - validate", () => {
-  // TODO: Test session validation
+Deno.test('SessionService - validate session', async () => {
+  await clearAllData();
+  const userRepo = new UserRepository();
+  const sessionRepo = new SessionRepository();
+  const sessionService = new SessionService(sessionRepo);
+  
+  const user = new User({
+    firstName: 'Test',
+    lastName: 'User',
+    email: 'test2@example.com',
+    passwordHash: 'hash',
+    role: UserRole.USER,
+  });
+  const savedUser = await userRepo.save(user);
+  
+  const session = await sessionService.create(savedUser[0].id, 24);
+  assertEquals(sessionService.isValid(session), true);
+  
+  const expiredSession = await sessionService.create(savedUser[0].id, -1);
+  assertEquals(sessionService.isValid(expiredSession), false);
 });
-
-// TODO: Add more test cases for SessionService methods
