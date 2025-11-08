@@ -29,12 +29,14 @@ Deno.test({
       const potRepo = new PotRepository();
       const transactionRepo = new TransactionRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const service = new ReservationService(
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       // Create test data
@@ -57,6 +59,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -67,6 +80,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test Transaction",
           amountCents: 5000 as Cents,
@@ -113,12 +127,14 @@ Deno.test({
       const potRepo = new PotRepository();
       const transactionRepo = new TransactionRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const service = new ReservationService(
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       const [user] = await db
@@ -128,6 +144,17 @@ Deno.test({
           passwordHash: "hash",
           firstName: "Test",
           lastName: "User",
+        })
+        .returning();
+
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
         })
         .returning();
 
@@ -141,6 +168,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test Transaction",
           amountCents: 5000 as Cents,
@@ -185,12 +213,14 @@ Deno.test({
       const potRepo = new PotRepository();
       const transactionRepo = new TransactionRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const service = new ReservationService(
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       const [user] = await db
@@ -247,12 +277,14 @@ Deno.test({
       const potRepo = new PotRepository();
       const transactionRepo = new TransactionRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const service = new ReservationService(
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       const [user] = await db
@@ -274,6 +306,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -284,6 +327,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test Transaction",
           amountCents: 5000 as Cents,
@@ -320,12 +364,14 @@ Deno.test({
       const potRepo = new PotRepository();
       const transactionRepo = new TransactionRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const service = new ReservationService(
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       // Create test data
@@ -348,6 +394,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -358,6 +415,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test Transaction",
           amountCents: 5000 as Cents,
@@ -404,12 +462,14 @@ Deno.test({
       const potRepo = new PotRepository();
       const transactionRepo = new TransactionRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const service = new ReservationService(
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       await assertRejects(
