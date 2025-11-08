@@ -6,6 +6,7 @@ import {
   pots,
   merchants,
   transactions,
+  cardAccounts,
 } from "../../db/db.schema.ts";
 import { withTestDB } from "../testHelpers.ts";
 import type { Cents } from "@shared/types";
@@ -36,6 +37,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -46,6 +58,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test transaction",
           amountCents: 10000 as Cents,
@@ -101,6 +114,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -111,6 +135,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test transaction",
           amountCents: 5000 as Cents,
@@ -165,6 +190,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -175,6 +211,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test transaction",
           amountCents: 3000 as Cents,
@@ -228,6 +265,17 @@ Deno.test({
         })
         .returning();
 
+      const [cardAccount] = await db
+        .insert(cardAccounts)
+        .values({
+          name: "Test Card Account",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
+        })
+        .returning();
+
       const [merchant] = await db
         .insert(merchants)
         .values({
@@ -238,6 +286,7 @@ Deno.test({
       const [transaction] = await db
         .insert(transactions)
         .values({
+          cardAccountId: cardAccount.id,
           merchantId: merchant.id,
           description: "Test transaction",
           amountCents: 1000 as Cents,

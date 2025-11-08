@@ -1,7 +1,7 @@
 import { assert } from "@std/assert";
 import { crypto } from "@std/crypto/crypto";
 import { UserRepository as _UserRepository } from "@backend/repositories";
-import { User } from "@shared/entities";
+import { User, UserRole } from "@shared/entities";
 import { db } from "@db";
 
 const userRepo = new _UserRepository();
@@ -12,9 +12,9 @@ const passwordHash = await User.passwordService.hashPassword("password123");
 const firstName = "test";
 const lastName = "user";
 const isActive = true;
-const role = "user";
+const role = UserRole.USER;
 
-const dummyUser = User.create({
+const dummyUser = new User({
   id,
   email: email,
   passwordHash,
@@ -22,6 +22,8 @@ const dummyUser = User.create({
   lastName,
   role,
   isActive,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 });
 
 Deno.test.afterEach(async () => {
