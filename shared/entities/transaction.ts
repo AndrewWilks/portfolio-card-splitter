@@ -1,9 +1,9 @@
 /**
  * Transaction Entity
- * 
+ *
  * Core entity representing expenses or income on a CardAccount.
  * Transactions are split via Allocations to Members, reserved via Reservations, and paid via Payments.
- * 
+ *
  * @module entities/transaction
  */
 
@@ -13,7 +13,7 @@ import { Cents, zCents } from "@shared/types";
 
 /**
  * Transaction Type Enum
- * 
+ *
  * @enum {string}
  * @property {string} EXPENSE - Money spent (positive amount reduces available funds)
  * @property {string} INCOME - Money received (positive amount increases available funds)
@@ -25,13 +25,13 @@ export enum TransactionType {
 
 /**
  * Transaction Data Interface
- * 
+ *
  * Represents a financial transaction on a credit card account.
  * Every transaction must belong to exactly one CardAccount and one Merchant.
- * 
+ *
  * @interface TransactionData
  * @extends EntityData
- * 
+ *
  * @property {string} cardAccountId - UUID of the CardAccount this transaction belongs to (REQUIRED)
  * @property {string} [cardId] - UUID of the specific Card used (OPTIONAL, for attribution)
  * @property {string} merchantId - UUID of the Merchant where transaction occurred
@@ -40,7 +40,7 @@ export enum TransactionType {
  * @property {TransactionType} type - "expense" (spending) or "income" (refund/payment)
  * @property {Date} transactionDate - When the transaction occurred (NOT when it was entered)
  * @property {string} createdById - UUID of the User who created this transaction record
- * 
+ *
  * @example
  * ```typescript
  * const txData: TransactionData = {
@@ -57,7 +57,7 @@ export enum TransactionType {
  *   updatedAt: new Date()
  * };
  * ```
- * 
+ *
  * @remarks
  * Key relationships:
  * - One Transaction belongs to one CardAccount (N:1) - REQUIRED
@@ -67,14 +67,14 @@ export enum TransactionType {
  * - One Transaction has many Reservations (1:N) - funds reserved from Pots
  * - One Transaction has many Payments (1:N) - actual payments made
  * - One Transaction belongs to one User (creator) (N:1)
- * 
+ *
  * Business rules enforced in TransactionService:
  * - Allocations must sum to exactly `amountCents` (100% split)
  * - Cannot mix percentage and fixed-amount allocations in same transaction
  * - All Members in allocations must exist and be active
  * - If `cardId` provided, must belong to the same `cardAccountId`
  * - Outstanding balance = Sum(Transactions) - Sum(Payments) per CardAccount
- * 
+ *
  * @see {@link CardAccount} - Parent account (REQUIRED relationship)
  * @see {@link Card} - Optional card attribution
  * @see {@link Allocation} - How transaction is split among members
@@ -95,13 +95,13 @@ export interface TransactionData extends EntityData {
 
 /**
  * Transaction Entity Class
- * 
+ *
  * Immutable entity representing a financial transaction.
  * Central to the expense splitting system.
- * 
+ *
  * @class Transaction
  * @extends Entity
- * 
+ *
  * @example
  * ```typescript
  * const tx = new Transaction({
@@ -117,7 +117,7 @@ export interface TransactionData extends EntityData {
  *   createdAt: new Date(),
  *   updatedAt: new Date()
  * });
- * 
+ *
  * console.log(tx.amountCents); // 5000
  * console.log(tx.cardAccountId); // "account-uuid"
  * ```

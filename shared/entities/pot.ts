@@ -1,10 +1,10 @@
 /**
  * Pot Entity
- * 
+ *
  * Represents a monetary "pot" or "envelope" for budgeting and expense tracking.
  * Pots hold funds that can be reserved (via Reservations) and spent (via Payments).
  * Supports both SOLO (private) and SHARED (multi-user) pots with ACL enforcement.
- * 
+ *
  * @module entities/pot
  */
 
@@ -15,9 +15,9 @@ import { UUID } from "node:crypto";
 
 /**
  * Pot Scope Enum
- * 
+ *
  * Defines pot visibility and access control level.
- * 
+ *
  * @enum {string}
  * @property {string} SOLO - Private pot, only owner can access (strict privacy)
  * @property {string} SHARED - Multi-user pot with ACL-based access control
@@ -29,9 +29,9 @@ export enum PotScope {
 
 /**
  * Pot Type Enum
- * 
+ *
  * Categorizes the type of account/pot for organization.
- * 
+ *
  * @enum {string}
  * @property {string} SAVINGS - Savings account at a financial institution
  * @property {string} LOAN - Loan account (amount owed)
@@ -47,9 +47,9 @@ export enum PotType {
 
 /**
  * Pot Visibility Enum
- * 
+ *
  * Defines access levels for SHARED pots (ignored for SOLO pots).
- * 
+ *
  * @enum {string}
  * @property {string} READ - User can view pot balance and transactions
  * @property {string} MANAGE - User can view and modify pot (create reservations/payments)
@@ -61,13 +61,13 @@ export enum PotVisibility {
 
 /**
  * Pot Data Interface
- * 
+ *
  * Represents a budgeting "pot" or "envelope" containing funds.
  * Pots are the SOURCE of funds for Payments and Reservations.
- * 
+ *
  * @interface PotData
  * @extends EntityData
- * 
+ *
  * @property {string} name - User-friendly name (e.g., "Groceries", "Emergency Fund")
  * @property {number} balanceCents - Total balance in cents (can be negative for loans)
  * @property {PotScope} scope - "solo" (private) or "shared" (multi-user with ACL)
@@ -77,7 +77,7 @@ export enum PotVisibility {
  * @property {string} [maskingAccount] - Last 4 digits or identifier (e.g., "****1234")
  * @property {string} [physicalLocation] - Where physical cash is kept (e.g., "Wallet", "Home Safe")
  * @property {Map<UUID, PotVisibility>} [visibilityAcls] - Access control list for SHARED pots
- * 
+ *
  * @example
  * ```typescript
  * // SOLO pot (private)
@@ -94,7 +94,7 @@ export enum PotVisibility {
  *   createdAt: new Date(),
  *   updatedAt: new Date()
  * };
- * 
+ *
  * // SHARED pot with ACL
  * const sharedPot: PotData = {
  *   id: "pot-uuid",
@@ -111,32 +111,32 @@ export enum PotVisibility {
  *   updatedAt: new Date()
  * };
  * ```
- * 
+ *
  * @remarks
  * Key relationships:
  * - One Pot belongs to one User (owner) (N:1)
  * - One Pot has many Reservations (1:N) - funds earmarked for future payments
  * - One Pot has many Payments (1:N) - actual payments made from this pot
  * - SHARED Pots have ACL entries for other Users
- * 
+ *
  * Derived values (NOT persisted, calculated on-demand):
  * - `reservedCents` = Sum of all active Reservations for this Pot
  * - `availableCents` = `balanceCents` - `reservedCents`
  * - These are cached in memory but recalculated when needed
- * 
+ *
  * Access control (enforced in PotService):
  * - SOLO pots: Only owner can access (strict privacy)
  * - SHARED pots: Owner + users in visibilityAcls can access based on level
  *   * READ: Can view balance, reservations, payments
  *   * MANAGE: Can view AND create/modify reservations, payments
  * - Owner always has MANAGE level implicitly
- * 
+ *
  * Business rules:
  * - Cannot create Reservation if amount > availableCents
  * - Cannot create Payment if amount > availableCents
  * - Balance can go negative (allowed for tracking loans/debt)
  * - ACL only relevant for SHARED pots
- * 
+ *
  * @see {@link Reservation} - Funds reserved from this pot
  * @see {@link Payment} - Payments made from this pot
  * @see {@link User} - Pot owner and ACL users
@@ -155,13 +155,13 @@ export interface PotData extends EntityData {
 
 /**
  * Pot Entity Class
- * 
+ *
  * Immutable entity representing a budgeting pot/envelope.
  * Implements "envelope budgeting" pattern with derived balance calculations.
- * 
+ *
  * @class Pot
  * @extends Entity
- * 
+ *
  * @remarks
  * Pot lifecycle:
  * 1. User creates Pot with initial balance
@@ -170,12 +170,12 @@ export interface PotData extends EntityData {
  * 3. User creates Payments to actually spend funds
  *    - Payments reduce balanceCents
  * 4. Derived values updated: availableCents = balanceCents - reservedCents
- * 
+ *
  * Privacy model:
  * - SOLO pots: Completely private, only owner sees them
  * - SHARED pots: Owner + ACL users can access
  * - Other users cannot even see that SOLO pots exist
- * 
+ *
  * @example
  * ```typescript
  * const pot = new Pot({
@@ -190,7 +190,7 @@ export interface PotData extends EntityData {
  *   createdAt: new Date(),
  *   updatedAt: new Date()
  * });
- * 
+ *
  * console.log(pot.name); // "Emergency Fund"
  * console.log(pot.scope); // PotScope.SOLO
  * // Derived values calculated via service layer

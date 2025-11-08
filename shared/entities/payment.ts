@@ -1,10 +1,10 @@
 /**
  * Payment Entity
- * 
+ *
  * Represents an actual payment from a Pot to a Transaction (CardAccount).
  * Payments reduce the outstanding balance on a CardAccount and are compared
  * against Reservations to detect budget mismatches.
- * 
+ *
  * @module entities/payment
  */
 
@@ -14,13 +14,13 @@ import { Cents, zCents } from "@shared/types";
 
 /**
  * Payment Data Interface
- * 
+ *
  * Records an actual payment from a Pot to cover (part of) a Transaction.
  * Payments affect the CardAccount's outstanding balance calculation.
- * 
+ *
  * @interface PaymentData
  * @extends EntityData
- * 
+ *
  * @property {Date} paidOn - Date when payment was made (important for statement reconciliation)
  * @property {string} potId - UUID of the Pot from which funds were paid (REQUIRED)
  * @property {string} transactionId - UUID of the Transaction being paid (REQUIRED)
@@ -29,7 +29,7 @@ import { Cents, zCents } from "@shared/types";
  * @property {string} [note] - Optional note about the payment
  * @property {boolean} needsReconciliation - Auto-calculated flag: true if payment doesn't match reservations
  * @property {string} createdById - UUID of the User who created this payment record
- * 
+ *
  * @example
  * ```typescript
  * // Payment matching a reservation
@@ -46,7 +46,7 @@ import { Cents, zCents } from "@shared/types";
  *   createdAt: new Date(),
  *   updatedAt: new Date()
  * };
- * 
+ *
  * // Payment without reservation (needs reconciliation)
  * const adhocPayment: PaymentData = {
  *   id: "payment-uuid",
@@ -61,33 +61,33 @@ import { Cents, zCents } from "@shared/types";
  *   updatedAt: new Date()
  * };
  * ```
- * 
+ *
  * @remarks
  * Key relationships:
  * - One Payment belongs to one Pot (N:1) - source of funds
  * - One Payment belongs to one Transaction (N:1) - what's being paid
  * - One Payment optionally belongs to one Reservation (N:1) - planned payment
  * - Multiple Payments can pay one Transaction (partial payments from different Pots)
- * 
+ *
  * Outstanding balance calculation:
  * - CardAccount outstanding = Sum(Transaction.amountCents) - Sum(Payment.amountCents)
  * - Calculated per CardAccount via LedgerService
  * - Payments reduce the balance owed on the credit card
- * 
+ *
  * Reconciliation logic (auto-calculated in PaymentService):
  * - needsReconciliation = true if:
  *   * Payment.amountCents ≠ sum of Reservations for same transaction
  *   * Payment exists without Reservations
  *   * Reservations exist without Payment
  * - Purpose: Detect when actual spending differs from budget plan
- * 
+ *
  * Business rules (enforced in PaymentService):
  * - Cannot pay more than Transaction.amountCents total (across all payments)
  * - Cannot pay more than Pot.availableCents
  * - paidOn date important for statement matching
  * - Pot must exist and be active
  * - Transaction must exist
- * 
+ *
  * @see {@link Pot} - Source of funds for payment
  * @see {@link Transaction} - What's being paid
  * @see {@link Reservation} - Planned payment (optional)
@@ -106,13 +106,13 @@ export interface PaymentData extends EntityData {
 
 /**
  * Payment Entity Class
- * 
+ *
  * Immutable entity representing an actual payment from Pot to Transaction.
  * Central to outstanding balance tracking and budget reconciliation.
- * 
+ *
  * @class Payment
  * @extends Entity
- * 
+ *
  * @remarks
  * Workflow:
  * 1. Transaction created with Allocations (who owes what)
@@ -120,12 +120,12 @@ export interface PaymentData extends EntityData {
  * 3. Payments created (actual payment from Pots)
  * 4. If Payment ≠ Reservations, needsReconciliation flagged
  * 5. Outstanding balance updated: CardAccount balance - Payments
- * 
+ *
  * The `needsReconciliation` flag helps users identify:
  * - Unplanned spending (payment without reservation)
  * - Budget variance (payment amount differs from reservation)
  * - Missing payments (reservation without payment)
- * 
+ *
  * @example
  * ```typescript
  * const payment = new Payment({
@@ -141,7 +141,7 @@ export interface PaymentData extends EntityData {
  *   createdAt: new Date(),
  *   updatedAt: new Date()
  * });
- * 
+ *
  * console.log(payment.paidOn); // Date
  * console.log(payment.needsReconciliation); // false
  * ```
