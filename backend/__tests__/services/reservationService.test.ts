@@ -5,6 +5,7 @@ import {
   PotRepository,
   TransactionRepository,
   MemberRepository,
+  AllocationRepository,
 } from "../../repositories/index.ts";
 import { withTestDB } from "../testHelpers.ts";
 import { db } from "../../db/db.client.ts";
@@ -14,6 +15,7 @@ import {
   merchants,
   transactions,
   members,
+  cardAccounts,
 } from "../../db/db.schema.ts";
 import type { Cents } from "@shared/types";
 
