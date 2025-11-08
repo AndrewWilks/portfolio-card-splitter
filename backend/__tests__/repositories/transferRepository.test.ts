@@ -37,7 +37,6 @@ Deno.test({
           fromPotId: pot.id,
           toPotId: null,
           amountCents: 5000 as Cents,
-          createdById: user.id,
         })
         .returning();
 
@@ -81,7 +80,6 @@ Deno.test({
           fromPotId: null,
           toPotId: pot.id,
           amountCents: 7500 as Cents,
-          createdById: user.id,
         })
         .returning();
 
@@ -134,7 +132,6 @@ Deno.test({
           fromPotId: pot1.id,
           toPotId: pot2.id,
           amountCents: 10000 as Cents,
-          createdById: user.id,
         })
         .returning();
 
@@ -151,17 +148,6 @@ Deno.test({
   sanitizeOps: false,
   async fn() {
     await withTestDB(async () => {
-      // Create test user
-      const [user] = await db
-        .insert(users)
-        .values({
-          email: "test4@example.com",
-          passwordHash: "hash",
-          firstName: "Test",
-          lastName: "User",
-        })
-        .returning();
-
       // Attempt to insert transfer with both pot IDs null - should fail with constraint violation
       await assertRejects(
         async () => {
@@ -171,7 +157,6 @@ Deno.test({
               fromPotId: null,
               toPotId: null,
               amountCents: 1000 as Cents,
-              createdById: user.id,
             })
             .returning();
         },

@@ -1,4 +1,4 @@
-import { assertEquals, assertRejects } from "@std/assert";
+import { assertEquals } from "@std/assert";
 import { PaymentService } from "../../services/paymentService.ts";
 import { ReservationService } from "../../services/reservationService.ts";
 import {
@@ -7,6 +7,7 @@ import {
   PotRepository,
   ReservationRepository,
   MemberRepository,
+  AllocationRepository,
 } from "../../repositories/index.ts";
 import { withTestDB } from "../testHelpers.ts";
 import { db } from "../../db/db.client.ts";
@@ -31,6 +32,7 @@ Deno.test({
       const potRepo = new PotRepository();
       const reservationRepo = new ReservationRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const paymentService = new PaymentService(
         paymentRepo,
@@ -43,7 +45,8 @@ Deno.test({
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       // Create test data
@@ -69,7 +72,6 @@ Deno.test({
       const [member] = await db
         .insert(members)
         .values({
-          potId: pot.id,
           userId: user.id,
           displayName: "Test Member",
         })
@@ -85,9 +87,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 0 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
         })
         .returning();
 
@@ -147,6 +151,7 @@ Deno.test({
       const potRepo = new PotRepository();
       const reservationRepo = new ReservationRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const paymentService = new PaymentService(
         paymentRepo,
@@ -159,7 +164,8 @@ Deno.test({
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       // Create test data
@@ -185,7 +191,6 @@ Deno.test({
       const [member] = await db
         .insert(members)
         .values({
-          potId: pot.id,
           userId: user.id,
           displayName: "Test Member",
         })
@@ -194,16 +199,18 @@ Deno.test({
       const [merchant] = await db
         .insert(merchants)
         .values({
-          name: "Test Merchant",
+          name: "Test Merchant 2",
         })
         .returning();
 
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 0 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
         })
         .returning();
 
@@ -292,9 +299,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 0 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
         })
         .returning();
 
@@ -339,6 +348,7 @@ Deno.test({
       const potRepo = new PotRepository();
       const reservationRepo = new ReservationRepository();
       const memberRepo = new MemberRepository();
+      const allocationRepo = new AllocationRepository();
 
       const paymentService = new PaymentService(
         paymentRepo,
@@ -351,7 +361,8 @@ Deno.test({
         reservationRepo,
         potRepo,
         transactionRepo,
-        memberRepo
+        memberRepo,
+        allocationRepo
       );
 
       // Create test data
@@ -377,7 +388,6 @@ Deno.test({
       const [member] = await db
         .insert(members)
         .values({
-          potId: pot.id,
           userId: user.id,
           displayName: "Test Member",
         })
@@ -393,9 +403,11 @@ Deno.test({
       const [cardAccount] = await db
         .insert(cardAccounts)
         .values({
-          potId: pot.id,
-          accountNumber: "1234",
-          balance: 0 as Cents,
+          name: "Test Card",
+          issuer: "Test Bank",
+          last4: "1234",
+          billingCycle: 1,
+          ownerId: user.id,
         })
         .returning();
 
