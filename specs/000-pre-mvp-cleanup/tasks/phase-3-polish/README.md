@@ -24,14 +24,16 @@ Finalize implementation, update documentation, and verify all specs are met.
 ## Completed Test Fixes (Commits: 211caac, ac2ae1f, 62ad1bf, 9981b35)
 
 ### Shared Entity Fixes ✅
+
 - Payment tests: Added required `needsReconciliation` and `createdById` fields
-- Reservation tests: Added required `createdById` field  
+- Reservation tests: Added required `createdById` field
 - Token test: Changed from private `markUsed()` to public `use()` method
 - Member entity: Added `userId`, `displayName`, `archived` getters
 - Merchant entity: Added `name`, `location`, `mergedIntoId` getters
 - Tag entity: Added `name`, `color` getters
 
 ### Backend Service/DI Fixes ✅
+
 - MemberRepository: Added `findByUserId()` method
 - MemberService: Fixed entity instantiation (use `new Member()` instead of `create/from`)
 - MemberService: Removed invalid `override` keywords
@@ -43,6 +45,7 @@ Finalize implementation, update documentation, and verify all specs are met.
 ## Remaining Test Fixes (Known Issues)
 
 ### Backend Validation/Integration Tests (~150 errors)
+
 - **CardAccount inserts**: Many tests insert invalid `potId` field into card_accounts table
 - **Allocation inserts**: Tests try to add `createdById` field (not in schema)
 - **Schema validation**: Multiple tests use undefined validation schemas
