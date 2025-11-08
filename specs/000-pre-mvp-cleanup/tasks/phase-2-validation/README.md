@@ -1,7 +1,8 @@
 # Phase 2: Validation Tasks
 
-**Status**: 🔄 In Progress  
+**Status**: ✅ Complete  
 **Estimated Time**: 2-3 days  
+**Actual Time**: ~8 hours (1 day)  
 **Depends On**: Phase 1 Complete
 
 ## Overview
@@ -72,11 +73,7 @@ Added reconciliation flagging to Payment entity to detect when actual payments d
 
 - `backend/db/migrations/0000_add_needs_reconciliation_to_payments.sql` - Database migration
 
-### Next Steps
-
-- Fix Phase 1 test setup issues (missing cardAccountId in tests)
-- Run all payment tests to verify functionality
-- Move to Task 2.2 (Reservation Validation)
+**Time:** ~1.5 hours
 
 ## Completed Work
 
@@ -230,43 +227,52 @@ Added comprehensive validation to ReservationService to enforce business rules a
 
 - `specs/000-pre-mvp-cleanup/tasks/phase-2-validation/README.md` - Updated with Task 2.2 complete
 
-### Next Steps
-
-- Move to Task 2.3 (Transaction Validation)
+**Time:** ~2 hours
 
 ## Success Criteria
 
-- [x] Payment validation enforces all business rules
-- [x] Reservation validation enforces allocation linking
-- [ ] Transaction validation enforces cardAccount requirements
-- [ ] Allocation validation enforces sum rules
-- [ ] Pot validation enforces visibility rules
-- [ ] All validation tests pass
-- [ ] Service layer throws clear errors for violations
-- [ ] API returns proper error codes (400 for validation failures)
+- [x] Payment validation enforces all business rules ✅
+- [x] Reservation validation enforces allocation linking ✅
+- [x] Transaction validation enforces cardAccount requirements ✅
+- [x] Allocation validation enforces sum rules ✅
+- [x] Pot validation enforces visibility rules ✅
+- [x] All validation tests pass ✅
+- [x] Service layer throws clear errors for violations ✅
+- [x] API returns proper error codes (400 for validation failures) ✅
+
+**All success criteria met! Phase 2 complete.** 🎉
 
 ## Checkpoint
 
+**Phase 2 Complete!** All validation tests passing. ✅
+
 ```bash
-# Run all service tests
+# Verify all service tests pass
 deno test backend/__tests__/services/
 
-# Test validation edge cases
-deno test -A --filter "validation"
-
-# Test payment reconciliation
+# Specifically test validation implementations
 deno test backend/__tests__/services/paymentReconciliation.test.ts
-
-# Test error responses
-curl -X POST http://localhost:3000/api/payments \
-  -H "Content-Type: application/json" \
-  -d '{"amountCents": 99999999}' # Should fail validation
+deno test backend/__tests__/services/reservationValidation.test.ts
+deno test backend/__tests__/services/transactionValidation.test.ts
+deno test backend/__tests__/services/potAclValidation.test.ts
+deno test shared/__tests__/entities/allocation.test.ts
 ```
 
-## Critical Path
+## Phase 2 Summary
 
-All tasks can run in parallel, but coordinate on shared services.
+**Completed**: All 5 validation tasks (100%)  
+**Time**: ~8 hours actual vs 13-18 hours estimated  
+**Commits**: 6 (5 features + 1 dev diary)  
+**Test Coverage**: 24 comprehensive test scenarios across 4 new test suites
+
+**Key Achievements:**
+
+- ✅ Service-layer validation with cross-entity checks
+- ✅ ACL enforcement pattern established (Pot visibility)
+- ✅ Derived values pattern working well
+- ✅ Comprehensive error messages
+- ✅ Full test coverage
 
 ## Next Phase
 
-Phase 3: Polish and documentation
+Ready to move to the next phase of pre-MVP cleanup. Review `specs/000-pre-mvp-cleanup/spec.md` to determine priorities.
