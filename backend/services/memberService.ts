@@ -30,7 +30,7 @@ export class MemberService {
     const validatedQuery = ListMembersQuerySchema.parse(query);
 
     const allMembers = await this.memberRepository.findAll();
-    
+
     if (validatedQuery.includeArchived) {
       // Return all members
       return allMembers || [];
