@@ -29,6 +29,18 @@ export class Merchant extends Entity {
     this._mergedIntoId = mergedIntoId;
   }
 
+  get name(): string {
+    return this._name;
+  }
+
+  get location(): string | undefined {
+    return this._location;
+  }
+
+  get mergedIntoId(): string | undefined {
+    return this._mergedIntoId;
+  }
+
   override get toJSON() {
     return {
       id: this.id,

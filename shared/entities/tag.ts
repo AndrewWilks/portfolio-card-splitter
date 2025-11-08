@@ -22,6 +22,14 @@ export class Tag extends Entity {
     this._color = color;
   }
 
+  get name(): string {
+    return this._name;
+  }
+
+  get color(): HexColor {
+    return this._color;
+  }
+
   override get toJSON() {
     return {
       id: this.id,

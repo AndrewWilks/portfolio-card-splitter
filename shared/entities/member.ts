@@ -28,6 +28,18 @@ export class Member extends Entity {
     this._archived = archived;
   }
 
+  get userId(): string {
+    return this._userId;
+  }
+
+  get displayName(): string {
+    return this._displayName;
+  }
+
+  get archived(): boolean {
+    return this._archived;
+  }
+
   override get toJSON() {
     return {
       id: this.id,
