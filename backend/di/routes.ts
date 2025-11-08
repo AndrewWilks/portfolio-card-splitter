@@ -23,8 +23,6 @@ function createListRoute<T>(
 ) {
   const service = serviceFactory();
   return (c: Context) => {
-    const query = schemas.QuerySchema.parse(c.req.query());
-    c.set("query", query);
     return handler(c, service);
   };
 }

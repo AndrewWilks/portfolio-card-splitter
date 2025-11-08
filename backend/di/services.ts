@@ -5,12 +5,12 @@ import * as repositories from "./repositories.ts";
 
 // Service Factories
 export function createAuthService() {
-  // return new services.AuthService(
-  //   repositories.createUserRepository(),
-  //   repositories.createSessionRepository(),
-  //   repositories.createInviteTokenRepository(),
-  //   repositories.createPasswordResetTokenRepository()
-  // );
+  return new services.AuthService(
+    repositories.createUserRepository(),
+    repositories.createSessionRepository(),
+    repositories.createInviteTokenRepository(),
+    repositories.createPasswordResetTokenRepository()
+  );
 }
 
 export function createMemberService() {

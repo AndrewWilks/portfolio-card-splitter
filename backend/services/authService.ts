@@ -23,13 +23,13 @@ import {
  * - Implement session token generation
  */
 export class AuthService {
-  // TODO: Add constructor(
-  //   private userRepo: UserRepository,
-  //   private sessionRepo: SessionRepository,
-  //   private inviteTokenRepo: InviteTokenRepository,
-  //   private passwordResetTokenRepo: PasswordResetTokenRepository,
-  //   private passwordService: PasswordService
-  // ) {}
+  constructor(
+    private userRepo: _UserRepository,
+    private sessionRepo: _SessionRepository,
+    private inviteTokenRepo: _InviteTokenRepository,
+    private passwordResetTokenRepo: _PasswordResetTokenRepository
+  ) {}
+
   bootstrap(_data: {
     email: string;
     password: string;
