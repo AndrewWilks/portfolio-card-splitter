@@ -1,24 +1,79 @@
-import { ReservationRepository as SharedReservationRepository } from "@shared/repositories";
 import { Reservation } from "@shared/entities";
+import { Repository } from "./base/repository.ts";
+import { eq } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class ReservationRepository extends SharedReservationRepository {
-  override save(_reservation: Reservation): Promise<void> {
-    // TODO: Implement save method to insert reservation into database
-    return Promise.reject("Not implemented");
+export class ReservationRepository extends Repository<"Reservation"> {
+  constructor() {
+    super("Reservation");
   }
 
-  override findById(_id: string): Promise<Reservation | null> {
-    // TODO: Implement findById method to query reservation by ID from database
-    return Promise.reject("Not implemented");
+  async findByPotId(potId: string): Promise<Reservation[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.reservations)
+      .where(eq(Tables.reservations.potId, potId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Reservation(camelCaseData as any);
+    });
   }
 
-  override findByPotId(_potId: string): Promise<Reservation[]> {
-    // TODO: Implement findByPotId method to query reservations by pot ID from database
-    return Promise.reject("Not implemented");
+  async findByTransactionId(transactionId: string): Promise<Reservation[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.reservations)
+      .where(eq(Tables.reservations.transactionId, transactionId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Reservation(camelCaseData as any);
+    });
   }
 
-  override delete(_id: string): Promise<void> {
-    // TODO: Implement delete method to remove reservation from database
-    return Promise.reject("Not implemented");
+  async findByAllocationId(allocationId: string): Promise<Reservation[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.reservations)
+      .where(eq(Tables.reservations.allocationId, allocationId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Reservation(camelCaseData as any);
+    });
+  }
+
+  async findByMemberId(memberId: string): Promise<Reservation[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.reservations)
+      .where(eq(Tables.reservations.memberId, memberId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Reservation(camelCaseData as any);
+    });
   }
 }

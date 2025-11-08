@@ -1,82 +1,82 @@
-import { TransactionService as SharedTransactionService } from "@shared/services";
-import { Allocation, Transaction } from "@shared/entities";
-import { z } from "zod";
+import {
+  Allocation,
+  AllocationRule,
+  Transaction,
+  TransactionType,
+} from "@shared/entities";
+import {
+  TransactionRepository,
+  MerchantRepository,
+  TagRepository,
+  CardAccountRepository,
+  CardRepository,
+  MemberRepository,
+} from "@backend/repositories";
+import { type z } from "zod";
+import { basisPoints } from "@shared/types";
 
-// Request schemas
-const CreateAllocationRequestSchema = z
-  .object({
-    memberId: z.string().uuid(),
-    rule: z.enum(["percentage", "fixed_amount"]),
-    percentage: z.number().int().min(0).max(10000).optional(), // basis points
-    amountCents: z.number().int().min(0).optional(),
-  })
-  .refine(
-    (data) => {
-      if (data.rule === "percentage") {
-        return data.percentage !== undefined && data.amountCents === undefined;
-      }
-      if (data.rule === "fixed_amount") {
-        return data.amountCents !== undefined && data.percentage === undefined;
-      }
-      return false;
-    },
-    {
-      message:
-        "Invalid allocation: percentage rule requires percentage, fixed_amount rule requires amountCents",
-    },
-  );
+// Type exports using entity schemas
+export type CreateTransactionRequest = z.infer<typeof Transaction.createSchema>;
+export type UpdateTransactionRequest = z.infer<typeof Transaction.updateSchema>;
+export type CreateAllocationRequest = z.infer<typeof Allocation.createSchema>;
 
-const CreateTransactionRequestSchema = z.object({
-  merchantId: z.string().uuid(),
-  description: z.string().min(1).max(500),
-  amountCents: z.number().int().positive(),
-  type: z.enum(["expense", "income"]).default("expense"),
-  transactionDate: z.string().datetime().optional(),
-  tagIds: z.array(z.string().uuid()).optional(),
-  allocations: z.array(CreateAllocationRequestSchema).min(1),
-});
+export class TransactionService {
+  constructor(
+    private transactionRepository: TransactionRepository,
+    private merchantRepository: MerchantRepository,
+    private tagRepository: TagRepository,
+    private cardAccountRepository: CardAccountRepository,
+    private cardRepository: CardRepository,
+    private memberRepository: MemberRepository
+  ) {}
 
-const UpdateTransactionRequestSchema = z.object({
-  merchantId: z.string().uuid().optional(),
-  description: z.string().min(1).max(500).optional(),
-  amountCents: z.number().int().positive().optional(),
-  type: z.enum(["expense", "income"]).optional(),
-  transactionDate: z.string().datetime().optional(),
-  tagIds: z.array(z.string().uuid()).optional(),
-  allocations: z.array(CreateAllocationRequestSchema).min(1).optional(),
-});
-
-export type CreateTransactionRequest = z.infer<
-  typeof CreateTransactionRequestSchema
->;
-export type UpdateTransactionRequest = z.infer<
-  typeof UpdateTransactionRequestSchema
->;
-export type CreateAllocationRequest = z.infer<
-  typeof CreateAllocationRequestSchema
->;
-
-export class TransactionService extends SharedTransactionService {
-  // Constructor inherited from SharedTransactionService
-  // which takes (transactionRepository, merchantRepository, tagRepository)
-
-  override async listTransactions(
-    query: Record<string, unknown>,
+  async listTransactions(
+    query: Record<string, unknown>
   ): Promise<Transaction[]> {
     return await this.transactionRepository.findByQuery(query);
   }
 
-  override async createTransaction(request: unknown): Promise<Transaction> {
-    const validatedRequest = CreateTransactionRequestSchema.parse(request);
+  async createTransaction(request: unknown): Promise<Transaction> {
+    // Validate request using entity schema with nested allocation validation
+    const validatedRequest = Transaction.createSchema
+      .extend({
+        allocations: Allocation.createSchema.array().min(1),
+      })
+      .parse(request);
 
     // Validate that merchant exists
     const merchant = await this.merchantRepository.findById(
-      validatedRequest.merchantId,
+      validatedRequest.merchantId
     );
     if (!merchant) {
       throw new Error(
-        `Merchant with ID ${validatedRequest.merchantId} not found`,
+        `Merchant with ID ${validatedRequest.merchantId} not found`
       );
+    }
+
+    // Validate that CardAccount exists
+    const cardAccount = await this.cardAccountRepository.findById(
+      validatedRequest.cardAccountId
+    );
+    if (!cardAccount) {
+      throw new Error(
+        `CardAccount with ID ${validatedRequest.cardAccountId} not found`
+      );
+    }
+
+    // If cardId provided, validate Card exists and belongs to CardAccount
+    if (validatedRequest.cardId) {
+      const card = await this.cardRepository.findById(validatedRequest.cardId);
+      if (!card) {
+        throw new Error(`Card with ID ${validatedRequest.cardId} not found`);
+      }
+
+      // Validate Card belongs to CardAccount
+      if (card.cardAccountId !== validatedRequest.cardAccountId) {
+        throw new Error(
+          `Card ${validatedRequest.cardId} does not belong to CardAccount ${validatedRequest.cardAccountId}`
+        );
+      }
     }
 
     // Validate that all tags exist (if provided)
@@ -89,10 +89,18 @@ export class TransactionService extends SharedTransactionService {
       }
     }
 
+    // Validate that all members in allocations exist
+    for (const allocation of validatedRequest.allocations) {
+      const member = await this.memberRepository.findById(allocation.memberId);
+      if (!member) {
+        throw new Error(`Member with ID ${allocation.memberId} not found`);
+      }
+    }
+
     // Validate allocations sum to 100% or total amount
-    await this.validateAllocations(
+    this.validateAllocations(
       validatedRequest.allocations,
-      validatedRequest.amountCents,
+      validatedRequest.amountCents
     );
 
     // Create the transaction
@@ -100,58 +108,59 @@ export class TransactionService extends SharedTransactionService {
       ? new Date(validatedRequest.transactionDate)
       : new Date();
 
-    const transaction = Transaction.create({
+    const transaction = new Transaction({
       merchantId: validatedRequest.merchantId,
       description: validatedRequest.description,
       amountCents: validatedRequest.amountCents,
-      type: validatedRequest.type,
+      type:
+        validatedRequest.type === "expense"
+          ? TransactionType.EXPENSE
+          : TransactionType.INCOME,
       transactionDate,
       createdById: "system", // TODO: Get from auth context
+      cardAccountId: validatedRequest.cardAccountId,
+      cardId: validatedRequest.cardId,
     });
 
     // Save transaction
-    await this.transactionRepository.save(transaction);
+    const savedTransaction = await this.transactionRepository.save(transaction);
 
     // Create and save allocations
-    const allocations = validatedRequest.allocations.map((allocationReq) =>
-      Allocation.create({
+    const allocations = validatedRequest.allocations.map((allocationReq) => {
+      // Convert user-friendly rule names to enum values
+      const rule =
+        allocationReq.rule === "percentage"
+          ? AllocationRule.basisPoints
+          : AllocationRule.FIXED_AMOUNT;
+
+      return new Allocation({
         transactionId: transaction.id,
         memberId: allocationReq.memberId,
-        rule: allocationReq.rule,
-        percentage: allocationReq.percentage,
+        rule,
+        basisPoints: allocationReq.percentage as basisPoints | undefined,
         amountCents: allocationReq.amountCents,
-      })
-    );
-
-    // Calculate the actual amounts for percentage-based allocations
-    const calculatedAllocations = allocations.map((allocation) => {
-      if (allocation.rule === "percentage") {
-        const calculatedAmount = allocation.calculateAmount(
-          transaction.amountCents,
-        );
-        return Allocation.from({
-          ...allocation.toJSON(),
-          calculatedAmountCents: calculatedAmount,
-        });
-      }
-      return allocation;
+      });
     });
 
-    await this.transactionRepository.updateAllocations(
-      transaction.id,
-      calculatedAllocations,
-    );
+    // Save allocations
+    for (const allocation of allocations) {
+      await this.transactionRepository.updateAllocations(transaction.id, [
+        allocation,
+      ]);
+    }
 
     // TODO: Save transaction tags if provided
 
-    return transaction;
+    return savedTransaction[0] as Transaction;
   }
 
-  override async updateTransaction(
-    id: string,
-    request: unknown,
-  ): Promise<Transaction> {
-    const validatedRequest = UpdateTransactionRequestSchema.parse(request);
+  async updateTransaction(id: string, request: unknown): Promise<Transaction> {
+    // Validate request using entity schema
+    const validatedRequest = Transaction.updateSchema
+      .extend({
+        allocations: Allocation.createSchema.array().min(1).optional(),
+      })
+      .parse(request);
 
     // Find existing transaction
     const existingTransaction = await this.transactionRepository.findById(id);
@@ -162,74 +171,76 @@ export class TransactionService extends SharedTransactionService {
     // Validate merchant if provided
     if (validatedRequest.merchantId) {
       const merchant = await this.merchantRepository.findById(
-        validatedRequest.merchantId,
+        validatedRequest.merchantId
       );
       if (!merchant) {
         throw new Error(
-          `Merchant with ID ${validatedRequest.merchantId} not found`,
+          `Merchant with ID ${validatedRequest.merchantId} not found`
         );
       }
     }
 
+    const existingData = existingTransaction.toJSON;
+
     // Validate allocations if provided
     if (validatedRequest.allocations) {
-      const amountCents = validatedRequest.amountCents ||
-        existingTransaction.amountCents;
-      await this.validateAllocations(validatedRequest.allocations, amountCents);
+      const amountCents =
+        validatedRequest.amountCents || existingData.amountCents;
+      this.validateAllocations(validatedRequest.allocations, amountCents);
     }
 
     // Create updated transaction
-    const updatedData = {
-      ...existingTransaction.toJSON(),
-      ...validatedRequest,
+    const updatedTransaction = new Transaction({
+      ...existingData,
+      merchantId: validatedRequest.merchantId ?? existingData.merchantId,
+      description: validatedRequest.description ?? existingData.description,
+      amountCents: validatedRequest.amountCents ?? existingData.amountCents,
+      type: validatedRequest.type
+        ? validatedRequest.type === "expense"
+          ? TransactionType.EXPENSE
+          : TransactionType.INCOME
+        : existingData.type,
       transactionDate: validatedRequest.transactionDate
         ? new Date(validatedRequest.transactionDate)
-        : existingTransaction.transactionDate,
-    };
-
-    const updatedTransaction = Transaction.from(updatedData);
+        : existingData.transactionDate,
+      updatedAt: new Date(),
+    });
 
     // Save updated transaction
-    await this.transactionRepository.save(updatedTransaction);
+    const saved = await this.transactionRepository.save(updatedTransaction);
 
     // Update allocations if provided
     if (validatedRequest.allocations) {
-      const allocations = validatedRequest.allocations.map((allocationReq) =>
-        Allocation.create({
+      const allocations = validatedRequest.allocations.map((allocationReq) => {
+        const rule =
+          allocationReq.rule === "percentage"
+            ? AllocationRule.basisPoints
+            : AllocationRule.FIXED_AMOUNT;
+
+        return new Allocation({
           transactionId: updatedTransaction.id,
           memberId: allocationReq.memberId,
-          rule: allocationReq.rule,
-          percentage: allocationReq.percentage,
+          rule,
+          basisPoints: allocationReq.percentage as basisPoints | undefined,
           amountCents: allocationReq.amountCents,
-        })
-      );
-
-      // Calculate amounts for percentage allocations
-      const calculatedAllocations = allocations.map((allocation) => {
-        if (allocation.rule === "percentage") {
-          const calculatedAmount = allocation.calculateAmount(
-            updatedTransaction.amountCents,
-          );
-          return Allocation.from({
-            ...allocation.toJSON(),
-            calculatedAmountCents: calculatedAmount,
-          });
-        }
-        return allocation;
+        });
       });
 
-      await this.transactionRepository.updateAllocations(
-        updatedTransaction.id,
-        calculatedAllocations,
-      );
+      // Save allocations
+      for (const allocation of allocations) {
+        await this.transactionRepository.updateAllocations(
+          updatedTransaction.id,
+          [allocation]
+        );
+      }
     }
 
-    return updatedTransaction;
+    return saved[0] as Transaction;
   }
 
   private validateAllocations(
     allocations: CreateAllocationRequest[],
-    totalAmountCents: number,
+    totalAmountCents: number
   ): void {
     if (allocations.length === 0) {
       throw new Error("At least one allocation is required");
@@ -251,14 +262,14 @@ export class TransactionService extends SharedTransactionService {
       throw new Error(
         `Percentage allocations must sum to 100% (currently ${
           totalPercentage / 100
-        }%)`,
+        }%)`
       );
     }
 
     // Validate fixed amount allocations don't exceed total
     if (totalFixedAmount > totalAmountCents) {
       throw new Error(
-        `Fixed amount allocations (${totalFixedAmount} cents) exceed transaction amount (${totalAmountCents} cents)`,
+        `Fixed amount allocations (${totalFixedAmount} cents) exceed transaction amount (${totalAmountCents} cents)`
       );
     }
 
@@ -268,7 +279,7 @@ export class TransactionService extends SharedTransactionService {
 
     if (hasPercentage && hasFixedAmount) {
       throw new Error(
-        "Cannot mix percentage and fixed amount allocations in the same transaction",
+        "Cannot mix percentage and fixed amount allocations in the same transaction"
       );
     }
   }

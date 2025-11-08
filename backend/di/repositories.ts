@@ -12,6 +12,10 @@ import { EventRepository } from "@backend/repositories";
 import { InviteTokenRepository } from "@backend/repositories";
 import { PasswordResetTokenRepository } from "@backend/repositories";
 import { SessionRepository } from "@backend/repositories";
+import { CardAccountRepository } from "@backend/repositories";
+import { CardAccountSettingsRepository } from "@backend/repositories";
+import { CardRepository } from "@backend/repositories";
+import { AllocationRepository } from "@backend/repositories";
 
 // Repository Factories
 export function createUserRepository() {
@@ -64,4 +68,20 @@ export function createPasswordResetTokenRepository() {
 
 export function createSessionRepository() {
   return new SessionRepository();
+}
+
+export function createCardAccountRepository() {
+  return new CardAccountRepository();
+}
+
+export function createCardAccountSettingsRepository() {
+  return new CardAccountSettingsRepository();
+}
+
+export function createCardRepository() {
+  return new CardRepository();
+}
+
+export function createAllocationRepository() {
+  return new AllocationRepository();
 }

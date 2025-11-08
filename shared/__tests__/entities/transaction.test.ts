@@ -1,124 +1,278 @@
-import { assert } from "@std/assert";
-import { Transaction } from "../../entities/transaction.ts";
+import { assertEquals, assertThrows } from "@std/assert";
+import {
+  Transaction,
+  TransactionType,
+  type TransactionData,
+} from "../../entities/transaction.ts";
+import type { Cents } from "../../types.ts";
 
-Deno.test("Transaction entity", () => {
-  // TODO: Test transaction entity validation and methods
-});
+Deno.test(
+  "Transaction - creates with required fields including cardAccountId",
+  () => {
+    const data: TransactionData = {
+      id: "123e4567-e89b-12d3-a456-426614174000",
+      cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+      merchantId: "323e4567-e89b-12d3-a456-426614174000",
+      description: "Coffee at Starbucks",
+      amountCents: 550 as Cents,
+      type: TransactionType.EXPENSE,
+      transactionDate: new Date("2025-10-21"),
+      createdById: "423e4567-e89b-12d3-a456-426614174000",
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-Deno.test("Transaction - can be created with required fields", () => {
-  const transaction = Transaction.create({
-    merchantId: "550e8400-e29b-41d4-a716-446655440000",
-    description: "Coffee at Starbucks",
-    amountCents: 550,
-    type: "expense",
-    transactionDate: new Date("2025-10-21"),
-    createdById: "550e8400-e29b-41d4-a716-446655440001",
-  });
+    const transaction = new Transaction(data);
 
-  assert(transaction.id.length > 0);
-  assert(transaction.merchantId === "550e8400-e29b-41d4-a716-446655440000");
-  assert(transaction.description === "Coffee at Starbucks");
-  assert(transaction.amountCents === 550);
-  assert(transaction.type === "expense");
-  assert(transaction.transactionDate instanceof Date);
-  assert(transaction.createdById === "550e8400-e29b-41d4-a716-446655440001");
-  assert(transaction.createdAt instanceof Date);
-  assert(transaction.updatedAt instanceof Date);
-});
-
-Deno.test("Transaction - can be created with income type", () => {
-  const transaction = Transaction.create({
-    merchantId: "550e8400-e29b-41d4-a716-446655440000",
-    description: "Salary deposit",
-    amountCents: 500000,
-    type: "income",
-    transactionDate: new Date("2025-10-21"),
-    createdById: "550e8400-e29b-41d4-a716-446655440001",
-  });
-
-  assert(transaction.type === "income");
-  assert(transaction.amountCents === 500000);
-});
-
-Deno.test("Transaction - validates required fields", () => {
-  try {
-    Transaction.create({
-      merchantId: "", // Invalid empty merchantId
-      description: "Test transaction",
-      amountCents: 100,
-      type: "expense",
-      transactionDate: new Date(),
-      createdById: "550e8400-e29b-41d4-a716-446655440001",
-    });
-    assert(false, "Should have thrown validation error");
-  } catch (error) {
-    assert(error instanceof Error);
+    assertEquals(transaction.cardAccountId, data.cardAccountId);
+    assertEquals(transaction.cardId, undefined);
+    assertEquals(transaction.merchantId, data.merchantId);
+    assertEquals(transaction.description, "Coffee at Starbucks");
+    assertEquals(transaction.amountCents, 550 as Cents);
+    assertEquals(transaction.type, TransactionType.EXPENSE);
+    assertEquals(transaction.createdById, data.createdById);
   }
-});
+);
 
-Deno.test("Transaction - validates amount is positive", () => {
-  try {
-    Transaction.create({
-      merchantId: "550e8400-e29b-41d4-a716-446655440000",
-      description: "Test transaction",
-      amountCents: -100, // Invalid negative amount
-      type: "expense",
-      transactionDate: new Date(),
-      createdById: "550e8400-e29b-41d4-a716-446655440001",
-    });
-    assert(false, "Should have thrown validation error");
-  } catch (error) {
-    assert(error instanceof Error);
-  }
-});
-
-Deno.test("Transaction - can be reconstructed from data", () => {
-  const data = {
-    id: "550e8400-e29b-41d4-a716-446655440002",
-    merchantId: "550e8400-e29b-41d4-a716-446655440000",
+Deno.test("Transaction - creates with cardAccountId and cardId", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    cardId: "523e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
     description: "Lunch at cafe",
-    amountCents: 1250,
-    type: "expense" as const,
-    transactionDate: new Date("2025-10-21T12:00:00Z"),
-    createdById: "550e8400-e29b-41d4-a716-446655440001",
-    createdAt: new Date("2025-10-21T12:00:00Z"),
-    updatedAt: new Date("2025-10-21T12:00:00Z"),
+    amountCents: 1250 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date("2025-10-21"),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
-  const transaction = Transaction.from(data);
+  const transaction = new Transaction(data);
 
-  assert(transaction.id === data.id);
-  assert(transaction.merchantId === data.merchantId);
-  assert(transaction.description === data.description);
-  assert(transaction.amountCents === data.amountCents);
-  assert(transaction.type === data.type);
-  assert(
-    transaction.transactionDate.getTime() === data.transactionDate.getTime(),
-  );
-  assert(transaction.createdById === data.createdById);
-  assert(transaction.createdAt.getTime() === data.createdAt.getTime());
-  assert(transaction.updatedAt.getTime() === data.updatedAt.getTime());
+  assertEquals(transaction.cardAccountId, data.cardAccountId);
+  assertEquals(transaction.cardId, data.cardId);
 });
 
-Deno.test("Transaction - toJSON returns correct data", () => {
-  const transaction = Transaction.create({
-    merchantId: "550e8400-e29b-41d4-a716-446655440000",
-    description: "Test transaction",
-    amountCents: 1000,
-    type: "expense",
+Deno.test("Transaction - creates with income type", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Salary deposit",
+    amountCents: 500000 as Cents,
+    type: TransactionType.INCOME,
     transactionDate: new Date("2025-10-21"),
-    createdById: "550e8400-e29b-41d4-a716-446655440001",
-  });
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-  const json = transaction.toJSON();
+  const transaction = new Transaction(data);
 
-  assert(typeof json.id === "string");
-  assert(json.merchantId === "550e8400-e29b-41d4-a716-446655440000");
-  assert(json.description === "Test transaction");
-  assert(json.amountCents === 1000);
-  assert(json.type === "expense");
-  assert(json.transactionDate instanceof Date);
-  assert(json.createdById === "550e8400-e29b-41d4-a716-446655440001");
-  assert(json.createdAt instanceof Date);
-  assert(json.updatedAt instanceof Date);
+  assertEquals(transaction.type, TransactionType.INCOME);
+  assertEquals(transaction.amountCents, 500000 as Cents);
+});
+
+Deno.test("Transaction - throws error when cardAccountId is missing", () => {
+  const data = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test transaction",
+    amountCents: 100 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date(),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  } as Partial<TransactionData> as TransactionData;
+
+  assertThrows(() => new Transaction(data));
+});
+
+Deno.test(
+  "Transaction - throws error when cardAccountId is invalid UUID",
+  () => {
+    const data: TransactionData = {
+      id: "123e4567-e89b-12d3-a456-426614174000",
+      cardAccountId: "not-a-uuid",
+      merchantId: "323e4567-e89b-12d3-a456-426614174000",
+      description: "Test transaction",
+      amountCents: 100 as Cents,
+      type: TransactionType.EXPENSE,
+      transactionDate: new Date(),
+      createdById: "423e4567-e89b-12d3-a456-426614174000",
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    assertThrows(() => new Transaction(data));
+  }
+);
+
+Deno.test("Transaction - throws error when cardId is invalid UUID", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    cardId: "not-a-uuid",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test transaction",
+    amountCents: 100 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date(),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  assertThrows(() => new Transaction(data));
+});
+
+Deno.test("Transaction - throws error when merchantId is invalid", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    merchantId: "invalid",
+    description: "Test transaction",
+    amountCents: 100 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date(),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  assertThrows(() => new Transaction(data));
+});
+
+Deno.test("Transaction - throws error when description is empty", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "",
+    amountCents: 100 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date(),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  assertThrows(() => new Transaction(data));
+});
+
+Deno.test("Transaction - throws error when amountCents is negative", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test transaction",
+    amountCents: -100 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date(),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  assertThrows(() => new Transaction(data));
+});
+
+Deno.test("Transaction - toJSON includes cardAccountId and cardId", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    cardId: "523e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test transaction",
+    amountCents: 1000 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date("2025-10-21"),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const transaction = new Transaction(data);
+  const json = transaction.toJSON;
+
+  assertEquals(json.cardAccountId, data.cardAccountId);
+  assertEquals(json.cardId, data.cardId);
+  assertEquals(json.merchantId, data.merchantId);
+  assertEquals(json.description, "Test transaction");
+  assertEquals(json.amountCents, 1000 as Cents);
+  assertEquals(json.type, TransactionType.EXPENSE);
+  assertEquals(json.createdById, data.createdById);
+});
+
+Deno.test("Transaction - toJSON without cardId", () => {
+  const data: TransactionData = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test transaction",
+    amountCents: 1000 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date("2025-10-21"),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const transaction = new Transaction(data);
+  const json = transaction.toJSON;
+
+  assertEquals(json.cardAccountId, data.cardAccountId);
+  assertEquals(json.cardId, undefined);
+});
+
+Deno.test("Transaction - parse reconstructs from valid data", () => {
+  const data = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "223e4567-e89b-12d3-a456-426614174000",
+    cardId: "523e4567-e89b-12d3-a456-426614174000",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test transaction",
+    amountCents: 1000 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date("2025-10-21"),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+    isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const transaction = Transaction.parse(data);
+
+  assertEquals(transaction.cardAccountId, data.cardAccountId);
+  assertEquals(transaction.cardId, data.cardId);
+  assertEquals(transaction.merchantId, data.merchantId);
+});
+
+Deno.test("Transaction - parse throws on invalid data", () => {
+  const data = {
+    id: "123e4567-e89b-12d3-a456-426614174000",
+    cardAccountId: "not-a-uuid",
+    merchantId: "323e4567-e89b-12d3-a456-426614174000",
+    description: "Test",
+    amountCents: 100 as Cents,
+    type: TransactionType.EXPENSE,
+    transactionDate: new Date(),
+    createdById: "423e4567-e89b-12d3-a456-426614174000",
+  };
+
+  assertThrows(() => Transaction.parse(data));
 });

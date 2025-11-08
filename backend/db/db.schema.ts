@@ -21,6 +21,9 @@ export { transfers } from "./schema/tables/transfers.ts";
 export { allocations } from "./schema/tables/allocations.ts";
 export { merchants } from "./schema/tables/merchants.ts";
 export { tags } from "./schema/tables/tags.ts";
+export { cardAccounts } from "./schema/tables/cardAccounts.ts";
+export { cardAccountSettings } from "./schema/tables/cardAccountSettings.ts";
+export { cards } from "./schema/tables/cards.ts";
 
 // Relations
 export { usersRelations } from "./schema/relations/usersRelations.ts";

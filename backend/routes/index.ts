@@ -8,9 +8,15 @@ export { apiAuthLogout } from "./auth/api_auth_logout.ts";
 export { apiAuthRequestReset } from "./auth/api_auth_requestReset.ts";
 export { apiAuthResetPassword } from "./auth/api_auth_resetPassword.ts";
 
-export { apiPeopleList } from "./people/api_people_list.ts";
-export { apiPeopleCreate } from "./people/api_people_create.ts";
-export { apiPeopleUpdate } from "./people/api_people_update.ts";
+export { apiMemberList } from "./members/api_member_list.ts";
+export { apiMemberCreate } from "./members/api_member_create.ts";
+export { apiMemberUpdate } from "./members/api_member_update.ts";
+
+export { apiUserList } from "./users/api_users_list.ts";
+export { apiUserGet } from "./users/api_users_get.ts";
+export { apiUserCreate } from "./users/api_users_create.ts";
+export { apiUserUpdate } from "./users/api_users_update.ts";
+export { apiUserDelete } from "./users/api_users_delete.ts";
 
 export { apiTransactionsList } from "./transactions/api_transactions_list.ts";
 export { apiTransactionsCreate } from "./transactions/api_transactions_create.ts";
@@ -39,3 +45,19 @@ export { apiLedgerGet } from "./ledger/api_ledger_get.ts";
 export { apiAuditGet } from "./ledger/api_audit_get.ts";
 
 export { apiEventsStream } from "./events/api_events_stream.ts";
+
+export { apiCardAccountsList } from "./cardAccounts/api_card_accounts_list.ts";
+export { apiCardAccountsCreate } from "./cardAccounts/api_card_accounts_create.ts";
+export { apiCardAccountsGet } from "./cardAccounts/api_card_accounts_get.ts";
+export { apiCardAccountsUpdate } from "./cardAccounts/api_card_accounts_update.ts";
+export { apiCardAccountsDelete } from "./cardAccounts/api_card_accounts_delete.ts";
+
+export { apiCardAccountSettingsGet } from "./cardAccounts/api_card_account_settings_get.ts";
+export { apiCardAccountSettingsUpdate } from "./cardAccounts/api_card_account_settings_update.ts";
+export { apiCardAccountSettingsReset } from "./cardAccounts/api_card_account_settings_reset.ts";
+
+export { apiCardsList } from "./cards/api_cards_list.ts";
+export { apiCardsCreate } from "./cards/api_cards_create.ts";
+export { apiCardsGet } from "./cards/api_cards_get.ts";
+export { apiCardsUpdate } from "./cards/api_cards_update.ts";
+export { apiCardsDelete } from "./cards/api_cards_delete.ts";

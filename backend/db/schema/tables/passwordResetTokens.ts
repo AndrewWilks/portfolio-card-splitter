@@ -1,6 +1,7 @@
-import { pgTable, timestamp, uuid } from "drizzle-orm/pg-core";
+import { pgTable, uuid } from "drizzle-orm/pg-core";
 
 import { users } from "./users.ts";
+import { token } from "./base/token.ts";
 
 /**
  * Database table definition for `password_reset_tokens`.
@@ -8,13 +9,8 @@ import { users } from "./users.ts";
  * Stores tokens for password reset flows with expiry and usage tracking.
  */
 export const passwordResetTokens = pgTable("password_reset_tokens", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  ...token,
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id),
-  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .defaultNow()
-    .notNull(),
-  usedAt: timestamp("used_at", { withTimezone: true }),
 });

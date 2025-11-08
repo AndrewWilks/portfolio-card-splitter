@@ -25,9 +25,12 @@ Deno.test("MerchantRepository - findByName method exists", () => {
 
 // Entity creation tests
 Deno.test("Merchant - can be created with required fields", () => {
-  const merchant = Merchant.create({
+  const merchant = new Merchant({
+    id: crypto.randomUUID(),
     name: "Test Merchant",
     isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
   assert(merchant.id.length > 0);
@@ -38,10 +41,13 @@ Deno.test("Merchant - can be created with required fields", () => {
 });
 
 Deno.test("Merchant - can be created with optional location", () => {
-  const merchant = Merchant.create({
+  const merchant = new Merchant({
+    id: crypto.randomUUID(),
     name: "Test Merchant",
     location: "Test Location",
     isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
   assert(merchant.location === "Test Location");
@@ -58,7 +64,7 @@ Deno.test("Merchant - can be reconstructed from data", () => {
     updatedAt: new Date("2023-01-01"),
   };
 
-  const merchant = Merchant.from(data);
+  const merchant = new Merchant(data);
 
   assert(merchant.id === data.id);
   assert(merchant.name === data.name);
@@ -67,13 +73,16 @@ Deno.test("Merchant - can be reconstructed from data", () => {
 });
 
 Deno.test("Merchant - toJSON returns correct data", () => {
-  const merchant = Merchant.create({
+  const merchant = new Merchant({
+    id: crypto.randomUUID(),
     name: "Test Merchant",
     location: "Test Location",
     isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
-  const json = merchant.toJSON();
+  const json = merchant.toJSON;
 
   assert(json.id === merchant.id);
   assert(json.name === merchant.name);

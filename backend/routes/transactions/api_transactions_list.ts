@@ -3,7 +3,7 @@ import { TransactionService } from "@backend/services";
 
 export async function apiTransactionsList(
   c: Context,
-  transactionService: TransactionService,
+  transactionService: TransactionService
 ) {
   try {
     // Parse query parameters
@@ -35,6 +35,8 @@ export async function apiTransactionsList(
         type: transaction.type,
         transactionDate: transaction.transactionDate.toISOString(),
         createdById: transaction.createdById,
+        cardAccountId: transaction.cardAccountId,
+        cardId: transaction.cardId,
         createdAt: transaction.createdAt.toISOString(),
         updatedAt: transaction.updatedAt.toISOString(),
       })),

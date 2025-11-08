@@ -1,6 +1,7 @@
 import { assert } from "@std/assert";
 import { TagRepository } from "../../repositories/index.ts";
 import { Tag } from "@shared/entities";
+import type { HexColor } from "@shared/types";
 
 // Unit tests that don't require database connection
 Deno.test("TagRepository - can be instantiated", () => {
@@ -30,24 +31,31 @@ Deno.test("TagRepository - findByName method exists", () => {
 
 // Entity creation tests
 Deno.test("Tag - can be created with required fields", () => {
-  const tag = Tag.create({
+  const tag = new Tag({
+    id: crypto.randomUUID(),
     name: "Test Tag",
+    color: "#3b82f6" as HexColor,
     isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
   assert(tag.id.length > 0);
   assert(tag.name === "Test Tag");
-  assert(tag.color === "#3b82f6"); // default color
+  assert(tag.color === "#3b82f6");
   assert(tag.isActive === true);
   assert(tag.createdAt instanceof Date);
   assert(tag.updatedAt instanceof Date);
 });
 
 Deno.test("Tag - can be created with custom color", () => {
-  const tag = Tag.create({
+  const tag = new Tag({
+    id: crypto.randomUUID(),
     name: "Test Tag",
-    color: "#ff0000",
+    color: "#ff0000" as HexColor,
     isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
   assert(tag.color === "#ff0000");
@@ -56,10 +64,13 @@ Deno.test("Tag - can be created with custom color", () => {
 Deno.test("Tag - validates color format", () => {
   // This should throw due to invalid color format
   try {
-    Tag.create({
+    new Tag({
+      id: crypto.randomUUID(),
       name: "Test Tag",
-      color: "invalid-color",
+      color: "invalid-color" as HexColor,
       isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
     assert(false, "Should have thrown validation error");
   } catch (error) {
@@ -71,13 +82,13 @@ Deno.test("Tag - can be reconstructed from data", () => {
   const data = {
     id: "550e8400-e29b-41d4-a716-446655440001", // Valid UUID
     name: "Test Tag",
-    color: "#ff0000",
+    color: "#ff0000" as HexColor,
     isActive: true,
     createdAt: new Date("2023-01-01"),
     updatedAt: new Date("2023-01-01"),
   };
 
-  const tag = Tag.from(data);
+  const tag = new Tag(data);
 
   assert(tag.id === data.id);
   assert(tag.name === data.name);
@@ -86,13 +97,16 @@ Deno.test("Tag - can be reconstructed from data", () => {
 });
 
 Deno.test("Tag - toJSON returns correct data", () => {
-  const tag = Tag.create({
+  const tag = new Tag({
+    id: crypto.randomUUID(),
     name: "Test Tag",
-    color: "#00ff00",
+    color: "#00ff00" as HexColor,
     isActive: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
 
-  const json = tag.toJSON();
+  const json = tag.toJSON;
 
   assert(json.id === tag.id);
   assert(json.name === tag.name);

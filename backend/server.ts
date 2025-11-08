@@ -2,39 +2,8 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { authMiddleware } from "./middleware/auth.ts";
-import {
-  createApiAuditGet,
-  createApiAuthAcceptInvite,
-  createApiAuthBootstrap,
-  createApiAuthInvite,
-  createApiAuthLogin,
-  createApiAuthLogout,
-  createApiAuthRequestReset,
-  createApiAuthResetPassword,
-  createApiEventsStream,
-  createApiLedgerGet,
-  createApiMerchantsCreate,
-  createApiMerchantsList,
-  createApiMerchantsUpdate,
-  createApiPaymentsCreate,
-  createApiPeopleCreate,
-  createApiPeopleList,
-  createApiPeopleUpdate,
-  createApiPotsCreate,
-  createApiPotsDeposit,
-  createApiPotsList,
-  createApiPotsUpdate,
-  createApiReservationsCreate,
-  createApiReservationsDelete,
-  createApiTagsCreate,
-  createApiTagsList,
-  createApiTagsUpdate,
-  createApiTransactionsCreate,
-  createApiTransactionsList,
-  createApiTransactionsUpdate,
-  createApiTransfersCreate,
-  createRootRoute,
-} from "./di/index.ts";
+import * as di from "@backend/di";
+import { db } from "@db";
 
 const backend = new Hono();
 
@@ -47,11 +16,12 @@ backend.use("*", logger());
 backend.use(
   "*",
   cors({
-    origin: Deno.env.get("NODE_ENV") === "production"
-      ? [Deno.env.get("APP_URL") || ""]
-      : ["http://localhost:3000"],
+    origin:
+      Deno.env.get("NODE_ENV") === "production"
+        ? [Deno.env.get("APP_URL") || ""]
+        : ["http://localhost:3000"],
     credentials: true,
-  }),
+  })
 );
 
 // Error Handling Middleware
@@ -59,12 +29,12 @@ backend.onError((err, c) => {
   console.error("Error occurred:", err);
   return c.json(
     { message: "Internal Server Error", details: err.message },
-    500,
+    500
   );
 });
 
 // Root route
-backend.get("/", createRootRoute());
+backend.get("/", di.createRootRoute());
 
 // Health check
 backend.get("/health", (c) => {
@@ -102,55 +72,91 @@ backend.get("/api/status", (c) => {
 });
 
 // Authentication Endpoints
-backend.post("/api/auth/bootstrap", createApiAuthBootstrap());
-backend.post("/api/auth/invite", createApiAuthInvite());
-backend.post("/api/auth/accept-invite", createApiAuthAcceptInvite());
-backend.post("/api/auth/login", createApiAuthLogin());
-backend.post("/api/auth/logout", createApiAuthLogout());
-backend.post("/api/auth/request-reset", createApiAuthRequestReset());
-backend.post("/api/auth/reset", createApiAuthResetPassword());
+backend.post("/api/auth/bootstrap", di.createApiAuthBootstrap());
+backend.post("/api/auth/invite", di.createApiAuthInvite());
+backend.post("/api/auth/accept-invite", di.createApiAuthAcceptInvite());
+backend.post("/api/auth/login", di.createApiAuthLogin());
+backend.post("/api/auth/logout", di.createApiAuthLogout());
+backend.post("/api/auth/request-reset", di.createApiAuthRequestReset());
+backend.post("/api/auth/reset", di.createApiAuthResetPassword());
 
 // People Management Endpoints
-backend.get("/api/people", createApiPeopleList());
-backend.post("/api/people", createApiPeopleCreate());
-backend.patch("/api/people/:id", createApiPeopleUpdate());
+backend.get("/api/member", di.createApiMemberList());
+backend.post("/api/member", di.createApiMemberCreate());
+backend.patch("/api/member/:id", di.createApiMemberUpdate());
+
+// User Management Endpoints
+backend.get("/api/users", di.createApiUserList());
+backend.get("/api/users/:id", di.createApiUserGet());
+backend.post("/api/users", di.createApiUserCreate());
+backend.patch("/api/users/:id", di.createApiUserUpdate());
+backend.delete("/api/users/:id", di.createApiUserDelete());
 
 // Transaction Management Endpoints
-backend.get("/api/transactions", createApiTransactionsList());
-backend.post("/api/transactions", createApiTransactionsCreate());
-backend.patch("/api/transactions/:id", createApiTransactionsUpdate());
+backend.get("/api/transactions", di.createApiTransactionsList());
+backend.post("/api/transactions", di.createApiTransactionsCreate());
+backend.patch("/api/transactions/:id", di.createApiTransactionsUpdate());
 
 // Merchant Management Endpoints
-backend.get("/api/merchants", createApiMerchantsList());
-backend.post("/api/merchants", createApiMerchantsCreate());
-backend.patch("/api/merchants/:id", createApiMerchantsUpdate());
+backend.get("/api/merchants", di.createApiMerchantsList());
+backend.post("/api/merchants", di.createApiMerchantsCreate());
+backend.patch("/api/merchants/:id", di.createApiMerchantsUpdate());
 
 // Tag Management Endpoints
-backend.get("/api/tags", createApiTagsList());
-backend.post("/api/tags", createApiTagsCreate());
-backend.patch("/api/tags/:id", createApiTagsUpdate());
+backend.get("/api/tags", di.createApiTagsList());
+backend.post("/api/tags", di.createApiTagsCreate());
+backend.patch("/api/tags/:id", di.createApiTagsUpdate());
 
 // Pot Management Endpoints
-backend.get("/api/pots", createApiPotsList());
-backend.post("/api/pots", createApiPotsCreate());
-backend.patch("/api/pots/:id", createApiPotsUpdate());
-backend.post("/api/pots/:id/deposit", createApiPotsDeposit());
+backend.get("/api/pots", di.createApiPotsList());
+backend.post("/api/pots", di.createApiPotsCreate());
+backend.patch("/api/pots/:id", di.createApiPotsUpdate());
+backend.post("/api/pots/:id/deposit", di.createApiPotsDeposit());
 
 // Reservation Management Endpoints
-backend.post("/api/reservations", createApiReservationsCreate());
-backend.delete("/api/reservations/:id", createApiReservationsDelete());
+backend.post("/api/reservations", di.createApiReservationsCreate());
+backend.delete("/api/reservations/:id", di.createApiReservationsDelete());
 // Transfer Management Endpoints
-backend.post("/api/transfers", createApiTransfersCreate());
+backend.post("/api/transfers", di.createApiTransfersCreate());
 
 // Payment Management Endpoints
-backend.post("/api/payments", createApiPaymentsCreate());
+backend.post("/api/payments", di.createApiPaymentsCreate());
 
 // Ledger & Audit Endpoints
-backend.get("/api/ledger", createApiLedgerGet());
-backend.get("/api/audit", createApiAuditGet());
+backend.get("/api/ledger", di.createApiLedgerGet());
+// TODO: Re-enable when AuditService is implemented
+// backend.get("/api/audit", di.createApiAuditGet());
 
 // Real-Time Events Endpoint
-backend.get("/api/events/stream", createApiEventsStream());
+backend.get("/api/events/stream", di.createApiEventsStream());
+
+// CardAccount Management Endpoints
+backend.get("/api/card-accounts", di.createApiCardAccountsList());
+backend.post("/api/card-accounts", di.createApiCardAccountsCreate());
+backend.get("/api/card-accounts/:id", di.createApiCardAccountsGet());
+backend.patch("/api/card-accounts/:id", di.createApiCardAccountsUpdate());
+backend.delete("/api/card-accounts/:id", di.createApiCardAccountsDelete());
+
+// CardAccount Settings Endpoints
+backend.get(
+  "/api/card-accounts/:id/settings",
+  di.createApiCardAccountSettingsGet()
+);
+backend.patch(
+  "/api/card-accounts/:id/settings",
+  di.createApiCardAccountSettingsUpdate()
+);
+backend.post(
+  "/api/card-accounts/:id/settings/reset",
+  di.createApiCardAccountSettingsReset()
+);
+
+// Card Management Endpoints
+backend.get("/api/cards", di.createApiCardsList());
+backend.post("/api/cards", di.createApiCardsCreate());
+backend.get("/api/cards/:id", di.createApiCardsGet());
+backend.patch("/api/cards/:id", di.createApiCardsUpdate());
+backend.delete("/api/cards/:id", di.createApiCardsDelete());
 
 // Health Check Endpoint
 backend.get("/api/health", (c) =>
@@ -159,6 +165,13 @@ backend.get("/api/health", (c) =>
     timestamp: new Date().toISOString(),
     locale: "en-AU",
     timezone: "Australia/Brisbane",
-  }));
+  })
+);
 
-Deno.serve(backend.fetch);
+const server = Deno.serve(backend.fetch);
+
+Deno.addSignalListener("SIGINT", async () => {
+  console.log("Shutting down server...");
+  server.shutdown();
+  await db.$client.end();
+});

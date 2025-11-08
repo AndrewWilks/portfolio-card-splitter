@@ -1,16 +1,100 @@
-import { assert as _assert } from "@std/assert";
-import { UserRepository as _UserRepository } from "../../repositories/index.ts";
+import { assert } from "@std/assert";
+import { crypto } from "@std/crypto/crypto";
+import { UserRepository as _UserRepository } from "@backend/repositories";
+import { User, UserRole } from "@shared/entities";
+import { db } from "@db";
 
-Deno.test("UserRepository - create", () => {
-  // TODO: Test user creation
+const userRepo = new _UserRepository();
+
+const id = crypto.randomUUID();
+const email = "test@example.com";
+const passwordHash = await User.passwordService.hashPassword("password123");
+const firstName = "test";
+const lastName = "user";
+const isActive = true;
+const role = UserRole.USER;
+
+const dummyUser = new User({
+  id,
+  email: email,
+  passwordHash,
+  firstName,
+  lastName,
+  role,
+  isActive,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 });
 
-Deno.test("UserRepository - findById", () => {
-  // TODO: Test finding user by ID
+Deno.test.afterEach(async () => {
+  // Clean up
+  // Note: Implement delete method in UserRepository for proper cleanup
+  await userRepo.delete(id);
 });
 
-Deno.test("UserRepository - findByEmail", () => {
-  // TODO: Test finding user by email
+Deno.test({
+  name: "UserRepository - create",
+  fn: () => {
+    assert(userRepo instanceof _UserRepository);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "UserRepository - find by ID with save",
+  fn: async () => {
+    await userRepo.save(dummyUser);
+
+    const fetchedUser = await userRepo.findById(id);
+
+    assert(fetchedUser !== null);
+    assert(fetchedUser?.email === email);
+    assert(fetchedUser?.firstName === firstName);
+    assert(fetchedUser?.lastName === lastName);
+    assert(fetchedUser?.isActive === isActive);
+    assert(fetchedUser?.role === role);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "UserRepository - findByEmail",
+  fn: async () => {
+    await userRepo.save(dummyUser);
+
+    const fetchedUser = await userRepo.findByEmail(email);
+
+    assert(fetchedUser !== null);
+    assert(fetchedUser?.email === email);
+    assert(fetchedUser?.firstName === firstName);
+    assert(fetchedUser?.lastName === lastName);
+    assert(fetchedUser?.isActive === isActive);
+    assert(fetchedUser?.role === role);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
+});
+
+Deno.test({
+  name: "UserRepository - findByRole",
+  fn: async () => {
+    await userRepo.save(dummyUser);
+
+    const usersByRole = await userRepo.findByRole(role);
+    assert(usersByRole.length > 0);
+    const fetchedUser = usersByRole.find((user) => user.id === id);
+
+    assert(fetchedUser !== undefined);
+    assert(fetchedUser?.email === email);
+    assert(fetchedUser?.firstName === firstName);
+    assert(fetchedUser?.lastName === lastName);
+    assert(fetchedUser?.isActive === isActive);
+    assert(fetchedUser?.role === role);
+  },
+  sanitizeOps: false,
+  sanitizeResources: false,
 });
 
 // TODO: Add more test cases for UserRepository methods

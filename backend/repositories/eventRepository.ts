@@ -1,22 +1,53 @@
-import { EventRepository as SharedEventRepository } from "@shared/repositories";
 import { Event } from "@shared/entities";
+import { Repository } from "./base/repository.ts";
+import { eq, and } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class EventRepository extends SharedEventRepository {
-  override save(_event: Event): Promise<void> {
-    // TODO: Implement save method to insert event into database
-    return Promise.reject("Not implemented");
+export class EventRepository extends Repository<"Event"> {
+  constructor() {
+    super("Event");
   }
 
-  override findByEntity(
-    _entityType: string,
-    _entityId: string,
-  ): Promise<Event[]> {
-    // TODO: Implement findByEntity method to query events by entity type and ID from database
-    return Promise.reject("Not implemented");
+  async findByEntity<T>(
+    entityType: string,
+    entityId: string
+  ): Promise<Event<T>[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.events)
+      .where(
+        and(
+          eq(Tables.events.entityType, entityType),
+          eq(Tables.events.entityId, entityId)
+        )
+      );
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Event<T>(camelCaseData as any);
+    });
   }
 
-  override findByActor(_actorId: string): Promise<Event[]> {
-    // TODO: Implement findByActor method to query events by actor ID from database
-    return Promise.reject("Not implemented");
+  async findByActor<T>(actorId: string): Promise<Event<T>[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.events)
+      .where(eq(Tables.events.actorId, actorId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Event<T>(camelCaseData as any);
+    });
   }
 }

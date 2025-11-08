@@ -1,4 +1,7 @@
 import { allocations } from "./allocations.ts";
+import { cardAccounts } from "./cardAccounts.ts";
+import { cardAccountSettings } from "./cardAccountSettings.ts";
+import { cards } from "./cards.ts";
 import { events } from "./events.ts";
 import { inviteTokens } from "./inviteTokens.ts";
 import { members } from "./members.ts";
@@ -30,4 +33,7 @@ export const Tables = {
   allocations,
   merchants,
   tags,
+  cardAccounts,
+  cardAccountSettings,
+  cards,
 };

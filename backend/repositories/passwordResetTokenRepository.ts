@@ -1,30 +1,37 @@
-import { PasswordResetTokenRepository as SharedPasswordResetTokenRepository } from "@shared/repositories";
 import { PasswordResetToken } from "@shared/entities";
+import { Repository } from "./base/repository.ts";
+import { eq, lt } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class PasswordResetTokenRepository
-  extends SharedPasswordResetTokenRepository {
-  override save(_token: PasswordResetToken): Promise<void> {
-    // TODO: Implement save method to insert password reset token into database
-    return Promise.reject("Not implemented");
+export class PasswordResetTokenRepository extends Repository<"PasswordResetToken"> {
+  constructor() {
+    super("PasswordResetToken");
   }
 
-  override findById(_id: string): Promise<PasswordResetToken | null> {
-    // TODO: Implement findById method to query password reset token by ID from database
-    return Promise.reject("Not implemented");
+  async findByUserId(userId: string): Promise<PasswordResetToken[]> {
+    const found = await this.dbClient
+      .select()
+      .from(Tables.passwordResetTokens)
+      .where(eq(Tables.passwordResetTokens.userId, userId));
+
+    if (found.length === 0) {
+      return [];
+    }
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new PasswordResetToken(camelCaseData as any);
+    });
   }
 
-  override findByUserId(_userId: string): Promise<PasswordResetToken[]> {
-    // TODO: Implement findByUserId method to query password reset tokens by user ID from database
-    return Promise.reject("Not implemented");
-  }
+  async deleteExpired(): Promise<number> {
+    const deleted = await this.dbClient
+      .delete(Tables.passwordResetTokens)
+      .where(lt(Tables.passwordResetTokens.expiresAt, new Date()))
+      .returning();
 
-  override delete(_id: string): Promise<void> {
-    // TODO: Implement delete method to remove password reset token from database
-    return Promise.reject("Not implemented");
-  }
-
-  override deleteExpired(): Promise<void> {
-    // TODO: Implement deleteExpired method to remove expired password reset tokens from database
-    return Promise.reject("Not implemented");
+    return deleted.length;
   }
 }

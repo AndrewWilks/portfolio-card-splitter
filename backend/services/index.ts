@@ -10,3 +10,7 @@ export { LedgerService } from "./ledgerService.ts";
 export { AuditService } from "./auditService.ts";
 export { PasswordService } from "./passwordService.ts";
 export { SessionService } from "./sessionService.ts";
+export { UserService } from "./userService.ts";
+export { CardAccountService } from "./cardAccountService.ts";
+export { CardAccountSettingsService } from "./cardAccountSettingsService.ts";
+export { CardService } from "./cardService.ts";

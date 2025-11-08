@@ -2,19 +2,26 @@
   "imports": {
     // Backend modules
     "@db": "./backend/db/index.ts",
+    "@db/schemas": "./backend/db/schema/index.ts",
+    "@db/tables": "./backend/db/schema/tables/index.ts",
     "@backend/services": "./backend/services/index.ts",
     "@backend/repositories": "./backend/repositories/index.ts",
     "@backend/routes": "./backend/routes/index.ts",
+    "@backend/middleware": "./backend/middleware/index.ts",
+    "@backend/di": "./backend/di/index.ts",
 
     // Frontend modules
     "@frontend/components": "./frontend/components/index.ts",
     "@frontend/services": "./frontend/services/index.ts",
     "@frontend/repositories": "./frontend/repositories/index.ts",
+    "@hono/zod-validator": "npm:@hono/zod-validator@^0.7.4",
 
     // Shared modules
     "@shared/services": "./shared/services/index.ts",
     "@shared/entities": "./shared/entities/index.ts",
-    "@shared/repositories": "./shared/repositories/index.ts",
+    "@shared/entities-map": "./shared/entities/entities.map.ts",
+    "@shared/utilities": "./shared/utilities/index.ts",
+    "@shared/types": "./shared/types.ts",
 
     // Third-party Packages
     "@std/crypto": "jsr:@std/crypto@^1.0.5",
@@ -31,6 +38,7 @@
     "@cspell/dict-en-au": "npm:@cspell/dict-en-au@^1.1.7"
   },
   "tasks": {
+    "db:studio": "deno -A --env-file=./.env npm:drizzle-kit studio --config=./backend/db/drizzle.config.ts",
     "db:generate": "deno -A --env-file=./.env npm:drizzle-kit generate --config=./backend/db/drizzle.config.ts",
     "db:migrate": "deno -A --env-file=./.env npm:drizzle-kit migrate --config=./backend/db/drizzle.config.ts",
     "db:empty": "deno -A --env-file=./.env backend/db/helpers/clearData.ts",

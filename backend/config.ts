@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const configSchema = z.object({
   DATABASE_URL: z.url(),
-  JWT_SECRET: z.string().min(32),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
@@ -22,12 +21,9 @@ export function loadConfig(): Config {
   const isTest = nodeEnv === "test";
 
   const config = {
-    DATABASE_URL: Deno.env.get("DATABASE_URL") ||
+    DATABASE_URL:
+      Deno.env.get("DATABASE_URL") ||
       (isTest ? "postgresql://test:test@localhost:5432/test" : undefined),
-    JWT_SECRET: Deno.env.get("JWT_SECRET") ||
-      (isTest
-        ? "test-jwt-secret-key-that-is-at-least-32-characters-long"
-        : undefined),
     NODE_ENV: nodeEnv,
     PORT: Deno.env.get("PORT"),
   };

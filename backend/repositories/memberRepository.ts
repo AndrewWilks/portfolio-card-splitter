@@ -1,117 +1,73 @@
-import { MemberRepository as SharedMemberRepository } from "@shared/repositories";
 import { Member } from "@shared/entities";
-import { db, Schemas } from "@db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
+import { Tables } from "@db/tables";
+import { Repository } from "./base/repository.ts";
+import { objectKeysToCamel } from "@shared/utilities";
 
-export class MemberRepository extends SharedMemberRepository {
-  constructor(private dbClient = db) {
-    super();
+export class MemberRepository extends Repository<"Member"> {
+  constructor() {
+    super("Member");
   }
 
-  override async save(member: Member): Promise<void> {
-    const data = member.toJSON();
-    await this.dbClient
-      .insert(Schemas.Tables.members)
-      .values({
-        id: data.id,
-        userId: data.userId,
-        displayName: data.displayName,
-        archived: data.archived,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      })
-      .onConflictDoUpdate({
-        target: Schemas.Tables.members.id,
-        set: {
-          displayName: data.displayName,
-          archived: data.archived,
-          updatedAt: data.updatedAt,
-        },
-      });
-  }
-
-  override async findById(id: string): Promise<Member | null> {
-    const result = await this.dbClient
+  async findByEmail(
+    _email: string,
+    _isActive?: boolean
+  ): Promise<Member | null> {
+    const found = await this.dbClient
       .select()
-      .from(Schemas.Tables.members)
-      .where(eq(Schemas.Tables.members.id, id))
-      .limit(1);
+      .from(Tables.members)
+      .innerJoin(Tables.users, eq(Tables.members.userId, Tables.users.id))
+      .where(
+        and(
+          eq(Tables.users.email, _email),
+          _isActive !== undefined
+            ? eq(Tables.members.isActive, _isActive)
+            : undefined
+        )
+      );
 
-    if (result.length === 0) {
+    if (found.length === 0) {
       return null;
     }
 
-    return Member.from({
-      id: result[0].id,
-      userId: result[0].userId,
-      displayName: result[0].displayName,
-      archived: result[0].archived,
-      createdAt: result[0].createdAt,
-      updatedAt: result[0].updatedAt,
+    if (found.length > 1) {
+      throw new Error(`Multiple members found with email: ${_email}`);
+    }
+
+    const camelCaseData = objectKeysToCamel(
+      found[0].members as Record<string, unknown>
+    );
+    // deno-lint-ignore no-explicit-any
+    return new Member(camelCaseData as any);
+  }
+
+  async findByStatus(_status: string): Promise<Member[]> {
+    const isActive = _status === "active" ? true : false;
+
+    const found = await this.dbClient
+      .select()
+      .from(Tables.members)
+      .where(eq(Tables.members.isActive, isActive))
+      .orderBy(Tables.members.createdAt);
+
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Member(camelCaseData as any);
     });
   }
 
-  override findByEmail(_email: string): Promise<Member | null> {
-    // Members don't have emails directly - they're linked to users
-    // This method doesn't make sense for members, but we implement it for interface compatibility
-    return Promise.resolve(null);
-  }
-
-  override async findByStatus(status: string): Promise<Member[]> {
-    // Interpret status as archived state: "active" = not archived, "archived" = archived
-    const isArchived = status === "archived";
-
-    const results = await this.dbClient
+  async findByUserId(_userId: string): Promise<Member[]> {
+    const found = await this.dbClient
       .select()
-      .from(Schemas.Tables.members)
-      .where(eq(Schemas.Tables.members.archived, isArchived));
+      .from(Tables.members)
+      .where(eq(Tables.members.userId, _userId))
+      .orderBy(Tables.members.createdAt);
 
-    return results.map((row) =>
-      Member.from({
-        id: row.id,
-        userId: row.userId,
-        displayName: row.displayName,
-        archived: row.archived,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      })
-    );
-  }
-
-  // Additional methods specific to members
-  async findByUserId(userId: string): Promise<Member[]> {
-    const results = await this.dbClient
-      .select()
-      .from(Schemas.Tables.members)
-      .where(eq(Schemas.Tables.members.userId, userId));
-
-    return results.map((row) =>
-      Member.from({
-        id: row.id,
-        userId: row.userId,
-        displayName: row.displayName,
-        archived: row.archived,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      })
-    );
-  }
-
-  async findAll(): Promise<Member[]> {
-    const results = await this.dbClient
-      .select()
-      .from(Schemas.Tables.members)
-      .orderBy(Schemas.Tables.members.createdAt);
-
-    return results.map((row) =>
-      Member.from({
-        id: row.id,
-        userId: row.userId,
-        displayName: row.displayName,
-        archived: row.archived,
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-      })
-    );
+    return found.map((row) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      // deno-lint-ignore no-explicit-any
+      return new Member(camelCaseData as any);
+    });
   }
 }
