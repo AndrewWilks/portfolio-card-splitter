@@ -61,7 +61,7 @@ export class User extends Entity {
     return {
       id: this.id,
       email: this.email,
-      fullName: this.fullName,
+      passwordHash: this.passwordHash,
       firstName: this.firstName,
       lastName: this.lastName,
       role: this.role,

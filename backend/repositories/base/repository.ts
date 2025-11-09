@@ -79,27 +79,42 @@ export class Repository<T extends TKeysOfRepository> {
 
   protected async update(_entity: InstanceType<(typeof entities)[T]>) {
     _entity.updatedAt = new Date();
-    return (
-      (await this.dbClient
+    
+    const rows = await this.dbClient
+      // deno-lint-ignore no-explicit-any
+      .update(Tables[this.schemaType] as any)
+      .set(_entity.toJSON)
+      .where(eq(Tables[this.schemaType].id, _entity.id))
+      .returning() as unknown[];
+    
+    // Convert DB rows (snake_case) to entity instances (camelCase)
+    return rows.map((row: unknown) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      return new entities[this.entityType](
         // deno-lint-ignore no-explicit-any
-        .update(Tables[this.schemaType] as any)
-        .set(_entity.toJSON)
-        .where(eq(Tables[this.schemaType].id, _entity.id))
-        .returning()) as InstanceType<(typeof entities)[T]>[]
-    );
+        camelCaseData as any
+      ) as InstanceType<(typeof entities)[T]>;
+    });
   }
 
   protected async insert(_entity: InstanceType<(typeof entities)[T]>) {
     // Use toJSON to get plain object with correct fields
     const insertData = _entity.toJSON;
 
-    return (
-      (await this.dbClient
+    const rows = await this.dbClient
+      // deno-lint-ignore no-explicit-any
+      .insert(Tables[this.schemaType] as any)
+      .values(insertData)
+      .returning() as unknown[];
+    
+    // Convert DB rows (snake_case) to entity instances (camelCase)
+    return rows.map((row: unknown) => {
+      const camelCaseData = objectKeysToCamel(row as Record<string, unknown>);
+      return new entities[this.entityType](
         // deno-lint-ignore no-explicit-any
-        .insert(Tables[this.schemaType] as any)
-        .values(insertData)
-        .returning()) as InstanceType<(typeof entities)[T]>[]
-    );
+        camelCaseData as any
+      ) as InstanceType<(typeof entities)[T]>;
+    });
   }
 
   async save(
