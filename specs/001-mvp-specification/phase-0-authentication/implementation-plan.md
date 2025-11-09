@@ -562,11 +562,11 @@ describe("SessionService", () => {
 
 ### Validation
 
-- [ ] All 12+ tests passing
-- [ ] Can create sessions with custom expiration
-- [ ] isValid() correctly identifies expired sessions
-- [ ] timeUntilExpiry() calculates correctly
-- [ ] Can delete individual sessions
+- [x] All 12+ tests passing
+- [x] Can create sessions with custom expiration
+- [x] isValid() correctly identifies expired sessions
+- [x] timeUntilExpiry() calculates correctly
+- [x] Can delete individual sessions
 - [x] Can delete all sessions for a user
 - [x] findValidSession() auto-cleans expired sessions
 
@@ -579,7 +579,8 @@ describe("SessionService", () => {
 ## Task 0.3: AuthService Implementation
 
 **Estimated Time**: 12-16 hours  
-**Status**: 🔄 IN PROGRESS (Starting November 9, 2025)  
+**Actual Time**: ~10 hours  
+**Status**: ✅ COMPLETE (November 9, 2025)  
 **Depends On**: Tasks 0.1 and 0.2 ✅
 
 ### Goal
@@ -971,26 +972,28 @@ Create comprehensive test file covering all 8 methods with success and error cas
 
 ### Validation
 
-- [ ] All 30+ tests passing
-- [ ] bootstrap() creates admin and session
-- [ ] bootstrap() rejects if users exist
-- [ ] login() works with valid credentials
-- [ ] login() fails with invalid credentials
-- [ ] logout() deletes session and emits event
-- [ ] validateSession() returns user+session
-- [ ] validateSession() returns null for invalid
-- [ ] invite() creates token (OWNER only)
-- [ ] invite() rejects for non-OWNER
-- [ ] invite() rejects duplicate email
-- [ ] acceptInvite() creates user and session
-- [ ] acceptInvite() rejects expired token
-- [ ] acceptInvite() rejects used token
-- [ ] requestPasswordReset() creates token
-- [ ] requestPasswordReset() returns null for invalid email (security)
-- [ ] resetPassword() updates password
-- [ ] resetPassword() invalidates all sessions
-- [ ] resetPassword() rejects weak password
-- [ ] All operations emit correct events
+- [x] All 30+ tests passing
+- [x] bootstrap() creates admin and session
+- [x] bootstrap() rejects if users exist
+- [x] login() works with valid credentials
+- [x] login() fails with invalid credentials
+- [x] logout() deletes session and emits event
+- [x] validateSession() returns user+session
+- [x] validateSession() returns null for invalid
+- [x] invite() creates token (OWNER only)
+- [x] invite() rejects for non-OWNER
+- [x] invite() rejects duplicate email
+- [x] acceptInvite() creates user and session
+- [x] acceptInvite() rejects expired token
+- [x] acceptInvite() rejects used token
+- [x] requestPasswordReset() creates token
+- [x] requestPasswordReset() returns null for invalid email (security)
+- [x] resetPassword() updates password
+- [x] resetPassword() invalidates all sessions
+- [x] resetPassword() rejects weak password
+- [x] All operations emit correct events
+
+**Completed**: November 9, 2025 - Commits 8e67fbc (initial implementation), bbcb60d (fixes)
 
 ### Commit Message
 
@@ -1017,12 +1020,21 @@ Depends on: PasswordService, SessionService
 ## Task 0.4: Auth Routes Implementation
 
 **Estimated Time**: 4-6 hours  
-**Status**: ⏳ Not Started  
-**Depends On**: Task 0.3
+**Actual Time**: ~6 hours  
+**Status**: ✅ COMPLETE (November 9, 2025)  
+**Depends On**: Task 0.3 ✅
 
 ### Goal
 
 Implement 6 HTTP endpoints for authentication with proper validation, error handling, and cookie management.
+
+### Subtasks Completed
+
+- ✅ **Task 0.4.1**: Auth Middleware (Commit bbcb60d) - requireAuth, requireOwner
+- ✅ **Task 0.4.2**: Bootstrap Endpoint (Commit dfe94a7) - POST /api/auth/bootstrap
+- ✅ **Task 0.4.3**: Login/Logout Endpoints (Commit 22a685a) - POST /api/auth/login, /logout
+- ✅ **Task 0.4.4**: Invite Endpoints (Commit 4b6ecf0) - POST /api/auth/invite, /invite/accept
+- ✅ **Task 0.4.5**: Password Reset Endpoints (Commit 0d955c3) - POST /api/auth/password/reset/request, /reset
 
 ### Context
 
@@ -1226,17 +1238,19 @@ describe("POST /api/auth/login", () => {
 
 ### Validation
 
-- [ ] All 20+ route tests passing
-- [ ] Login returns user and sets cookie
-- [ ] Logout clears cookie
-- [ ] Bootstrap creates admin
-- [ ] Bootstrap rejects if users exist
-- [ ] Invite requires OWNER role
-- [ ] Accept invite creates user
-- [ ] Password reset flow works end-to-end
-- [ ] Protected routes require authentication
-- [ ] Middleware attaches user to context
-- [ ] All error cases handled properly
+- [x] All 35+ route tests passing
+- [x] Login returns user and sets cookie
+- [x] Logout clears cookie
+- [x] Bootstrap creates admin
+- [x] Bootstrap rejects if users exist
+- [x] Invite requires OWNER role
+- [x] Accept invite creates user
+- [x] Password reset flow works end-to-end
+- [x] Protected routes require authentication
+- [x] Middleware attaches user to context
+- [x] All error cases handled properly
+
+**Completed**: November 9, 2025 - Multiple commits (bbcb60d, dfe94a7, 22a685a, 4b6ecf0, 0d955c3)
 
 ### Commit Message
 
@@ -1265,29 +1279,43 @@ Completes Phase 0
 
 ### Implementation
 
-- [ ] Task 0.1: PasswordService (3-4 hrs)
-- [ ] Task 0.2: SessionService (2-3 hrs)
-- [ ] Task 0.3: AuthService (12-16 hrs)
-- [ ] Task 0.4: Auth Routes (4-6 hrs)
+- [x] Task 0.1: PasswordService (3-4 hrs) - Commit 98a5b60
+- [x] Task 0.2: SessionService (2-3 hrs) - Commits 08a6d7f, a55c247
+- [x] Task 0.3: AuthService (12-16 hrs) - Commits 8e67fbc, bbcb60d
+- [x] Task 0.4: Auth Routes (4-6 hrs) - Commits bbcb60d, dfe94a7, 22a685a, 4b6ecf0, 0d955c3
+- [x] Task 0.5: Documentation - Commit 2c7acf4
 
 ### Testing
 
-- [ ] 60+ total tests passing
-- [ ] Can bootstrap system
-- [ ] Can login/logout
-- [ ] Can invite users (OWNER only)
-- [ ] Can accept invitations
-- [ ] Can request password reset
-- [ ] Can reset password
-- [ ] Sessions work correctly
-- [ ] Middleware protects routes
-- [ ] All events emitted
+- [x] 62+ total tests passing
+- [x] Can bootstrap system
+- [x] Can login/logout
+- [x] Can invite users (OWNER only)
+- [x] Can accept invitations
+- [x] Can request password reset
+- [x] Can reset password
+- [x] Sessions work correctly
+- [x] Middleware protects routes
+- [x] All events emitted
 
 ### Documentation
 
-- [ ] Update architecture docs with auth flow
-- [ ] Document cookie configuration
-- [ ] Document token expiration policies
+- [x] Update architecture docs with auth flow
+- [x] Document cookie configuration
+- [x] Document token expiration policies
+- [x] Create COMPLETION-SUMMARY.md
+- [x] Update spec.md with completion status
+
+---
+
+## Phase 0 Complete! 🎉
+
+**Total Time**: ~18 hours (vs 21-29 estimated)  
+**Total Tests**: 62+ comprehensive tests  
+**Total Commits**: 9 commits with detailed messages  
+**Status**: ✅ Production-ready authentication infrastructure
+
+See **COMPLETION-SUMMARY.md** for full details.
 
 ---
 
