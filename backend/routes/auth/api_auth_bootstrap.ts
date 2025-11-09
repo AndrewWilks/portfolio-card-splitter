@@ -67,12 +67,12 @@ export async function apiAuthBootstrap(c: Context, authService: AuthService) {
         },
         message: "Admin user created successfully",
       },
-      STATUS_CODE.Created,
+      STATUS_CODE.Created
     );
   } catch (error) {
     return c.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
-      STATUS_CODE.BadRequest,
+      STATUS_CODE.BadRequest
     );
   }
 }

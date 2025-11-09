@@ -59,7 +59,7 @@ Deno.test({
     assertExists(json.user);
     assertEquals(json.user.email, "admin@example.com");
     assertEquals(json.user.role, "owner");
-    
+
     // Check session cookie is set
     const setCookieHeader = res.headers.get("set-cookie");
     assertExists(setCookieHeader);
