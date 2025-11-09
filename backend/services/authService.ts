@@ -1,4 +1,5 @@
 import {
+  Event,
   InviteToken,
   PasswordResetToken,
   Session,
@@ -47,7 +48,7 @@ export class AuthService {
     const validation = this.passwordService.getStrengthValidation(
       data.password
     );
-    if (!validation.isValid) {
+    if (!validation.valid) {
       throw new Error(
         `Password validation failed: ${validation.errors.join(", ")}`
       );
@@ -57,29 +58,37 @@ export class AuthService {
     const passwordHash = await this.passwordService.hash(data.password);
 
     // Create OWNER user
-    const user = await this.userRepo.insert(
-      User.create({
-        email: data.email,
-        passwordHash,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: UserRole.OWNER,
-      })
-    );
+    const user = new User({
+      id: crypto.randomUUID(),
+      email: data.email,
+      passwordHash,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      role: UserRole.OWNER,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    const [savedUser] = await this.userRepo.save(user);
 
     // Create session
-    const session = await this.sessionService.create(user.id);
+    const session = await this.sessionService.create(savedUser.id);
 
     // Emit event
-    await this.eventRepo.insert({
-      type: "created",
-      actorUserId: user.id,
-      entityType: "user",
-      entityId: user.id,
+    const event = new Event({
+      id: crypto.randomUUID(),
+      type: Event.EventType.CREATED,
+      actorUserId: savedUser.id,
+      entityType: "user" as never, // Event enum needs updating
+      entityId: savedUser.id,
       payload: { bootstrapped: true },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
     });
+    await this.eventRepo.save(event);
 
-    return { user, session };
+    return { user: savedUser, session };
   }
 
   async login(
@@ -105,13 +114,18 @@ export class AuthService {
     const session = await this.sessionService.create(user.id);
 
     // Emit login event
-    await this.eventRepo.insert({
-      type: "login",
+    const event = new Event({
+      id: crypto.randomUUID(),
+      type: Event.EventType.LOGIN,
       actorUserId: user.id,
-      entityType: "user",
+      entityType: "user" as never,
       entityId: user.id,
       payload: {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
     });
+    await this.eventRepo.save(event);
 
     return { user, session };
   }
@@ -125,13 +139,18 @@ export class AuthService {
       await this.sessionService.delete(sessionId);
 
       // Emit logout event
-      await this.eventRepo.insert({
-        type: "logout",
+      const event = new Event({
+        id: crypto.randomUUID(),
+        type: Event.EventType.LOGOUT,
         actorUserId: session.userId,
-        entityType: "user",
+        entityType: "user" as never,
         entityId: session.userId,
         payload: {},
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isActive: true,
       });
+      await this.eventRepo.save(event);
     }
     // Silent if session doesn't exist
   }
@@ -173,16 +192,21 @@ export class AuthService {
 
     // Create invite token
     const token = InviteToken.create({ email, role, expirationHours: 24 });
-    const savedToken = await this.inviteTokenRepo.insert(token);
+    const [savedToken] = await this.inviteTokenRepo.save(token);
 
     // Emit event
-    await this.eventRepo.insert({
-      type: "created",
+    const event = new Event({
+      id: crypto.randomUUID(),
+      type: Event.EventType.CREATED,
       actorUserId: inviterUserId,
-      entityType: "invite_token",
+      entityType: "invite_token" as never,
       entityId: savedToken.id,
       payload: { email, role },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
     });
+    await this.eventRepo.save(event);
 
     return savedToken;
   }
@@ -201,7 +225,7 @@ export class AuthService {
     const validation = this.passwordService.getStrengthValidation(
       data.password
     );
-    if (!validation.isValid) {
+    if (!validation.valid) {
       throw new Error(
         `Password validation failed: ${validation.errors.join(", ")}`
       );
@@ -211,33 +235,41 @@ export class AuthService {
     const passwordHash = await this.passwordService.hash(data.password);
 
     // Create user
-    const user = await this.userRepo.insert(
-      User.create({
-        email: token.email,
-        passwordHash,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        role: token.role,
-      })
-    );
+    const user = new User({
+      id: crypto.randomUUID(),
+      email: token.email,
+      passwordHash,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      role: token.role,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+    const [savedUser] = await this.userRepo.save(user);
 
     // Mark token as used
     token.use();
-    await this.inviteTokenRepo.update(token);
+    await this.inviteTokenRepo.save(token);
 
     // Create session
-    const session = await this.sessionService.create(user.id);
+    const session = await this.sessionService.create(savedUser.id);
 
     // Emit event
-    await this.eventRepo.insert({
-      type: "created",
-      actorUserId: user.id,
-      entityType: "user",
-      entityId: user.id,
+    const event = new Event({
+      id: crypto.randomUUID(),
+      type: Event.EventType.CREATED,
+      actorUserId: savedUser.id,
+      entityType: "user" as never,
+      entityId: savedUser.id,
       payload: { inviteTokenId: tokenId },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
     });
+    await this.eventRepo.save(event);
 
-    return { user, session };
+    return { user: savedUser, session };
   }
 
   async requestPasswordReset(
@@ -253,20 +285,25 @@ export class AuthService {
 
     // Create reset token
     const token = PasswordResetToken.create({
-      id: "",
+      id: crypto.randomUUID(),
       userId: user.id,
       expirationHours: 1,
     });
-    const savedToken = await this.passwordResetTokenRepo.insert(token);
+    const [savedToken] = await this.passwordResetTokenRepo.save(token);
 
     // Emit event
-    await this.eventRepo.insert({
-      type: "created",
+    const event = new Event({
+      id: crypto.randomUUID(),
+      type: Event.EventType.CREATED,
       actorUserId: user.id,
-      entityType: "password_reset_token",
+      entityType: "password_reset_token" as never,
       entityId: savedToken.id,
       payload: { userId: user.id },
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
     });
+    await this.eventRepo.save(event);
 
     return savedToken;
   }
@@ -280,7 +317,7 @@ export class AuthService {
 
     // Validate password strength
     const validation = this.passwordService.getStrengthValidation(newPassword);
-    if (!validation.isValid) {
+    if (!validation.valid) {
       throw new Error(
         `Password validation failed: ${validation.errors.join(", ")}`
       );
@@ -296,26 +333,32 @@ export class AuthService {
     const passwordHash = await this.passwordService.hash(newPassword);
 
     // Update user password
-    const updatedUser = User.create({
+    const updatedUser = new User({
       ...user.toJSON,
       passwordHash,
+      updatedAt: new Date(),
     });
-    await this.userRepo.update(updatedUser);
+    await this.userRepo.save(updatedUser);
 
     // Mark token as used
     token.use();
-    await this.passwordResetTokenRepo.update(token);
+    await this.passwordResetTokenRepo.save(token);
 
     // Invalidate all user sessions
     await this.sessionService.deleteAllForUser(user.id);
 
     // Emit event
-    await this.eventRepo.insert({
-      type: "password_reset",
+    const event = new Event({
+      id: crypto.randomUUID(),
+      type: Event.EventType.PASSWORD_RESET,
       actorUserId: user.id,
-      entityType: "user",
+      entityType: "user" as never,
       entityId: user.id,
       payload: {},
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isActive: true,
     });
+    await this.eventRepo.save(event);
   }
 }
