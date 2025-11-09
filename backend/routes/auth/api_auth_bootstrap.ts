@@ -1,4 +1,5 @@
 import { Context } from "hono";
+import { setCookie } from "hono/cookie";
 import { email, object, string } from "zod";
 import { STATUS_CODE } from "@std/http";
 import { PasswordService } from "@shared/services";
@@ -6,7 +7,7 @@ import { AuthService } from "@backend/services";
 
 const BootstrapRequestSchema = object({
   firstName: string().min(2),
-  laseName: string().min(2),
+  lastName: string().min(2),
   email: email(),
   password: PasswordService.schema,
 });
@@ -17,7 +18,8 @@ interface BootstrapResponseSchema {
     id: string;
     email: string;
     firstName: string;
-    laseName: string;
+    lastName: string;
+    role: string;
     isActive: true;
   };
   message: string;
@@ -33,7 +35,7 @@ export async function apiAuthBootstrap(c: Context, authService: AuthService) {
   }
 
   // Extract validated data
-  const { laseName, firstName, email, password } = parseResult.data;
+  const { lastName, firstName, email, password } = parseResult.data;
 
   try {
     // Use authService.bootstrap to create the admin user
@@ -41,20 +43,32 @@ export async function apiAuthBootstrap(c: Context, authService: AuthService) {
       email,
       password,
       firstName,
-      lastName: laseName,
+      lastName,
     });
 
-    return c.json<BootstrapResponseSchema>({
-      success: true,
-      user: {
-        id: result.user.id,
-        email: result.user.email,
-        firstName: result.user.firstName,
-        laseName: result.user.lastName,
-        isActive: true,
-      },
-      message: "Admin user created successfully",
+    // Set session cookie
+    setCookie(c, "session_id", result.session.id, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 60 * 60 * 24, // 24 hours
     });
+
+    return c.json<BootstrapResponseSchema>(
+      {
+        success: true,
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          firstName: result.user.firstName,
+          lastName: result.user.lastName,
+          role: result.user.role,
+          isActive: true,
+        },
+        message: "Admin user created successfully",
+      },
+      STATUS_CODE.Created,
+    );
   } catch (error) {
     return c.json(
       { error: error instanceof Error ? error.message : "Unknown error" },
