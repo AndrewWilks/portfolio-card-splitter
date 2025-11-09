@@ -13,8 +13,8 @@ This plan implements authentication infrastructure in 4 sequential tasks:
 
 1. **PasswordService** (3-4 hrs) - ✅ COMPLETE - Password hashing and validation
 2. **SessionService** (2-3 hrs) - ✅ COMPLETE - Session lifecycle management
-3. **AuthService** (12-16 hrs) - 🔄 IN PROGRESS - All 8 auth operations
-4. **Auth Routes** (4-6 hrs) - ⏳ NOT STARTED - 6 HTTP endpoints + middleware
+3. **AuthService** (12-16 hrs) - ✅ COMPLETE - All 8 auth operations
+4. **Auth Routes** (4-6 hrs) - ✅ COMPLETE - 6 HTTP endpoints + middleware
 
 Each task is independent and can be completed, tested, and committed separately.
 
