@@ -21,6 +21,14 @@ export class PasswordResetToken extends Token {
     this._userId = userId;
   }
 
+  get userId(): string {
+    return this._userId;
+  }
+
+  get token(): string {
+    return this.id; // Token string is the entity ID
+  }
+
   static override create(data: {
     id: string;
     userId: string;

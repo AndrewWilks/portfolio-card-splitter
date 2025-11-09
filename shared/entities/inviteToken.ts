@@ -38,6 +38,10 @@ export class InviteToken extends Token {
     return this._role;
   }
 
+  get token(): string {
+    return this.id; // Token string is the entity ID
+  }
+
   static override create(data: {
     email: string;
     role?: UserRole;
@@ -50,7 +54,7 @@ export class InviteToken extends Token {
 
     return new InviteToken({
       email: data.email,
-      role: data.role || User.UserRole.USER,
+      role: data.role || User.UserRole.MEMBER,
       expiresAt: expiresAt,
     });
   }
@@ -59,7 +63,7 @@ export class InviteToken extends Token {
   static override get schema() {
     return object({
       email: email(),
-      role: zEnum([User.UserRole.ADMIN, User.UserRole.USER]),
+      role: zEnum([User.UserRole.OWNER, User.UserRole.MEMBER]),
       expiresAt: date().min(new Date()),
       usedAt: date().optional(),
     });

@@ -16,6 +16,14 @@ export class Token extends Entity {
     this._usedAt = usedAt;
   }
 
+  get usedAt(): Date | undefined {
+    return this._usedAt;
+  }
+
+  get isUsed(): boolean {
+    return this._usedAt !== undefined;
+  }
+
   static create(data: { expirationHours?: number }): Token {
     const expiresAt = calculateExpirationDate(data.expirationHours ?? 7 * 24); // default to 7 days
 
@@ -28,12 +36,8 @@ export class Token extends Entity {
     return new Date() > this._expiresAt;
   }
 
-  isUsed(): boolean {
-    return this._usedAt !== undefined;
-  }
-
   isValid(): boolean {
-    return !this.isExpired() && !this.isUsed();
+    return !this.isExpired() && !this.isUsed;
   }
 
   /**
@@ -52,7 +56,7 @@ export class Token extends Entity {
    */
   private assertCanUse(): void {
     if (this.isExpired()) throw new Error("Token is expired");
-    if (this.isUsed()) throw new Error("Token has already been used");
+    if (this.isUsed) throw new Error("Token has already been used");
   }
 
   /**

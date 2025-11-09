@@ -11,5 +11,5 @@ import { token } from "./base/token.ts";
 export const inviteTokens = pgTable("invite_tokens", {
   ...token,
   email: text("email").notNull(),
-  role: userRole("role").notNull().default("user"),
+  role: userRole("role").notNull().default("member"),
 });

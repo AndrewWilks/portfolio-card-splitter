@@ -20,8 +20,8 @@ export interface UserData extends EntityData {
 }
 
 export enum UserRole {
-  ADMIN = "admin",
-  USER = "user",
+  OWNER = "owner",
+  MEMBER = "member",
 }
 
 export class User extends Entity {
@@ -50,7 +50,7 @@ export class User extends Entity {
     this.passwordHash = passwordHash;
     this.firstName = firstName.trim();
     this.lastName = lastName.trim();
-    this.role = role || User.UserRole.USER;
+    this.role = role || User.UserRole.MEMBER;
   }
 
   get fullName(): string {
@@ -76,12 +76,12 @@ export class User extends Entity {
     return new User(parsed);
   }
 
-  isAdmin(): boolean {
-    return this.role === User.UserRole.USER;
+  isMember(): boolean {
+    return this.role === User.UserRole.MEMBER;
   }
 
-  canBootstrap(): boolean {
-    return this.role === User.UserRole.ADMIN;
+  isOwner(): boolean {
+    return this.role === User.UserRole.OWNER;
   }
 
   // Validation schemas

@@ -7,9 +7,16 @@ enum EventType {
   UPDATED = "updated",
   DELETED = "deleted",
   ARCHIVED = "archived",
+  LOGIN = "login",
+  LOGOUT = "logout",
+  PASSWORD_RESET = "password_reset",
 }
 
 enum EntityType {
+  USER = "user",
+  SESSION = "session",
+  INVITE_TOKEN = "invite_token",
+  PASSWORD_RESET_TOKEN = "password_reset_token",
   TRANSACTION = "transaction",
   PAYMENT = "payment",
   POT = "pot",
